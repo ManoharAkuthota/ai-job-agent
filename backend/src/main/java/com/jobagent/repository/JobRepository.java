@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface JobRepository extends JpaRepository<Job, Long> {
-    Optional<Job> findByUrl(String url);
+    List<Job> findByUrl(String url);
     List<Job> findByStatusOrderByDiscoveredAtDesc(String status);
     List<Job> findAllByOrderByDiscoveredAtDesc();
     List<Job> findAllByOrderByMatchScoreDesc();
