@@ -12,11 +12,14 @@ public class DataInitializer implements CommandLineRunner {
 
     private final UserProfileRepository profileRepository;
     private final AgentSettingsRepository settingsRepository;
+    private final com.jobagent.service.JobDiscoveryService jobDiscoveryService;
 
     public DataInitializer(UserProfileRepository profileRepository,
-                           AgentSettingsRepository settingsRepository) {
+                           AgentSettingsRepository settingsRepository,
+                           com.jobagent.service.JobDiscoveryService jobDiscoveryService) {
         this.profileRepository = profileRepository;
         this.settingsRepository = settingsRepository;
+        this.jobDiscoveryService = jobDiscoveryService;
     }
 
     @Override
@@ -63,5 +66,8 @@ public class DataInitializer implements CommandLineRunner {
             settings.setAutoApplyEnabled(false);
             settingsRepository.save(settings);
         }
+
+        // 3. Purge German/irrelevant jobs and seed verified Indian company jobs
+        jobDiscoveryService.discoverJobs("Java Full Stack Developer", "Java, Spring Boot, React");
     }
 }
