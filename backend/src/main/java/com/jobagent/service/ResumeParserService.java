@@ -86,8 +86,8 @@ public class ResumeParserService {
         for (Job job : allJobs) {
             int score = calculateMatchScore(job, matchedSkills, domain);
             job.setMatchScore(score);
-            jobRepository.save(job);
         }
+        jobRepository.saveAll(allJobs);
 
         // Sort matching jobs by score descending
         List<Job> sortedMatches = allJobs.stream()
