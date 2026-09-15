@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import { getProfile, saveProfile } from '../services/api';
-import { User, Mail, Phone, MapPin, Globe, Award, CheckCircle2, Save } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { getProfile, saveProfile, uploadResume } from '../services/api';
+import { User, Mail, Phone, MapPin, Globe, Award, CheckCircle2, Save, UploadCloud, RefreshCw } from 'lucide-react';
 
 export default function ProfileEditor() {
   const [profile, setProfile] = useState({
@@ -19,6 +19,8 @@ export default function ProfileEditor() {
   });
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
+  const [uploadingResume, setUploadingResume] = useState(false);
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     getProfile()
@@ -27,6 +29,24 @@ export default function ProfileEditor() {
       })
       .catch((err) => console.error("Error loading profile:", err));
   }, []);
+
+  const handleResumeUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploadingResume(true);
+    try {
+      const res = await uploadResume(file);
+      if (res.data && res.data.profile) {
+        setProfile(res.data.profile);
+        setSavedSuccess(true);
+        setTimeout(() => setSavedSuccess(false), 4000);
+      }
+    } catch (err) {
+      alert("Error parsing uploaded resume: " + (err.response?.data?.error || err.message));
+    } finally {
+      setUploadingResume(false);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -54,6 +74,25 @@ export default function ProfileEditor() {
         <div>
           <h2 className="page-title">Master Resume & Profile</h2>
           <p className="page-subtitle">The AI Agent uses this profile to calculate match scores and customize your resume daily.</p>
+        </div>
+        <div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf,.docx,.txt"
+            style={{ display: 'none' }}
+            onChange={handleResumeUpload}
+          />
+          <button
+            type="button"
+            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+            disabled={uploadingResume}
+            className="btn-secondary"
+            style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+          >
+            {uploadingResume ? <RefreshCw size={16} className="spin" /> : <UploadCloud size={16} />}
+            {uploadingResume ? 'Parsing PDF...' : 'Upload PDF to Auto-Fill'}
+          </button>
         </div>
       </div>
 

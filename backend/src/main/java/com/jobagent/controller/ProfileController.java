@@ -10,9 +10,12 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileController {
 
     private final UserProfileRepository profileRepository;
+    private final com.jobagent.service.ResumeParserService resumeParserService;
 
-    public ProfileController(UserProfileRepository profileRepository) {
+    public ProfileController(UserProfileRepository profileRepository,
+                             com.jobagent.service.ResumeParserService resumeParserService) {
         this.profileRepository = profileRepository;
+        this.resumeParserService = resumeParserService;
     }
 
     @GetMapping
@@ -45,5 +48,15 @@ public class ProfileController {
         }
         UserProfile saved = profileRepository.save(profile);
         return ResponseEntity.ok(saved);
+    }
+
+    @PostMapping(value = "/upload-resume", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> uploadResume(@RequestParam("file") org.springframework.web.multipart.MultipartFile file) {
+        try {
+            com.jobagent.service.ResumeParserService.ResumeParseResult result = resumeParserService.parseAndMatch(file);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(java.util.Map.of("error", e.getMessage() != null ? e.getMessage() : "Error parsing resume"));
+        }
     }
 }

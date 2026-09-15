@@ -61,6 +61,13 @@
             <version>1.46.0</version>
         </dependency>
 
+        <!-- Apache PDFBox for Parsing Uploaded PDF Resumes -->
+        <dependency>
+            <groupId>org.apache.pdfbox</groupId>
+            <artifactId>pdfbox</artifactId>
+            <version>3.0.3</version>
+        </dependency>
+
         <!-- Spring Boot Test -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

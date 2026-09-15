@@ -25,6 +25,13 @@ export const scanJobs = (domain, keywords) => api.post('/jobs/scan', null, { par
 
 export const getProfile = () => api.get('/profile');
 export const saveProfile = (profile) => api.post('/profile', profile);
+export const uploadResume = (file) => {
+  const formData = new FormData();
+  formData.append('file', file);
+  return api.post('/profile/upload-resume', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' }
+  });
+};
 
 export const getResumes = () => api.get('/resumes');
 export const tailorResume = (jobId) => api.post(`/resumes/tailor/${jobId}`);

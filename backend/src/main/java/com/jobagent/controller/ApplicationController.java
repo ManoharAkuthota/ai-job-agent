@@ -24,13 +24,25 @@ public class ApplicationController {
     private final JobApplicationRepository applicationRepository;
     private final JobRepository jobRepository;
     private final TailoredResumeRepository tailoredResumeRepository;
+    private final com.jobagent.service.BrowserAutoApplyService browserAutoApplyService;
+    private final com.jobagent.service.AiAgentService aiAgentService;
+    private final com.jobagent.service.ResumeGeneratorService resumeGeneratorService;
+    private final com.jobagent.repository.UserProfileRepository userProfileRepository;
 
     public ApplicationController(JobApplicationRepository applicationRepository,
                                  JobRepository jobRepository,
-                                 TailoredResumeRepository tailoredResumeRepository) {
+                                 TailoredResumeRepository tailoredResumeRepository,
+                                 com.jobagent.service.BrowserAutoApplyService browserAutoApplyService,
+                                 com.jobagent.service.AiAgentService aiAgentService,
+                                 com.jobagent.service.ResumeGeneratorService resumeGeneratorService,
+                                 com.jobagent.repository.UserProfileRepository userProfileRepository) {
         this.applicationRepository = applicationRepository;
         this.jobRepository = jobRepository;
         this.tailoredResumeRepository = tailoredResumeRepository;
+        this.browserAutoApplyService = browserAutoApplyService;
+        this.aiAgentService = aiAgentService;
+        this.resumeGeneratorService = resumeGeneratorService;
+        this.userProfileRepository = userProfileRepository;
     }
 
     @GetMapping
@@ -45,22 +57,42 @@ public class ApplicationController {
             return ResponseEntity.badRequest().body("Job not found: " + jobId);
         }
 
-        Long resumeId = null;
+        com.jobagent.model.UserProfile profile = userProfileRepository.findAll().stream().findFirst().orElseGet(() -> {
+            com.jobagent.model.UserProfile p = new com.jobagent.model.UserProfile();
+            p.setFullName("AKUTHOTA MANOHAR");
+            p.setEmail("manoharsriakuthota@gmail.com");
+            return p;
+        });
+
         TailoredResume resume = tailoredResumeRepository.findByJobId(jobId).orElse(null);
-        if (resume != null) {
-            resumeId = resume.getId();
+        if (resume == null) {
+            resume = aiAgentService.tailorResume(profile, job);
+            String html = resumeGeneratorService.buildHtmlResume(profile, resume);
+            resume.setResumeHtml(html);
+            String pdfPath = resumeGeneratorService.generatePdfResume(profile, resume);
+            resume.setPdfFilePath(pdfPath);
+            resume = tailoredResumeRepository.save(resume);
+            job.setStatus("TAILORED");
+            jobRepository.save(job);
         }
 
+        // Autonomous Playwright Browser submission & proof capture
+        com.jobagent.service.BrowserAutoApplyService.AutoApplyResult applyResult =
+                browserAutoApplyService.executeAutonomousApply(job, profile, resume);
+
+        TailoredResume finalResume = resume;
         JobApplication application = applicationRepository.findByJobId(jobId).orElseGet(() ->
-                new JobApplication(job.getId(), job.getTitle(), job.getCompany(), job.getLocation(), job.getUrl(), null)
+                new JobApplication(job.getId(), job.getTitle(), job.getCompany(), job.getLocation(), job.getUrl(), finalResume.getId())
         );
 
-        application.setTailoredResumeId(resumeId);
+        application.setTailoredResumeId(resume.getId());
         application.setStatus("APPLIED");
-        if (body != null && body.containsKey("notes")) {
-            application.setNotes(body.get("notes"));
+        application.setAppliedMethod("AUTONOMOUS_PLAYWRIGHT");
+        application.setScreenshotProofPath(applyResult.proofScreenshotPath());
+        if (body != null && body.containsKey("notes") && !body.get("notes").isBlank()) {
+            application.setNotes(body.get("notes") + " | " + applyResult.message());
         } else {
-            application.setNotes("Application submitted via AI Agent.");
+            application.setNotes(applyResult.message());
         }
 
         job.setStatus("APPLIED");
