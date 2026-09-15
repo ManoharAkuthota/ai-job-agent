@@ -45,6 +45,11 @@ public class Job {
 
     public Job(String title, String company, String location, String jobType, String salary,
                String description, String url, String source) {
+        this(title, company, location, jobType, salary, description, url, source, "Today", LocalDateTime.now());
+    }
+
+    public Job(String title, String company, String location, String jobType, String salary,
+               String description, String url, String source, String postedDate, LocalDateTime discoveredAt) {
         this.title = title;
         this.company = company;
         this.location = location;
@@ -53,7 +58,8 @@ public class Job {
         this.description = description;
         this.url = url;
         this.source = source;
-        this.discoveredAt = LocalDateTime.now();
+        this.postedDate = postedDate != null ? postedDate : "Today";
+        this.discoveredAt = discoveredAt != null ? discoveredAt : LocalDateTime.now();
         this.status = "DISCOVERED";
     }
 

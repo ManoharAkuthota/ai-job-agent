@@ -16,6 +16,11 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     List<Job> findAllByOrderByMatchScoreDesc();
     List<Job> findByMatchScoreGreaterThanEqualOrderByMatchScoreDesc(Integer minScore);
 
+    // Strict Freshness Filtering (Within 7 Days)
+    List<Job> findAllByDiscoveredAtAfterOrderByMatchScoreDesc(java.time.LocalDateTime cutoff);
+    List<Job> findByStatusAndDiscoveredAtAfterOrderByDiscoveredAtDesc(String status, java.time.LocalDateTime cutoff);
+    List<Job> findByMatchScoreGreaterThanEqualAndDiscoveredAtAfterOrderByMatchScoreDesc(Integer minScore, java.time.LocalDateTime cutoff);
+
     @Query("SELECT COUNT(j) FROM Job j WHERE j.status = :status")
     long countByStatus(String status);
 }

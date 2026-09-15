@@ -15,10 +15,11 @@ export const getSettings = () => api.get('/agent/settings');
 export const updateSettings = (settings) => api.post('/agent/settings', settings);
 export const runAgentNow = () => api.post('/agent/run-now');
 
-export const getJobs = (status, minScore) => {
+export const getJobs = (status, minScore, days = 7) => {
   const params = {};
   if (status) params.status = status;
   if (minScore) params.minScore = minScore;
+  if (days) params.days = days;
   return api.get('/jobs', { params });
 };
 export const scanJobs = (domain, keywords) => api.post('/jobs/scan', null, { params: { domain, keywords } });

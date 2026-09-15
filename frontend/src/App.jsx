@@ -5,31 +5,49 @@ import ProfileEditor from './pages/ProfileEditor';
 import TailoredResumes from './pages/TailoredResumes';
 import Applications from './pages/Applications';
 import AgentSettings from './pages/AgentSettings';
-import { LayoutDashboard, Briefcase, FileText, FileCode2, Send, Settings, Bot } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, FileCode2, Send, Settings, Bot, Menu, X } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState('dashboard');
+  const [activeTab, setActiveTab] = useState('jobs');
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  const handleSelectTab = (tab) => {
+    setActiveTab(tab);
+    setMobileNavOpen(false);
+  };
 
   return (
     <div className="app-container">
-      {/* Sidebar */}
-      <aside className="sidebar">
-        <div className="brand">
+      {/* Mobile Top Header (Visible on screens <= 768px) */}
+      <header className="mobile-header">
+        <div className="brand" style={{ margin: 0, padding: 0 }}>
+          <Bot size={24} />
+          <span>JobAgent.ai</span>
+        </div>
+        <button
+          className="mobile-menu-toggle"
+          onClick={() => setMobileNavOpen(!mobileNavOpen)}
+          aria-label="Toggle navigation menu"
+        >
+          {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
+        </button>
+      </header>
+
+      {/* Backdrop overlay for mobile */}
+      {mobileNavOpen && (
+        <div className="sidebar-backdrop" onClick={() => setMobileNavOpen(false)} />
+      )}
+
+      {/* Sidebar (Fixed on Desktop, Slide-out Drawer on Mobile) */}
+      <aside className={`sidebar ${mobileNavOpen ? 'mobile-open' : ''}`}>
+        <div className="brand desktop-brand">
           <Bot size={28} />
           <span>JobAgent.ai</span>
         </div>
 
         <nav style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1 }}>
           <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-          >
-            <LayoutDashboard size={18} />
-            Dashboard
-          </button>
-
-          <button
-            onClick={() => setActiveTab('jobs')}
+            onClick={() => handleSelectTab('jobs')}
             className={`nav-item ${activeTab === 'jobs' ? 'active' : ''}`}
           >
             <Briefcase size={18} />
@@ -37,7 +55,15 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('profile')}
+            onClick={() => handleSelectTab('dashboard')}
+            className={`nav-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+          >
+            <LayoutDashboard size={18} />
+            Dashboard
+          </button>
+
+          <button
+            onClick={() => handleSelectTab('profile')}
             className={`nav-item ${activeTab === 'profile' ? 'active' : ''}`}
           >
             <FileCode2 size={18} />
@@ -45,7 +71,7 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('resumes')}
+            onClick={() => handleSelectTab('resumes')}
             className={`nav-item ${activeTab === 'resumes' ? 'active' : ''}`}
           >
             <FileText size={18} />
@@ -53,7 +79,7 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('applications')}
+            onClick={() => handleSelectTab('applications')}
             className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`}
           >
             <Send size={18} />
@@ -61,7 +87,7 @@ export default function App() {
           </button>
 
           <button
-            onClick={() => setActiveTab('settings')}
+            onClick={() => handleSelectTab('settings')}
             className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`}
           >
             <Settings size={18} />
@@ -88,8 +114,8 @@ export default function App() {
 
       {/* Main Content Area */}
       <main className="main-content">
-        {activeTab === 'dashboard' && <Dashboard onNavigate={setActiveTab} />}
-        {activeTab === 'jobs' && <JobFeed onNavigate={setActiveTab} />}
+        {activeTab === 'dashboard' && <Dashboard onNavigate={handleSelectTab} />}
+        {activeTab === 'jobs' && <JobFeed onNavigate={handleSelectTab} />}
         {activeTab === 'profile' && <ProfileEditor />}
         {activeTab === 'resumes' && <TailoredResumes />}
         {activeTab === 'applications' && <Applications />}
