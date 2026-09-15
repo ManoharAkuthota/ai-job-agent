@@ -1,0 +1,32 @@
+﻿services:
+  # Spring Boot 3 Backend Web Service
+  - type: web
+    name: ai-job-agent-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: singapore
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        value: jdbc:mysql://gateway01.ap-southeast-1.prod.aws.tidbcloud.com:4000/test?useSSL=true&verifyServerCertificate=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+      - key: SPRING_DATASOURCE_USERNAME
+        value: 3HVUhdVZBhSBCPs.root
+      - key: SPRING_DATASOURCE_PASSWORD
+        value: 6BP74bdgTlFpWzrm
+      - key: PORT
+        value: 8080
+
+  # React Frontend Static Site
+  - type: web
+    name: ai-job-agent-frontend
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://ai-job-agent-backend.onrender.com
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
