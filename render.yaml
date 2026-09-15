@@ -1,7 +1,7 @@
 ﻿services:
   # Spring Boot 3 Backend Web Service
   - type: web
-    name: ai-job-agent-backend
+    name: manohar-ai-job-backend
     runtime: docker
     dockerfilePath: ./backend/Dockerfile
     dockerContext: ./backend
@@ -19,13 +19,13 @@
 
   # React Frontend Static Site
   - type: web
-    name: ai-job-agent-frontend
+    name: manohar-ai-job-frontend
     runtime: static
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: ./frontend/dist
     envVars:
       - key: VITE_API_URL
-        value: https://ai-job-agent-backend.onrender.com
+        value: https://manohar-ai-job-backend.onrender.com
     routes:
       - type: rewrite
         source: /*
