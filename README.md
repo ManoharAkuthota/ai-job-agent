@@ -1,17 +1,21 @@
-# AI Job Agent Application (React + Java Spring Boot + MySQL)
+# Autonomous AI Job Application Agent (React + Java Spring Boot 3 + TiDB Cloud + Playwright)
 
-An autonomous AI agent application that automatically discovers domain-specific jobs every day, scores and matches candidate profiles, tailors ATS-compliant resumes, and tracks/automates job applications—built **100% free of cost**.
+An autonomous AI agent application that automatically discovers domain-specific jobs every day, evolves technical skills to match market demand, generates ATS-compliant resumes, and automatically applies to jobs using a headless browser with visual proof of submission—built **100% free of cost**.
+
+* **GitHub Repository**: [https://github.com/ManoharAkuthota/ai-job-agent](https://github.com/ManoharAkuthota/ai-job-agent)
 
 ---
 
 ## Tech Stack
 
-* **Frontend**: React 18 / Vite + Lucide Icons + Axios
-* **Backend**: Java 21 / Spring Boot 3.3 (Spring Data JPA, Hibernate, REST Controllers)
-* **Database**: MySQL 8 (`MySQL80` service)
-* **AI Engine**: Google Gemini Free API (or built-in NLP keyword optimization fallback)
-* **PDF Builder**: OpenPDF (clean, text-scannable, ATS single-column resumes)
-* **Scheduler**: Spring `@Scheduled` (Daily at 09:00 AM IST)
+* **Frontend**: React 18 / Vite + Tailwind CSS + Lucide Icons + Axios
+* **Backend**: Java 21 / Spring Boot 3.3.4 (Spring Data JPA, Hibernate, REST Controllers)
+* **Cloud Database**: **TiDB Cloud Serverless MySQL** (High-availability distributed SQL on AWS ap-southeast-1)
+* **Autonomous Browser Engine**: **Playwright Headless Browser** (Auto-applies to job portals and captures screenshot proof)
+* **AI Engine**: Google Gemini Free API (with built-in smart NLP keyword tailoring fallback)
+* **PDF Builder**: OpenPDF (Clean, text-scannable, ATS single-column resumes)
+* **Scheduler**: Spring `@Scheduled` (Automated daily runs at 09:00 AM IST)
+* **Cloud Deployment**: **Render** (via `render.yaml` Infrastructure-as-Code Blueprint)
 
 ---
 
@@ -84,6 +88,20 @@ cd frontend
 npm run dev
 ```
 *Frontend opens at `http://localhost:5173`.*
+
+---
+
+## Cloud Deployment on Render (1-Click Blueprint)
+
+This project contains a pre-configured `render.yaml` blueprint that deploys both the Spring Boot Docker Web Service and React Static Site with 1 click:
+
+1. Go to [Render Dashboard](https://dashboard.render.com).
+2. Click **New +** -> **Blueprint**.
+3. Connect your GitHub repository: `https://github.com/ManoharAkuthota/ai-job-agent`.
+4. Render reads `render.yaml` and provisions:
+   - **`ai-job-agent-backend`**: Docker Web Service running Spring Boot, connected to your TiDB Cloud Serverless database.
+   - **`ai-job-agent-frontend`**: Static Site building Vite React and routed to backend.
+5. Click **Apply** to deploy!
 
 ---
 
