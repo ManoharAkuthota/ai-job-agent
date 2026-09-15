@@ -13,6 +13,7 @@ public interface JobRepository extends JpaRepository<Job, Long> {
     Optional<Job> findByUrl(String url);
     List<Job> findByStatusOrderByDiscoveredAtDesc(String status);
     List<Job> findAllByOrderByDiscoveredAtDesc();
+    List<Job> findAllByOrderByMatchScoreDesc();
     List<Job> findByMatchScoreGreaterThanEqualOrderByMatchScoreDesc(Integer minScore);
 
     @Query("SELECT COUNT(j) FROM Job j WHERE j.status = :status")

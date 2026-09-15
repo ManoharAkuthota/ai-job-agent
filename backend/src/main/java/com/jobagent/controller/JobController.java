@@ -29,7 +29,7 @@ public class JobController {
         if (minScore != null) {
             return jobRepository.findByMatchScoreGreaterThanEqualOrderByMatchScoreDesc(minScore);
         }
-        return jobRepository.findAllByOrderByDiscoveredAtDesc();
+        return jobRepository.findAllByOrderByMatchScoreDesc();
     }
 
     @GetMapping("/{id}")
