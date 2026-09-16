@@ -34,16 +34,16 @@ export default function TailoredResumes() {
 
       {resumes.length === 0 ? (
         <div style={{
-          background: '#fff',
+          background: '#0b0f19',
           border: '1px solid var(--border)',
           borderRadius: 'var(--radius)',
           padding: '48px',
           textAlign: 'center',
           color: 'var(--text-muted)'
         }}>
-          <FileText size={40} style={{ margin: '0 auto 12px auto', opacity: 0.4 }} />
-          <h3 style={{ fontSize: '16px', color: 'var(--text-main)', marginBottom: '6px' }}>No tailored resumes yet</h3>
-          <p style={{ fontSize: '14px' }}>
+          <FileText size={40} style={{ margin: '0 auto 12px auto', opacity: 0.4, color: '#818cf8' }} />
+          <h3 style={{ fontSize: '16px', color: '#ffffff', marginBottom: '6px' }}>No tailored resumes yet</h3>
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
             Go to the "Job Feed" and click "Tailor Resume", or run the AI Agent from the Dashboard to generate them.
           </p>
         </div>
@@ -53,7 +53,7 @@ export default function TailoredResumes() {
             <div
               key={r.id}
               style={{
-                background: '#fff',
+                background: '#0b0f19',
                 border: '1px solid var(--border)',
                 borderRadius: 'var(--radius)',
                 padding: '22px',
@@ -66,8 +66,8 @@ export default function TailoredResumes() {
               <div>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
                   <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-main)' }}>{r.jobTitle}</h3>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'var(--text-muted)', marginTop: '2px' }}>
+                    <h3 style={{ fontSize: '16px', fontWeight: '700', color: '#ffffff' }}>{r.jobTitle}</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#38bdf8', marginTop: '2px' }}>
                       <Building size={13} /> {r.company}
                     </div>
                   </div>
@@ -84,7 +84,7 @@ export default function TailoredResumes() {
                   <div style={{ fontSize: '11px', fontWeight: '700', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '4px' }}>
                     Tailored Summary
                   </div>
-                  <p style={{ fontSize: '13px', color: '#334155', lineHeight: '1.5', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                  <p style={{ fontSize: '13px', color: '#cbd5e1', lineHeight: '1.5', display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
                     {r.tailoredSummary}
                   </p>
                 </div>
@@ -132,16 +132,16 @@ export default function TailoredResumes() {
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '18px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
               <div>
-                <h3 style={{ fontSize: '18px', fontWeight: '700' }}>Resume for {previewResume.company}</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#ffffff' }}>Resume for {previewResume.company}</h3>
                 <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{previewResume.jobTitle}</span>
               </div>
-              <button onClick={() => setPreviewResume(null)} style={{ background: 'none', color: '#64748b' }}>
+              <button onClick={() => setPreviewResume(null)} style={{ background: 'none', color: '#94a3b8', cursor: 'pointer' }}>
                 <X size={20} />
               </button>
             </div>
 
             <div
-              style={{ background: '#f8fafc', padding: '20px', borderRadius: '8px', border: '1px solid var(--border)' }}
+              style={{ background: '#070b14', color: '#e2e8f0', padding: '20px', borderRadius: '8px', border: '1px solid var(--border)' }}
               dangerouslySetInnerHTML={{ __html: previewResume.resumeHtml }}
             />
 

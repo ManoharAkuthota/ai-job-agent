@@ -97,7 +97,7 @@ export default function App() {
 
         {/* System footer badge */}
         <div style={{
-          background: '#f8fafc',
+          background: 'rgba(255, 255, 255, 0.03)',
           border: '1px solid var(--border)',
           borderRadius: '8px',
           padding: '12px',
@@ -105,10 +105,10 @@ export default function App() {
           color: 'var(--text-muted)'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontWeight: '600', color: '#10b981', marginBottom: '2px' }}>
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }}></span>
+            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 8px #10b981' }}></span>
             Agent Active
           </div>
-          <div>Spring Boot 3 + MySQL + React</div>
+          <div style={{ color: '#94a3b8' }}>Spring Boot 3 + MySQL + React</div>
         </div>
       </aside>
 

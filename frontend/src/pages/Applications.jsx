@@ -70,22 +70,22 @@ export default function Applications() {
 
       {filtered.length === 0 ? (
         <div style={{
-          background: '#fff',
+          background: '#0b0f19',
           border: '1px solid var(--border)',
           borderRadius: 'var(--radius)',
           padding: '48px',
           textAlign: 'center',
           color: 'var(--text-muted)'
         }}>
-          <Send size={40} style={{ margin: '0 auto 12px auto', opacity: 0.4 }} />
-          <h3 style={{ fontSize: '16px', color: 'var(--text-main)', marginBottom: '6px' }}>No applications found</h3>
-          <p style={{ fontSize: '14px' }}>Jobs submitted automatically by the Playwright AI agent will appear here with proof screenshots.</p>
+          <Send size={40} style={{ margin: '0 auto 12px auto', opacity: 0.4, color: '#818cf8' }} />
+          <h3 style={{ fontSize: '16px', color: '#ffffff', marginBottom: '6px' }}>No applications found</h3>
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Jobs submitted automatically by the Playwright AI agent will appear here with proof screenshots.</p>
         </div>
       ) : (
-        <div style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
+        <div style={{ background: '#0b0f19', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden', overflowX: 'auto' }}>
+          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px', minWidth: '600px' }}>
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontWeight: '600' }}>
+              <tr style={{ background: '#070b14', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontWeight: '600' }}>
                 <th style={{ padding: '14px 18px' }}>Role & Company</th>
                 <th style={{ padding: '14px 18px' }}>Applied Date</th>
                 <th style={{ padding: '14px 18px' }}>Status</th>
@@ -98,8 +98,8 @@ export default function Applications() {
               {filtered.map((app) => (
                 <tr key={app.id} style={{ borderBottom: '1px solid var(--border)' }}>
                   <td style={{ padding: '14px 18px' }}>
-                    <div style={{ fontWeight: '600', color: 'var(--text-main)', fontSize: '14px' }}>{app.jobTitle}</div>
-                    <div style={{ color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                    <div style={{ fontWeight: '600', color: '#ffffff', fontSize: '14px' }}>{app.jobTitle}</div>
+                    <div style={{ color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
                       <Building size={13} /> {app.company} • {app.location}
                     </div>
                   </td>
@@ -115,12 +115,14 @@ export default function Applications() {
                       value={app.status}
                       onChange={(e) => handleStatusChange(app.id, e.target.value)}
                       style={{
-                        padding: '4px 8px',
+                        padding: '5px 10px',
                         fontSize: '12px',
                         fontWeight: '600',
                         borderRadius: '6px',
                         width: 'auto',
-                        background: app.status === 'INTERVIEW' ? '#dcfce7' : app.status === 'OFFER' ? '#fef3c7' : '#f1f5f9'
+                        background: '#0f172a',
+                        color: app.status === 'INTERVIEW' ? '#34d399' : app.status === 'OFFER' ? '#fbbf24' : '#f8fafc',
+                        border: '1px solid var(--border)'
                       }}
                     >
                       <option value="APPLIED">APPLIED</option>
@@ -136,9 +138,9 @@ export default function Applications() {
                       <button
                         onClick={() => setPreviewProof(app)}
                         className="btn-secondary"
-                        style={{ padding: '4px 10px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#166534', background: '#dcfce7', border: '1px solid #bbf7d0' }}
+                        style={{ padding: '5px 10px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#34d399', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)' }}
                       >
-                        <ImageIcon size={14} color="#16a34a" /> View Proof
+                        <ImageIcon size={14} color="#34d399" /> View Proof
                       </button>
                     ) : (
                       <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Pending capture</span>
@@ -154,7 +156,7 @@ export default function Applications() {
                           display: 'inline-flex',
                           alignItems: 'center',
                           gap: '6px',
-                          color: 'var(--primary)',
+                          color: '#818cf8',
                           textDecoration: 'none',
                           fontWeight: '600'
                         }}
@@ -174,7 +176,7 @@ export default function Applications() {
                           target="_blank"
                           rel="noreferrer"
                           title="Open Job Listing"
-                          style={{ color: '#64748b', padding: '6px' }}
+                          style={{ color: '#94a3b8', padding: '6px' }}
                         >
                           <ExternalLink size={16} />
                         </a>
@@ -182,7 +184,7 @@ export default function Applications() {
                       <button
                         onClick={() => handleDelete(app.id)}
                         title="Delete Application"
-                        style={{ background: 'none', color: '#ef4444', padding: '6px' }}
+                        style={{ background: 'none', color: '#ef4444', padding: '6px', cursor: 'pointer' }}
                       >
                         <Trash2 size={16} />
                       </button>
@@ -201,27 +203,27 @@ export default function Applications() {
           <div className="modal-content" style={{ maxWidth: '850px' }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
               <div>
-                <h3 style={{ fontSize: '18px', fontWeight: '700' }}>Autonomous Submission Proof</h3>
+                <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#ffffff' }}>Autonomous Submission Proof</h3>
                 <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>{previewProof.jobTitle} at {previewProof.company}</span>
               </div>
-              <button onClick={() => setPreviewProof(null)} style={{ background: 'none', color: '#64748b' }}>
+              <button onClick={() => setPreviewProof(null)} style={{ background: 'none', color: '#94a3b8', cursor: 'pointer' }}>
                 <X size={20} />
               </button>
             </div>
 
-            <div style={{ textAlign: 'center', background: '#000', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>
+            <div style={{ textAlign: 'center', background: '#000', borderRadius: '8px', overflow: 'hidden', padding: '10px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
               <img
                 src={getProofUrl(previewProof.id)}
                 alt="Application Submission Proof Screenshot"
                 style={{ maxWidth: '100%', maxHeight: '65vh', objectFit: 'contain', borderRadius: '6px' }}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://placehold.co/800x500?text=Browser+Submission+Captured+Successfully";
+                  e.target.src = "https://placehold.co/800x500/0b0f19/38bdf8?text=Browser+Submission+Captured+Successfully";
                 }}
               />
             </div>
 
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '16px', flexWrap: 'wrap', gap: '10px' }}>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
                 Captured autonomously by Playwright headless browser at {new Date(previewProof.appliedAt).toLocaleString()}
               </div>

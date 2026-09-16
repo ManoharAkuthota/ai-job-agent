@@ -223,8 +223,8 @@ export default function JobFeed({ onNavigate }) {
 
       {networkWarning && (
         <div style={{
-          background: '#fffbeb',
-          border: '1px solid #fde047',
+          background: 'rgba(245, 158, 11, 0.1)',
+          border: '1px solid rgba(245, 158, 11, 0.3)',
           borderRadius: 'var(--radius)',
           padding: '14px 18px',
           marginBottom: '20px',
@@ -234,7 +234,7 @@ export default function JobFeed({ onNavigate }) {
           flexWrap: 'wrap',
           gap: '10px'
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#854d0e', fontSize: '13px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#fbbf24', fontSize: '13px' }}>
             <RefreshCw size={16} className={loading ? "spin" : ""} />
             <span>{networkWarning}</span>
           </div>
@@ -256,10 +256,10 @@ export default function JobFeed({ onNavigate }) {
         onDragOver={handleDrag}
         onDrop={handleDrop}
         style={{
-          background: dragActive ? '#f0fdf4' : '#fff',
-          border: dragActive ? '2px dashed #10b981' : '2px dashed var(--border)',
+          background: dragActive ? 'rgba(16, 185, 129, 0.08)' : '#0b0f19',
+          border: dragActive ? '2px dashed #10b981' : '2px dashed rgba(99, 102, 241, 0.35)',
           borderRadius: 'var(--radius)',
-          padding: '24px 20px',
+          padding: '28px 20px',
           marginBottom: '24px',
           textAlign: 'center',
           transition: 'all 0.2s ease',
@@ -278,26 +278,28 @@ export default function JobFeed({ onNavigate }) {
           }}
         />
 
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
           <div style={{
-            width: '50px',
-            height: '50px',
+            width: '54px',
+            height: '54px',
             borderRadius: '50%',
-            background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+            background: 'rgba(99, 102, 241, 0.15)',
+            border: '1px solid rgba(99, 102, 241, 0.3)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: 'var(--primary)'
+            color: '#818cf8',
+            boxShadow: '0 0 20px rgba(99, 102, 241, 0.25)'
           }}>
-            <UploadCloud size={26} />
+            <UploadCloud size={28} />
           </div>
 
           <div>
-            <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'var(--text-main)', marginBottom: '3px' }}>
+            <h3 style={{ fontSize: '17px', fontWeight: '700', color: '#ffffff', marginBottom: '4px' }}>
               Upload Resume for Instant ATS Scoring & Matching
             </h3>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
-              Drag & drop your <strong>PDF</strong>, <strong>DOCX</strong>, or <strong>TXT</strong> resume, or browse file.
+              Drag & drop your <strong style={{ color: '#f8fafc' }}>PDF</strong>, <strong style={{ color: '#f8fafc' }}>DOCX</strong>, or <strong style={{ color: '#f8fafc' }}>TXT</strong> resume, or browse file.
             </p>
           </div>
 
@@ -305,7 +307,7 @@ export default function JobFeed({ onNavigate }) {
             onClick={() => fileInputRef.current && fileInputRef.current.click()}
             disabled={uploading}
             className="btn-primary"
-            style={{ marginTop: '4px' }}
+            style={{ marginTop: '6px' }}
           >
             {uploading ? (
               <>
@@ -325,8 +327,9 @@ export default function JobFeed({ onNavigate }) {
           <div style={{
             marginTop: '16px',
             padding: '12px 16px',
-            background: '#fef2f2',
-            color: '#b91c1c',
+            background: 'rgba(239, 68, 68, 0.12)',
+            border: '1px solid rgba(239, 68, 68, 0.3)',
+            color: '#f87171',
             borderRadius: '8px',
             fontSize: '13px',
             display: 'inline-flex',
@@ -341,18 +344,18 @@ export default function JobFeed({ onNavigate }) {
         {uploadSuccess && (
           <div style={{
             marginTop: '16px',
-            padding: '12px 16px',
-            background: '#f0fdf4',
-            border: '1px solid #bbf7d0',
+            padding: '14px 18px',
+            background: 'rgba(16, 185, 129, 0.1)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
             borderRadius: '8px',
             textAlign: 'left'
           }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#15803d', fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#34d399', fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>
               <CheckCircle2 size={16} />
               {uploadSuccess.message}
             </div>
-            <div style={{ fontSize: '12px', color: '#374151' }}>
-              <strong>Candidate:</strong> {uploadSuccess.candidateName} | <strong>Domain:</strong> {uploadSuccess.targetDomain} | <strong>Fresh Matches:</strong> {uploadSuccess.matchCount} Indian tech openings
+            <div style={{ fontSize: '13px', color: '#cbd5e1' }}>
+              <strong style={{ color: '#f8fafc' }}>Candidate:</strong> {uploadSuccess.candidateName} | <strong style={{ color: '#f8fafc' }}>Domain:</strong> {uploadSuccess.targetDomain} | <strong style={{ color: '#f8fafc' }}>Fresh Matches:</strong> {uploadSuccess.matchCount} Indian tech openings
             </div>
           </div>
         )}
@@ -362,7 +365,7 @@ export default function JobFeed({ onNavigate }) {
           1. ATS SCORE CARD & DEDUCTION ANALYSIS (DISPLAYED FIRST)
           ============================================================ */}
       {atsReport && (
-        <div className="ats-card" style={{ border: '1px solid #cbd5e1', marginBottom: '28px' }}>
+        <div className="ats-card" style={{ border: '1px solid var(--border)', marginBottom: '28px' }}>
           {/* Header & Overall Gauge */}
           <div style={{
             display: 'flex',
@@ -383,17 +386,17 @@ export default function JobFeed({ onNavigate }) {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Award size={20} color="var(--primary)" />
-                  <h3 style={{ fontSize: '19px', fontWeight: '700', color: 'var(--text-main)' }}>
+                  <h3 style={{ fontSize: '19px', fontWeight: '700', color: '#ffffff' }}>
                     Resume ATS Compatibility Report
                   </h3>
                 </div>
                 <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
                   {atsReport.overallScore >= 80 ? (
-                    <span style={{ color: '#15803d', fontWeight: '600' }}>🟢 Excellent Match: High probability of passing enterprise ATS filters (Workday, Greenhouse, Taleo).</span>
+                    <span style={{ color: '#34d399', fontWeight: '600' }}>🟢 Excellent Match: High probability of passing enterprise ATS filters (Workday, Greenhouse, Taleo).</span>
                   ) : atsReport.overallScore >= 65 ? (
-                    <span style={{ color: '#b45309', fontWeight: '600' }}>🟡 Moderate Match: Good foundation, but missing key metrics and high-demand cloud/DevOps keywords.</span>
+                    <span style={{ color: '#fbbf24', fontWeight: '600' }}>🟡 Moderate Match: Good foundation, but missing key metrics and high-demand cloud/DevOps keywords.</span>
                   ) : (
-                    <span style={{ color: '#b91c1c', fontWeight: '600' }}>🔴 Needs Attention: Critical gaps in quantifiable achievements or standard ATS headings.</span>
+                    <span style={{ color: '#f87171', fontWeight: '600' }}>🔴 Needs Attention: Critical gaps in quantifiable achievements or standard ATS headings.</span>
                   )}
                 </p>
               </div>
@@ -410,25 +413,25 @@ export default function JobFeed({ onNavigate }) {
             gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
             gap: '14px',
             marginBottom: '22px',
-            background: '#f8fafc',
+            background: '#070b14',
             padding: '16px',
             borderRadius: '8px',
             border: '1px solid var(--border)'
           }}>
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#334155' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#94a3b8' }}>
                 <span>Technical Skills</span>
-                <span>{atsReport.skillsScore} / 30</span>
+                <span style={{ color: '#f8fafc' }}>{atsReport.skillsScore} / 30</span>
               </div>
               <div className="ats-progress-track">
-                <div className="ats-progress-fill" style={{ width: `${(atsReport.skillsScore / 30) * 100}%`, background: '#4f46e5' }} />
+                <div className="ats-progress-fill" style={{ width: `${(atsReport.skillsScore / 30) * 100}%`, background: '#6366f1' }} />
               </div>
             </div>
 
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#334155' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#94a3b8' }}>
                 <span>Impact & Metrics</span>
-                <span>{atsReport.impactScore} / 20</span>
+                <span style={{ color: '#f8fafc' }}>{atsReport.impactScore} / 20</span>
               </div>
               <div className="ats-progress-track">
                 <div className="ats-progress-fill" style={{ width: `${(atsReport.impactScore / 20) * 100}%`, background: atsReport.impactScore >= 14 ? '#10b981' : '#f59e0b' }} />
@@ -436,29 +439,29 @@ export default function JobFeed({ onNavigate }) {
             </div>
 
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#334155' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#94a3b8' }}>
                 <span>ATS Structure</span>
-                <span>{atsReport.structureScore} / 20</span>
+                <span style={{ color: '#f8fafc' }}>{atsReport.structureScore} / 20</span>
               </div>
               <div className="ats-progress-track">
-                <div className="ats-progress-fill" style={{ width: `${(atsReport.structureScore / 20) * 100}%`, background: '#0ea5e9' }} />
+                <div className="ats-progress-fill" style={{ width: `${(atsReport.structureScore / 20) * 100}%`, background: '#38bdf8' }} />
               </div>
             </div>
 
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#334155' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#94a3b8' }}>
                 <span>Action Verbs</span>
-                <span>{atsReport.actionVerbsScore} / 15</span>
+                <span style={{ color: '#f8fafc' }}>{atsReport.actionVerbsScore} / 15</span>
               </div>
               <div className="ats-progress-track">
-                <div className="ats-progress-fill" style={{ width: `${(atsReport.actionVerbsScore / 15) * 100}%`, background: '#8b5cf6' }} />
+                <div className="ats-progress-fill" style={{ width: `${(atsReport.actionVerbsScore / 15) * 100}%`, background: '#c084fc' }} />
               </div>
             </div>
 
             <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#334155' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '12px', fontWeight: '600', color: '#94a3b8' }}>
                 <span>Contact & Profiles</span>
-                <span>{atsReport.contactScore} / 15</span>
+                <span style={{ color: '#f8fafc' }}>{atsReport.contactScore} / 15</span>
               </div>
               <div className="ats-progress-track">
                 <div className="ats-progress-fill" style={{ width: `${(atsReport.contactScore / 15) * 100}%`, background: '#10b981' }} />
@@ -469,8 +472,8 @@ export default function JobFeed({ onNavigate }) {
           {/* WHY SCORE IS NOT 100% (REASONS & ACTIONABLE FIXES) */}
           <div style={{ marginBottom: '20px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '14px' }}>
-              <ShieldAlert size={18} color="#dc2626" />
-              <h4 style={{ fontSize: '15px', fontWeight: '700', color: '#1e293b' }}>
+              <ShieldAlert size={18} color="#ef4444" />
+              <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#ffffff' }}>
                 Why Your Score Is Not Higher (Actionable Improvements)
               </h4>
             </div>
@@ -480,7 +483,7 @@ export default function JobFeed({ onNavigate }) {
                 {atsReport.improvements.map((item, idx) => (
                   <div key={idx} className={`ats-improvement-card ${item.severity === 'RECOMMENDED' ? 'recommended' : ''}`}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', flexWrap: 'wrap', gap: '8px' }}>
-                      <div style={{ fontWeight: '700', fontSize: '14px', color: '#0f172a' }}>
+                      <div style={{ fontWeight: '700', fontSize: '14px', color: '#ffffff' }}>
                         {item.issue}
                       </div>
                       <span className={`badge ${item.severity === 'CRITICAL' ? 'badge-yellow' : 'badge-blue'}`}>
@@ -488,18 +491,18 @@ export default function JobFeed({ onNavigate }) {
                       </span>
                     </div>
 
-                    <div style={{ fontSize: '13px', color: '#475569', lineHeight: '1.5' }}>
-                      <strong>ATS Deduction Reason:</strong> {item.reason}
+                    <div style={{ fontSize: '13px', color: '#cbd5e1', lineHeight: '1.5' }}>
+                      <strong style={{ color: '#f8fafc' }}>ATS Deduction Reason:</strong> {item.reason}
                     </div>
 
                     <div className="ats-suggestion-box">
-                      <strong style={{ color: '#0369a1' }}>💡 Recommended Fix:</strong> {item.suggestion}
+                      <strong style={{ color: '#38bdf8' }}>💡 Recommended Fix:</strong> {item.suggestion}
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <div style={{ fontSize: '13px', color: '#16a34a' }}>
+              <div style={{ fontSize: '13px', color: '#34d399' }}>
                 🎉 Great job! Your resume meets all major ATS standards.
               </div>
             )}
@@ -508,23 +511,23 @@ export default function JobFeed({ onNavigate }) {
           {/* Missing Keywords Tag Cloud */}
           {atsReport.missingKeywords && atsReport.missingKeywords.length > 0 && (
             <div style={{
-              background: '#fefce8',
-              border: '1px solid #fef08a',
+              background: 'rgba(245, 158, 11, 0.08)',
+              border: '1px solid rgba(245, 158, 11, 0.25)',
               borderRadius: '8px',
               padding: '14px 18px',
               marginBottom: '16px'
             }}>
-              <div style={{ fontSize: '13px', fontWeight: '700', color: '#854d0e', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <div style={{ fontSize: '13px', fontWeight: '700', color: '#fbbf24', marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <TrendingUp size={16} />
                 High-Demand Industry Keywords to Add to Your Resume:
               </div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                 {atsReport.missingKeywords.map((kw, i) => (
                   <span key={i} style={{
-                    background: '#ffffff',
-                    border: '1px solid #fde047',
-                    color: '#713f12',
-                    padding: '3px 10px',
+                    background: '#070b14',
+                    border: '1px solid rgba(245, 158, 11, 0.35)',
+                    color: '#fde047',
+                    padding: '4px 11px',
                     borderRadius: '12px',
                     fontSize: '12px',
                     fontWeight: '600'
@@ -539,15 +542,15 @@ export default function JobFeed({ onNavigate }) {
           {/* Strengths */}
           {atsReport.strengths && atsReport.strengths.length > 0 && (
             <div style={{
-              background: '#f0fdf4',
-              border: '1px solid #bbf7d0',
+              background: 'rgba(16, 185, 129, 0.08)',
+              border: '1px solid rgba(16, 185, 129, 0.25)',
               borderRadius: '8px',
-              padding: '12px 18px'
+              padding: '14px 18px'
             }}>
-              <div style={{ fontSize: '13px', fontWeight: '700', color: '#15803d', marginBottom: '6px' }}>
+              <div style={{ fontSize: '13px', fontWeight: '700', color: '#34d399', marginBottom: '8px' }}>
                 Detected Strengths:
               </div>
-              <ul style={{ paddingLeft: '18px', margin: 0, fontSize: '13px', color: '#166534', lineHeight: '1.6' }}>
+              <ul style={{ paddingLeft: '18px', margin: 0, fontSize: '13px', color: '#a7f3d0', lineHeight: '1.6' }}>
                 {atsReport.strengths.map((str, idx) => (
                   <li key={idx}>{str}</li>
                 ))}
@@ -589,7 +592,7 @@ export default function JobFeed({ onNavigate }) {
 
       {/* Filter & Search Bar */}
       <div style={{
-        background: '#fff',
+        background: '#0b0f19',
         border: '1px solid var(--border)',
         borderRadius: 'var(--radius)',
         padding: '14px 18px',
@@ -600,7 +603,7 @@ export default function JobFeed({ onNavigate }) {
         alignItems: 'center'
       }}>
         <div style={{ flex: 1, minWidth: '200px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Search size={18} color="#64748b" />
+          <Search size={18} color="#94a3b8" />
           <input
             type="text"
             placeholder="Search job title or company (Swiggy, Razorpay, TCS...)"
@@ -641,16 +644,16 @@ export default function JobFeed({ onNavigate }) {
       {/* Jobs List */}
       {filteredJobs.length === 0 ? (
         <div style={{
-          background: '#fff',
+          background: '#0b0f19',
           border: '1px solid var(--border)',
           borderRadius: 'var(--radius)',
           padding: '48px',
           textAlign: 'center',
           color: 'var(--text-muted)'
         }}>
-          <Building size={40} style={{ margin: '0 auto 12px auto', opacity: 0.4 }} />
-          <h3 style={{ fontSize: '16px', color: 'var(--text-main)', marginBottom: '6px' }}>No jobs match your filters within the selected freshness window</h3>
-          <p style={{ fontSize: '14px' }}>Upload your resume above or click "Scan Indian Tech Jobs" to load real postings from the past 7 days.</p>
+          <Building size={40} style={{ margin: '0 auto 12px auto', opacity: 0.4, color: '#818cf8' }} />
+          <h3 style={{ fontSize: '16px', color: '#ffffff', marginBottom: '6px' }}>No jobs match your filters within the selected freshness window</h3>
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Upload your resume above or click "Scan Indian Tech Jobs" to load real postings from the past 7 days.</p>
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -664,8 +667,8 @@ export default function JobFeed({ onNavigate }) {
               <div
                 key={job.id}
                 style={{
-                  background: '#fff',
-                  border: isApplied ? '1px solid #bbf7d0' : '1px solid var(--border)',
+                  background: '#0b0f19',
+                  border: isApplied ? '1px solid rgba(16, 185, 129, 0.4)' : '1px solid var(--border)',
                   borderRadius: 'var(--radius)',
                   padding: '20px',
                   boxShadow: 'var(--shadow-sm)'
@@ -674,7 +677,7 @@ export default function JobFeed({ onNavigate }) {
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '16px', flexWrap: 'wrap' }}>
                   <div style={{ flex: '1 1 300px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', flexWrap: 'wrap' }}>
-                      <h3 style={{ fontSize: '17px', fontWeight: '700', color: 'var(--text-main)' }}>{job.title}</h3>
+                      <h3 style={{ fontSize: '17px', fontWeight: '700', color: '#ffffff' }}>{job.title}</h3>
                       <span className={`badge ${job.matchScore >= 80 ? 'badge-green' : job.matchScore >= 60 ? 'badge-blue' : 'badge-yellow'}`}>
                         {job.matchScore}% Resume Match
                       </span>
@@ -692,14 +695,14 @@ export default function JobFeed({ onNavigate }) {
                     </div>
 
                     <div style={{ display: 'flex', alignItems: 'center', gap: '14px', fontSize: '13px', color: 'var(--text-muted)', marginBottom: '12px', flexWrap: 'wrap' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: '600', color: '#1e293b' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', fontWeight: '600', color: '#38bdf8' }}>
                         <Building size={14} /> {job.company}
                       </span>
                       <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
                         <MapPin size={14} /> {job.location || 'India'}
                       </span>
                       {job.salary && job.salary !== 'Competitive' && (
-                        <span style={{ color: '#059669', fontWeight: '600' }}>💰 {job.salary}</span>
+                        <span style={{ color: '#34d399', fontWeight: '600' }}>💰 {job.salary}</span>
                       )}
                     </div>
                   </div>
@@ -737,7 +740,7 @@ export default function JobFeed({ onNavigate }) {
                         </>
                       ) : isApplied ? (
                         <>
-                          <Check size={14} color="#16a34a" />
+                          <Check size={14} color="#34d399" />
                           Applied
                         </>
                       ) : (
@@ -765,7 +768,7 @@ export default function JobFeed({ onNavigate }) {
                 </div>
 
                 {/* Job Description */}
-                <div style={{ fontSize: '13px', color: '#475569', marginTop: '10px', lineHeight: '1.6' }}>
+                <div style={{ fontSize: '13px', color: '#94a3b8', marginTop: '10px', lineHeight: '1.6' }}>
                   {isExpanded ? job.description : (job.description?.slice(0, 180) + '...')}
                 </div>
 
@@ -774,7 +777,7 @@ export default function JobFeed({ onNavigate }) {
                     onClick={() => setExpandedDesc(prev => ({ ...prev, [job.id]: !prev[job.id] }))}
                     style={{
                       background: 'none',
-                      color: 'var(--primary)',
+                      color: '#818cf8',
                       fontSize: '12px',
                       fontWeight: '600',
                       marginTop: '6px',
@@ -800,27 +803,27 @@ export default function JobFeed({ onNavigate }) {
           <div className="modal-content" style={{ maxWidth: '850px' }} onClick={(e) => e.stopPropagation()}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border)', paddingBottom: '12px' }}>
               <div>
-                <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#166534', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                  <CheckCircle2 size={20} color="#16a34a" />
+                <h3 style={{ fontSize: '18px', fontWeight: '700', color: '#34d399', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <CheckCircle2 size={20} color="#10b981" />
                   Application Autonomously Submitted!
                 </h3>
                 <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
                   {previewProof.jobTitle} at {previewProof.company}
                 </span>
               </div>
-              <button onClick={() => setPreviewProof(null)} style={{ background: 'none', color: '#64748b', cursor: 'pointer' }}>
+              <button onClick={() => setPreviewProof(null)} style={{ background: 'none', color: '#94a3b8', cursor: 'pointer' }}>
                 <X size={20} />
               </button>
             </div>
 
-            <div style={{ textAlign: 'center', background: '#000', borderRadius: '8px', overflow: 'hidden', padding: '10px' }}>
+            <div style={{ textAlign: 'center', background: '#000', borderRadius: '8px', overflow: 'hidden', padding: '10px', border: '1px solid rgba(255, 255, 255, 0.08)' }}>
               <img
                 src={getProofUrl(previewProof.id)}
                 alt="Application Submission Proof"
                 style={{ maxWidth: '100%', maxHeight: '65vh', objectFit: 'contain', borderRadius: '6px' }}
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = "https://placehold.co/800x500?text=Autonomous+Playwright+Submission+Verified";
+                  e.target.src = "https://placehold.co/800x500/0b0f19/38bdf8?text=Autonomous+Playwright+Submission+Verified";
                 }}
               />
             </div>

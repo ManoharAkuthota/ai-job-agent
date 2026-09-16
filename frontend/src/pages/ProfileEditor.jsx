@@ -98,12 +98,12 @@ export default function ProfileEditor() {
 
       {savedSuccess && (
         <div style={{
-          background: '#ecfdf5',
-          border: '1px solid #a7f3d0',
+          background: 'rgba(16, 185, 129, 0.1)',
+          border: '1px solid rgba(16, 185, 129, 0.3)',
           borderRadius: '8px',
           padding: '12px 18px',
           marginBottom: '20px',
-          color: '#065f46',
+          color: '#a7f3d0',
           display: 'flex',
           alignItems: 'center',
           gap: '10px'
@@ -113,9 +113,9 @@ export default function ProfileEditor() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '28px' }}>
+      <form onSubmit={handleSubmit} style={{ background: '#0b0f19', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '28px' }}>
         {/* Basic Information */}
-        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#1e293b' }}>Contact & Basics</h3>
+        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Contact & Basics</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
           <div>
             <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>Full Name</label>
@@ -136,7 +136,7 @@ export default function ProfileEditor() {
         </div>
 
         {/* Links */}
-        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#1e293b' }}>Links & Online Presence</h3>
+        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Links & Online Presence</h3>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '16px', marginBottom: '24px' }}>
           <div>
             <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>LinkedIn URL</label>
@@ -153,7 +153,7 @@ export default function ProfileEditor() {
         </div>
 
         {/* Target Domain & Skills */}
-        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#1e293b' }}>Target Domain & Technical Skills</h3>
+        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Target Domain & Technical Skills</h3>
         <div style={{ marginBottom: '20px' }}>
           <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>
             Target Domain / Primary Job Title
@@ -182,7 +182,7 @@ export default function ProfileEditor() {
         </div>
 
         {/* Summary & Experience */}
-        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#1e293b' }}>Summary & Experience</h3>
+        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff' }}>Summary & Experience</h3>
         <div style={{ marginBottom: '20px' }}>
           <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)', display: 'block', marginBottom: '6px' }}>
             Base Professional Summary

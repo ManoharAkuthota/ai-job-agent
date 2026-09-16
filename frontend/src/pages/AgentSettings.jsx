@@ -57,12 +57,12 @@ export default function AgentSettings() {
 
       {success && (
         <div style={{
-          background: '#ecfdf5',
-          border: '1px solid #a7f3d0',
+          background: 'rgba(16, 185, 129, 0.1)',
+          border: '1px solid rgba(16, 185, 129, 0.3)',
           borderRadius: '8px',
           padding: '12px 18px',
           marginBottom: '20px',
-          color: '#065f46',
+          color: '#a7f3d0',
           display: 'flex',
           alignItems: 'center',
           gap: '10px'
@@ -72,9 +72,9 @@ export default function AgentSettings() {
         </div>
       )}
 
-      <form onSubmit={handleSubmit} style={{ background: '#fff', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '28px' }}>
+      <form onSubmit={handleSubmit} style={{ background: '#0b0f19', border: '1px solid var(--border)', borderRadius: 'var(--radius)', padding: '28px' }}>
         {/* Domain & Keywords */}
-        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Globe size={18} color="var(--primary)" /> Target Search Domain
         </h3>
 
@@ -124,7 +124,7 @@ export default function AgentSettings() {
         <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '24px 0' }} />
 
         {/* Automation Thresholds */}
-        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '16px', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Sliders size={18} color="var(--primary)" /> Automation Criteria
         </h3>
 
@@ -133,7 +133,7 @@ export default function AgentSettings() {
             <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)' }}>
               Minimum Match Score for Auto-Tailoring
             </label>
-            <span style={{ fontWeight: '700', color: 'var(--primary)' }}>{settings.minMatchScore}%</span>
+            <span style={{ fontWeight: '700', color: '#818cf8' }}>{settings.minMatchScore}%</span>
           </div>
           <input
             type="range"
@@ -147,7 +147,7 @@ export default function AgentSettings() {
         </div>
 
         <div style={{
-          background: '#f8fafc',
+          background: '#070b14',
           border: '1px solid var(--border)',
           borderRadius: '8px',
           padding: '16px',
@@ -157,7 +157,7 @@ export default function AgentSettings() {
           marginBottom: '24px'
         }}>
           <div>
-            <div style={{ fontWeight: '600', fontSize: '14px', color: 'var(--text-main)' }}>Daily Auto-Apply</div>
+            <div style={{ fontWeight: '600', fontSize: '14px', color: '#ffffff' }}>Daily Auto-Apply</div>
             <div style={{ fontSize: '12px', color: 'var(--text-muted)', marginTop: '2px' }}>
               Automatically submits applications for discovered jobs meeting the minimum match threshold.
             </div>
@@ -173,7 +173,7 @@ export default function AgentSettings() {
             <span style={{
               position: 'absolute',
               inset: 0,
-              backgroundColor: settings.autoApplyEnabled ? 'var(--primary)' : '#cbd5e1',
+              backgroundColor: settings.autoApplyEnabled ? 'var(--primary)' : '#334155',
               borderRadius: '24px',
               transition: '0.2s',
               display: 'flex',
@@ -195,11 +195,11 @@ export default function AgentSettings() {
         <hr style={{ border: 'none', borderTop: '1px solid var(--border)', margin: '24px 0' }} />
 
         {/* Free AI Configuration */}
-        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px', color: '#1e293b', display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <h3 style={{ fontSize: '16px', fontWeight: '700', marginBottom: '8px', color: '#ffffff', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Key size={18} color="var(--primary)" /> Free AI Model Engine
         </h3>
         <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginBottom: '16px' }}>
-          You can provide a <strong>Google Gemini Free API Key</strong> (from Google AI Studio). If left blank, the application automatically uses the built-in smart NLP rule-based engine at 100% free of cost!
+          You can provide a <strong style={{ color: '#f8fafc' }}>Google Gemini Free API Key</strong> (from Google AI Studio). If left blank, the application automatically uses the built-in smart NLP rule-based engine at 100% free of cost!
         </p>
 
         <div style={{ marginBottom: '28px' }}>
