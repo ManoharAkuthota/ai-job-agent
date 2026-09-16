@@ -369,24 +369,38 @@ export default function JobFeed({ onNavigate }) {
               <AlertCircle size={18} color="#f87171" style={{ flexShrink: 0 }} />
               <span>{uploadError}</span>
             </div>
-            {lastUploadedFile && !uploading && (
+            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', justifyContent: 'center' }}>
+              {lastUploadedFile && !uploading && (
+                <button
+                  type="button"
+                  onClick={() => handleFileUpload(lastUploadedFile, 1)}
+                  className="btn-primary"
+                  style={{
+                    padding: '7px 16px',
+                    fontSize: '12px',
+                    fontWeight: '700',
+                    background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                    boxShadow: '0 0 14px rgba(239, 68, 68, 0.4)',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  ⚡ Retry Upload Now ({lastUploadedFile.name})
+                </button>
+              )}
               <button
                 type="button"
-                onClick={() => handleFileUpload(lastUploadedFile, 1)}
-                className="btn-primary"
+                onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                className="btn-secondary"
                 style={{
-                  padding: '7px 18px',
+                  padding: '7px 14px',
                   fontSize: '12px',
-                  fontWeight: '700',
-                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-                  boxShadow: '0 0 14px rgba(239, 68, 68, 0.4)',
-                  border: 'none',
                   cursor: 'pointer'
                 }}
               >
-                ⚡ Retry Upload Now ({lastUploadedFile.name})
+                📁 Select File Again
               </button>
-            )}
+            </div>
           </div>
         )}
 

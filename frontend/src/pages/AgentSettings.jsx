@@ -182,7 +182,7 @@ export default function AgentSettings() {
         </p>
 
         {/* Provider Radio Pills */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 mb-5">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '10px', marginBottom: '20px' }}>
           {[
             { id: 'AUTO', label: 'Auto (Recommended)', desc: 'Detects Ollama -> Gemini -> Built-in' },
             { id: 'OLLAMA', label: 'Ollama (Llama 3)', desc: '100% Free, Local & Offline' },
@@ -191,84 +191,116 @@ export default function AgentSettings() {
           ].map(p => (
             <label
               key={p.id}
-              className={`p-3 rounded-xl border cursor-pointer flex flex-col justify-between transition-all ${
-                settings.aiProvider === p.id
-                  ? 'bg-indigo-950/30 border-indigo-500 shadow-md shadow-indigo-500/10'
-                  : 'bg-[#070b14] border-gray-800 hover:border-gray-700'
-              }`}
+              style={{
+                padding: '12px 14px',
+                borderRadius: '10px',
+                border: settings.aiProvider === p.id ? '1px solid #818cf8' : '1px solid var(--border)',
+                background: settings.aiProvider === p.id ? 'rgba(99, 102, 241, 0.15)' : '#070b14',
+                cursor: 'pointer',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+                gap: '6px',
+                boxShadow: settings.aiProvider === p.id ? '0 0 14px rgba(99, 102, 241, 0.25)' : 'none',
+                transition: 'all 0.2s'
+              }}
             >
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-xs font-bold text-white">{p.label}</span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '13px', fontWeight: '700', color: '#ffffff' }}>{p.label}</span>
                 <input
                   type="radio"
                   name="aiProvider"
                   value={p.id}
                   checked={settings.aiProvider === p.id}
                   onChange={handleChange}
-                  className="accent-indigo-500"
+                  style={{ width: 'auto', accentColor: '#818cf8' }}
                 />
               </div>
-              <span className="text-[11px] text-gray-400">{p.desc}</span>
+              <span style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{p.desc}</span>
             </label>
           ))}
         </div>
 
         {/* Ollama Details when AUTO or OLLAMA is selected */}
         {(settings.aiProvider === 'AUTO' || settings.aiProvider === 'OLLAMA') && (
-          <div className="bg-[#070b14] border border-gray-800 rounded-xl p-4 mb-5 space-y-3">
-            <div className="flex items-center justify-between flex-wrap gap-2">
-              <span className="text-xs font-bold text-indigo-400 uppercase tracking-wider flex items-center gap-1.5">
+          <div style={{
+            background: '#070b14',
+            border: '1px solid rgba(99, 102, 241, 0.25)',
+            borderRadius: '10px',
+            padding: '16px',
+            marginBottom: '20px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+              <span style={{ fontSize: '12px', fontWeight: '700', color: '#818cf8', textTransform: 'uppercase', letterSpacing: '0.5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
                 <Cpu size={14} /> Ollama Local Configuration
               </span>
               <button
                 type="button"
                 onClick={handleTestOllama}
                 disabled={checkingOllama}
-                className="px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-600/20 hover:bg-indigo-600/30 text-indigo-300 border border-indigo-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                className="btn-secondary"
+                style={{
+                  padding: '5px 12px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
               >
-                {checkingOllama ? <RefreshCw size={12} className="animate-spin" /> : <Sparkles size={12} />}
+                {checkingOllama ? <RefreshCw size={12} className="spin" /> : <Sparkles size={12} />}
                 <span>{checkingOllama ? 'Pinging...' : 'Test Connection'}</span>
               </button>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '12px' }}>
               <div>
-                <label className="text-[11px] font-semibold text-gray-400 block mb-1">Ollama API Endpoint</label>
+                <label style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+                  Ollama API Endpoint
+                </label>
                 <input
                   type="text"
                   name="ollamaEndpoint"
                   value={settings.ollamaEndpoint || ''}
                   onChange={handleChange}
                   placeholder="http://localhost:11434"
-                  className="w-full text-xs"
+                  style={{ fontSize: '12px' }}
                 />
               </div>
               <div>
-                <label className="text-[11px] font-semibold text-gray-400 block mb-1">Model Name</label>
+                <label style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+                  Model Name
+                </label>
                 <input
                   type="text"
                   name="ollamaModel"
                   value={settings.ollamaModel || ''}
                   onChange={handleChange}
                   placeholder="llama3"
-                  className="w-full text-xs"
+                  style={{ fontSize: '12px' }}
                 />
               </div>
             </div>
 
             {ollamaStatus && (
-              <div className={`p-3 rounded-lg text-xs border ${
-                ollamaStatus.connected
-                  ? 'bg-emerald-950/20 border-emerald-800/40 text-emerald-300'
-                  : 'bg-amber-950/20 border-amber-800/40 text-amber-300'
-              }`}>
-                <div className="font-semibold flex items-center gap-1.5">
+              <div style={{
+                padding: '12px 14px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                border: ollamaStatus.connected ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(245, 158, 11, 0.3)',
+                background: ollamaStatus.connected ? 'rgba(16, 185, 129, 0.1)' : 'rgba(245, 158, 11, 0.1)',
+                color: ollamaStatus.connected ? '#a7f3d0' : '#fde68a'
+              }}>
+                <div style={{ fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px' }}>
                   {ollamaStatus.connected ? '🟢 ' : '⚠️ '}
                   {ollamaStatus.message}
                 </div>
                 {ollamaStatus.models && ollamaStatus.models.length > 0 && (
-                  <div className="text-[11px] text-gray-400 mt-1">
-                    Installed Models: <span className="text-gray-200">{ollamaStatus.models.join(', ')}</span>
+                  <div style={{ fontSize: '11px', color: '#94a3b8', marginTop: '4px' }}>
+                    Installed Models: <strong style={{ color: '#ffffff' }}>{ollamaStatus.models.join(', ')}</strong>
                   </div>
                 )}
               </div>
@@ -300,8 +332,17 @@ export default function AgentSettings() {
           Receive automated HTML notifications when your AI bot auto-applies or discovers a 80%+ ATS matching job.
         </p>
 
-        <div className="bg-[#070b14] border border-gray-800 rounded-xl p-4 mb-5 space-y-3">
-          <div className="flex items-center justify-between">
+        <div style={{
+          background: '#070b14',
+          border: '1px solid var(--border)',
+          borderRadius: '10px',
+          padding: '16px',
+          marginBottom: '20px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '14px'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
             <div>
               <div style={{ fontWeight: '600', fontSize: '14px', color: '#ffffff' }}>Enable Email Alerts</div>
               <div style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
@@ -338,37 +379,52 @@ export default function AgentSettings() {
             </label>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-2">
-            <div className="sm:col-span-2">
-              <label className="text-[11px] font-semibold text-gray-400 block mb-1">Notification Email Recipient</label>
+          <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-end', flexWrap: 'wrap' }}>
+            <div style={{ flex: '1 1 240px' }}>
+              <label style={{ fontSize: '11px', fontWeight: '600', color: 'var(--text-muted)', display: 'block', marginBottom: '4px' }}>
+                Notification Email Recipient
+              </label>
               <input
                 type="email"
                 name="notificationEmail"
                 value={settings.notificationEmail || ''}
                 onChange={handleChange}
                 placeholder="manoharsriakuthota@gmail.com"
-                className="w-full text-xs"
+                style={{ fontSize: '12px' }}
               />
             </div>
-            <div className="flex items-end">
+            <div>
               <button
                 type="button"
                 onClick={handleTestEmail}
                 disabled={sendingTestEmail || !settings.notificationEmail}
-                className="w-full py-2.5 rounded-xl text-xs font-semibold bg-sky-600/20 hover:bg-sky-600/30 text-sky-300 border border-sky-500/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                className="btn-secondary"
+                style={{
+                  padding: '9px 16px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  color: '#38bdf8',
+                  border: '1px solid rgba(56, 189, 248, 0.35)'
+                }}
               >
-                {sendingTestEmail ? <RefreshCw size={13} className="animate-spin" /> : <Send size={13} />}
+                {sendingTestEmail ? <RefreshCw size={13} className="spin" /> : <Send size={13} />}
                 <span>{sendingTestEmail ? 'Sending...' : 'Send Test Alert'}</span>
               </button>
             </div>
           </div>
 
           {emailStatus && (
-            <div className={`p-3 rounded-lg text-xs border ${
-              emailStatus.success
-                ? 'bg-emerald-950/20 border-emerald-800/40 text-emerald-300'
-                : 'bg-red-950/20 border-red-800/40 text-red-300'
-            }`}>
+            <div style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              fontSize: '12px',
+              border: emailStatus.success ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
+              background: emailStatus.success ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+              color: emailStatus.success ? '#a7f3d0' : '#fca5a5'
+            }}>
               {emailStatus.message}
             </div>
           )}
