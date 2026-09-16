@@ -200,8 +200,8 @@ public class JobDiscoveryService {
                 "Remote, India",
                 "₹ 15 - 26 LPA",
                 "Zomato engineering is looking for passionate backend developers. Design, build, and deploy low-latency Java microservices handling millions of daily food delivery requests. Tech stack: Java, Spring Boot, Kafka, MySQL, AWS.",
-                "https://www.google.com/search?q=Zomato+Backend+Engineer+Java+Gurugram+Jobs&ibp=htl;jobs",
-                "Indian Tech Careers",
+                "https://www.zomato.com/careers",
+                "Official Career Portal",
                 "3 days ago",
                 now.minusDays(3)
         ));
@@ -214,7 +214,7 @@ public class JobDiscoveryService {
                 "₹ 18 - 32 LPA",
                 "PhonePe is India's leading fintech platform. Looking for talented Java Engineers to scale high-volume transaction processing systems handling 5000+ TPS. Expertise in Java, Spring Boot, distributed caching, Kafka event streaming, and MySQL schema design is required.",
                 "https://www.phonepe.com/careers/",
-                "Indian Tech Careers",
+                "Official Career Portal",
                 "3 days ago",
                 now.minusDays(3)
         ));
@@ -227,7 +227,7 @@ public class JobDiscoveryService {
                 "₹ 7.5 - 13 LPA",
                 "HCLTech has openings for Java Software Engineers. Work on enterprise microservices architectures using Spring Boot, Spring Security, Kafka messaging, REST APIs, and MySQL.",
                 "https://www.hcltech.com/careers",
-                "Indian Tech Careers",
+                "Official Career Portal",
                 "4 days ago",
                 now.minusDays(4)
         ));
@@ -240,7 +240,7 @@ public class JobDiscoveryService {
                 "₹ 7.5 - 13 LPA",
                 "Wipro Technologies invites applications for Full Stack Developers. Key responsibilities: Develop responsive single-page web applications using React and build resilient backend REST APIs using Java and Spring Boot. Database design with MySQL, automated unit testing with JUnit, and version control via GitHub.",
                 "https://careers.wipro.com/",
-                "Indian Tech Careers",
+                "Official Career Portal",
                 "4 days ago",
                 now.minusDays(4)
         ));
@@ -252,8 +252,8 @@ public class JobDiscoveryService {
                 "Full-Time",
                 "₹ 8 - 14 LPA",
                 "Join TCS Digital Enterprise Solutions. Responsible for end-to-end development of microservices using Java 17/21, Spring Boot, Spring Security, Hibernate JPA, and modern React frontends. Build high-throughput REST APIs and integrate Apache Kafka for event-driven architectures. Experience with MySQL/PostgreSQL relational schemas, Git, and CI/CD pipelines required.",
-                "https://www.google.com/search?q=TCS+Java+Full+Stack+Developer+Bengaluru+Jobs&ibp=htl;jobs",
-                "Indian Tech Careers",
+                "https://ibegin.tcs.com/iBegin/",
+                "Official Career Portal",
                 "4 days ago",
                 now.minusDays(4)
         ));
@@ -265,8 +265,8 @@ public class JobDiscoveryService {
                 "Hybrid",
                 "₹ 9 - 15 LPA",
                 "Infosys is hiring Java Backend Engineers for modern banking and CPaaS solutions. Required: Strong Java, Spring Boot, Spring Cloud, Kafka messaging, RESTful APIs, MySQL, and Docker containerization. Candidate should have solid problem-solving skills, design patterns, and understanding of distributed systems.",
-                "https://www.google.com/search?q=Infosys+Java+Microservices+Developer+Hyderabad+Jobs&ibp=htl;jobs",
-                "Indian Tech Careers",
+                "https://career.infosys.com/joblist",
+                "Official Career Portal",
                 "5 days ago",
                 now.minusDays(5)
         ));
@@ -278,8 +278,8 @@ public class JobDiscoveryService {
                 "Full-Time",
                 "₹ 5 - 9 LPA",
                 "Immediate opening in Ahmedabad for Junior Java Developer. Work on cloud-native CPaaS (Communications Platform as a Service) backend microservices using Spring Boot, Spring Security, JWT authentication, and Apache Kafka. Maintain MySQL relational schemas and collaborate on REST API development and integration.",
-                "https://www.google.com/search?q=Junior+Java+Developer+Ahmedabad+Jobs&ibp=htl;jobs",
-                "Indian Tech Careers",
+                "https://keyannatech.com/careers",
+                "Official Career Portal",
                 "5 days ago",
                 now.minusDays(5)
         ));
@@ -291,8 +291,8 @@ public class JobDiscoveryService {
                 "Hybrid",
                 "₹ 8 - 14 LPA",
                 "Persistent Systems is hiring Java Full Stack Engineers for enterprise digital engineering programs. Tech competencies: Core Java, Spring Boot, Spring Data JPA, REST APIs, React / Angular frontends, MySQL, and Docker. Experience with microservices architecture and clean code practices.",
-                "https://www.google.com/search?q=Persistent+Systems+Java+Full+Stack+Developer+Pune+Jobs&ibp=htl;jobs",
-                "Indian Tech Careers",
+                "https://careers.persistent.com/",
+                "Official Career Portal",
                 "5 days ago",
                 now.minusDays(5)
         ));
@@ -304,8 +304,8 @@ public class JobDiscoveryService {
                 "Hybrid",
                 "₹ 8 - 14 LPA",
                 "LTI Mindtree is seeking Full Stack Engineers with expertise in Java, Spring Boot microservices, and React frontend interfaces. Collaborate with clients on cloud modernization and REST API development.",
-                "https://www.google.com/search?q=LTI+Mindtree+Full+Stack+Engineer+Java+Mumbai+Jobs&ibp=htl;jobs",
-                "Indian Tech Careers",
+                "https://www.ltimindtree.com/careers/",
+                "Official Career Portal",
                 "6 days ago",
                 now.minusDays(6)
         ));
@@ -317,8 +317,8 @@ public class JobDiscoveryService {
                 "Hybrid",
                 "₹ 7 - 12.5 LPA",
                 "Cognizant is hiring Java Full Stack Engineers. Design and code web applications using React and Spring Boot microservices. Strong proficiency with MySQL, JPA, REST APIs, GitHub, and Postman API testing.",
-                "https://www.google.com/search?q=Cognizant+Java+Full+Stack+Developer+Hyderabad+Jobs&ibp=htl;jobs",
-                "Indian Tech Careers",
+                "https://careers.cognizant.com/global/en",
+                "Official Career Portal",
                 "6 days ago",
                 now.minusDays(6)
         ));
@@ -331,7 +331,7 @@ public class JobDiscoveryService {
                 "₹ 12 - 20 LPA",
                 "Paytm is expanding its payment gateway and core financial services platform. Seeking Java Engineers with expertise in Spring Boot, Spring Security, JWT, MySQL transaction processing, Kafka, and Redis caching.",
                 "https://jobs.lever.co/paytm",
-                "Indian Tech Careers",
+                "Official Career Portal",
                 "6 days ago",
                 now.minusDays(6)
         ));
@@ -506,7 +506,7 @@ public class JobDiscoveryService {
                         j.getSource().contains("Worldwide")
                 );
                 boolean isGerman = isGermanJob(j.getTitle(), j.getLocation(), j.getDescription());
-                boolean isInvalidUrl = (j.getUrl() == null || j.getUrl().isBlank() || j.getUrl().contains("example.com"));
+                boolean isInvalidUrl = (j.getUrl() == null || j.getUrl().isBlank() || j.getUrl().contains("example.com") || j.getUrl().contains("google.com/search"));
                 boolean isNotIndian = !isIndianCompany(j.getCompany()) && !isIndianLocation(j.getLocation());
 
                 if (isLegacyNull || isTooOld || isForeignAggregator || isGerman || isInvalidUrl || isNotIndian) {

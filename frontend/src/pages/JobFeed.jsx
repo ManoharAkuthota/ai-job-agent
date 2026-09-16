@@ -773,19 +773,56 @@ export default function JobFeed({ onNavigate }) {
                       )}
                     </button>
 
-                    {/* LIVE VERIFIED LINK (NEVER 404) */}
+                    {/* DIRECT OFFICIAL CAREER PORTAL LINK */}
                     {job.url && (
                       <a
                         href={job.url}
                         target="_blank"
                         rel="noreferrer"
                         className="btn-secondary"
-                        style={{ padding: '8px 10px', textDecoration: 'none', display: 'flex', alignItems: 'center' }}
-                        title="Open Live Posting (Zero 404)"
+                        style={{
+                          padding: '8px 12px',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          textDecoration: 'none',
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          color: '#38bdf8',
+                          border: '1px solid rgba(56, 189, 248, 0.35)',
+                          background: 'rgba(56, 189, 248, 0.08)'
+                        }}
+                        title={`Visit ${job.company} Official Career Portal`}
                       >
-                        <ExternalLink size={15} />
+                        <Building size={13} color="#38bdf8" />
+                        Career Portal
+                        <ExternalLink size={12} />
                       </a>
                     )}
+
+                    {/* DIRECT LINKEDIN JOBS APPLICATION LINK */}
+                    <a
+                      href={`https://www.linkedin.com/jobs/search/?keywords=${encodeURIComponent(job.title + ' ' + job.company)}&location=India`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="btn-secondary"
+                      style={{
+                        padding: '8px 12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        color: '#60a5fa',
+                        border: '1px solid rgba(96, 165, 250, 0.35)',
+                        background: 'rgba(59, 130, 246, 0.08)'
+                      }}
+                      title={`Search ${job.title} at ${job.company} on LinkedIn Jobs India`}
+                    >
+                      LinkedIn Jobs
+                      <ExternalLink size={12} />
+                    </a>
                   </div>
                 </div>
 
