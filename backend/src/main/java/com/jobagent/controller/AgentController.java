@@ -7,7 +7,9 @@ import com.jobagent.repository.AgentSettingsRepository;
 import com.jobagent.repository.JobApplicationRepository;
 import com.jobagent.repository.JobRepository;
 import com.jobagent.repository.TailoredResumeRepository;
+import com.jobagent.service.AiAgentService;
 import com.jobagent.service.DailyAgentScheduler;
+import com.jobagent.service.EmailNotificationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,19 +27,25 @@ public class AgentController {
     private final JobApplicationRepository applicationRepository;
     private final AgentLogRepository logRepository;
     private final AgentSettingsRepository settingsRepository;
+    private final AiAgentService aiAgentService;
+    private final EmailNotificationService emailNotificationService;
 
     public AgentController(DailyAgentScheduler dailyAgentScheduler,
                            JobRepository jobRepository,
                            TailoredResumeRepository tailoredResumeRepository,
                            JobApplicationRepository applicationRepository,
                            AgentLogRepository logRepository,
-                           AgentSettingsRepository settingsRepository) {
+                           AgentSettingsRepository settingsRepository,
+                           AiAgentService aiAgentService,
+                           EmailNotificationService emailNotificationService) {
         this.dailyAgentScheduler = dailyAgentScheduler;
         this.jobRepository = jobRepository;
         this.tailoredResumeRepository = tailoredResumeRepository;
         this.applicationRepository = applicationRepository;
         this.logRepository = logRepository;
         this.settingsRepository = settingsRepository;
+        this.aiAgentService = aiAgentService;
+        this.emailNotificationService = emailNotificationService;
     }
 
     @GetMapping("/status")
@@ -53,6 +61,9 @@ public class AgentController {
         AgentSettings settings = settingsRepository.findById(1L).orElseGet(AgentSettings::new);
         stats.put("targetDomain", settings.getTargetDomain());
         stats.put("autoApplyEnabled", settings.getAutoApplyEnabled());
+        stats.put("aiProvider", settings.getAiProvider());
+        stats.put("ollamaEndpoint", settings.getOllamaEndpoint());
+        stats.put("emailNotificationsEnabled", settings.getEmailNotificationsEnabled());
 
         return ResponseEntity.ok(stats);
     }
@@ -77,5 +88,27 @@ public class AgentController {
     public ResponseEntity<?> runAgentNow() {
         DailyAgentScheduler.AgentWorkflowResult result = dailyAgentScheduler.runDailyWorkflow();
         return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/check-ollama")
+    public ResponseEntity<Map<String, Object>> checkOllama(@RequestParam(required = false, defaultValue = "http://localhost:11434") String endpoint) {
+        Map<String, Object> health = aiAgentService.checkOllamaHealth(endpoint);
+        return ResponseEntity.ok(health);
+    }
+
+    @PostMapping("/test-email")
+    public ResponseEntity<Map<String, Object>> testEmail(@RequestBody Map<String, String> payload) {
+        String email = payload.get("email");
+        if (email == null || email.isBlank()) {
+            AgentSettings settings = settingsRepository.findById(1L).orElseGet(AgentSettings::new);
+            email = settings.getNotificationEmail();
+        }
+
+        boolean sent = emailNotificationService.sendTestEmail(email);
+        Map<String, Object> res = new HashMap<>();
+        res.put("success", sent);
+        res.put("recipient", email);
+        res.put("message", sent ? "Test email dispatched successfully!" : "Failed to dispatch email. Check SMTP settings or backend logs.");
+        return ResponseEntity.ok(res);
     }
 }

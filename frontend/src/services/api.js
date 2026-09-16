@@ -91,6 +91,22 @@ export const updateApplicationStatus = (id, status, notes) => api.patch(`/applic
 export const deleteApplication = (id) => api.delete(`/applications/${id}`);
 export const getProofUrl = (applicationId) => `${API_BASE}/api/applications/${applicationId}/proof`;
 
+// Cover Letter APIs
+export const generateCoverLetter = (jobId) => api.post(`/cover-letters/generate/${jobId}`);
+export const getCoverLetters = () => api.get('/cover-letters');
+export const getCoverLetterById = (id) => api.get(`/cover-letters/${id}`);
+export const getCoverLetterPdfUrl = (id) => `${API_BASE}/api/cover-letters/${id}/pdf`;
+
+// Interview Preparation APIs
+export const generateInterviewPrep = (jobId) => api.post(`/interview-prep/generate/${jobId}`);
+export const getInterviewPreps = () => api.get('/interview-prep');
+export const getInterviewPrepById = (id) => api.get(`/interview-prep/${id}`);
+export const getInterviewPrepByJobId = (jobId) => api.get(`/interview-prep/job/${jobId}`);
+
+// AI Provider & Notification testing
+export const checkOllama = (endpoint) => api.get('/agent/check-ollama', { params: { endpoint } });
+export const testEmailNotification = (email) => api.post('/agent/test-email', { email });
+
 // Authentication APIs
 export const login = (email, password) => api.post('/auth/login', { email, password });
 export const register = (fullName, email, password) => api.post('/auth/register', { fullName, email, password });

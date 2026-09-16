@@ -5,9 +5,10 @@ import ProfileEditor from './pages/ProfileEditor';
 import TailoredResumes from './pages/TailoredResumes';
 import Applications from './pages/Applications';
 import AgentSettings from './pages/AgentSettings';
+import InterviewPrep from './pages/InterviewPrep';
 import LoginModal from './components/LoginModal';
 import { getCurrentUser } from './services/api';
-import { LayoutDashboard, Briefcase, FileText, FileCode2, Send, Settings, Bot, Menu, X, LogOut, UserCheck } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, FileCode2, Send, Settings, Bot, Menu, X, LogOut, UserCheck, GraduationCap } from 'lucide-react';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -247,6 +248,14 @@ export default function App() {
           </button>
 
           <button
+            onClick={() => handleSelectTab('prep')}
+            className={`nav-item ${activeTab === 'prep' ? 'active' : ''}`}
+          >
+            <GraduationCap size={18} />
+            Interview Prep
+          </button>
+
+          <button
             onClick={() => handleSelectTab('applications')}
             className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`}
           >
@@ -286,6 +295,7 @@ export default function App() {
         {activeTab === 'jobs' && <JobFeed onNavigate={handleSelectTab} />}
         {activeTab === 'profile' && <ProfileEditor />}
         {activeTab === 'resumes' && <TailoredResumes />}
+        {activeTab === 'prep' && <InterviewPrep />}
         {activeTab === 'applications' && <Applications />}
         {activeTab === 'settings' && <AgentSettings />}
       </main>
@@ -303,6 +313,16 @@ export default function App() {
         </button>
 
         <button
+          onClick={() => handleSelectTab('prep')}
+          className={`mobile-tab-btn ${activeTab === 'prep' ? 'active' : ''}`}
+          aria-label="Interview Prep"
+        >
+          {activeTab === 'prep' && <span className="mobile-tab-indicator" />}
+          <GraduationCap size={20} />
+          <span>Prep</span>
+        </button>
+
+        <button
           onClick={() => handleSelectTab('dashboard')}
           className={`mobile-tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
           aria-label="Dashboard"
@@ -310,16 +330,6 @@ export default function App() {
           {activeTab === 'dashboard' && <span className="mobile-tab-indicator" />}
           <LayoutDashboard size={20} />
           <span>Agent</span>
-        </button>
-
-        <button
-          onClick={() => handleSelectTab('profile')}
-          className={`mobile-tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
-          aria-label="Master Resume"
-        >
-          {activeTab === 'profile' && <span className="mobile-tab-indicator" />}
-          <FileCode2 size={20} />
-          <span>Resume</span>
         </button>
 
         <button

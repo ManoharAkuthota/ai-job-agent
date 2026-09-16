@@ -21,6 +21,7 @@ public class DailyAgentScheduler {
     private final JobApplicationRepository applicationRepository;
     private final AgentLogRepository logRepository;
     private final AgentSettingsRepository settingsRepository;
+    private final EmailNotificationService emailNotificationService;
 
     public DailyAgentScheduler(JobDiscoveryService discoveryService,
                                ResumeEvolutionService resumeEvolutionService,
@@ -32,7 +33,8 @@ public class DailyAgentScheduler {
                                TailoredResumeRepository tailoredResumeRepository,
                                JobApplicationRepository applicationRepository,
                                AgentLogRepository logRepository,
-                               AgentSettingsRepository settingsRepository) {
+                               AgentSettingsRepository settingsRepository,
+                               EmailNotificationService emailNotificationService) {
         this.discoveryService = discoveryService;
         this.resumeEvolutionService = resumeEvolutionService;
         this.aiAgentService = aiAgentService;
@@ -44,6 +46,7 @@ public class DailyAgentScheduler {
         this.applicationRepository = applicationRepository;
         this.logRepository = logRepository;
         this.settingsRepository = settingsRepository;
+        this.emailNotificationService = emailNotificationService;
     }
 
     /**
@@ -135,6 +138,22 @@ public class DailyAgentScheduler {
             job.setStatus("APPLIED");
             jobRepository.save(job);
             applicationsSubmitted++;
+
+            // Email Notification on Autonomous Submission
+            if (Boolean.TRUE.equals(settings.getEmailNotificationsEnabled())
+                    && settings.getNotificationEmail() != null && !settings.getNotificationEmail().isBlank()) {
+                try {
+                    emailNotificationService.sendApplicationSubmittedEmail(
+                            settings.getNotificationEmail(),
+                            job.getTitle(),
+                            job.getCompany(),
+                            "AUTONOMOUS_PLAYWRIGHT",
+                            applyResult.proofScreenshotPath()
+                    );
+                } catch (Exception e) {
+                    System.err.println("Failed to send application email notification: " + e.getMessage());
+                }
+            }
         }
 
         logRepository.save(new AgentLog("SUCCESS", "WORKFLOW",

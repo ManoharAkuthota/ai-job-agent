@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { getJobs, scanJobs, tailorResume, applyForJob, uploadResume, getProofUrl } from '../services/api';
+import CoverLetterModal from '../components/CoverLetterModal';
 import {
   Search, MapPin, Building, Sparkles, ExternalLink, Send, Check, RefreshCw,
   ChevronDown, ChevronUp, UploadCloud, FileText, CheckCircle2, AlertCircle,
   Zap, Bot, Eye, X, Award, ShieldAlert, TrendingUp, CheckSquare, Clock, Calendar,
-  HelpCircle, Info, ArrowRight
+  HelpCircle, Info, ArrowRight, GraduationCap
 } from 'lucide-react';
 
 export default function JobFeed({ onNavigate }) {
@@ -28,8 +29,9 @@ export default function JobFeed({ onNavigate }) {
   const [batchApplying, setBatchApplying] = useState(false);
   const [batchProgress, setBatchProgress] = useState(null);
 
-  // Proof Modal State
+  // Proof & Cover Letter Modal State
   const [previewProof, setPreviewProof] = useState(null);
+  const [coverLetterModalJob, setCoverLetterModalJob] = useState(null);
 
   const fileInputRef = useRef(null);
 
@@ -823,6 +825,54 @@ export default function JobFeed({ onNavigate }) {
                       LinkedIn Jobs
                       <ExternalLink size={12} />
                     </a>
+
+                    {/* AI COVER LETTER BUTTON */}
+                    <button
+                      type="button"
+                      onClick={() => setCoverLetterModalJob(job)}
+                      className="btn-secondary"
+                      style={{
+                        padding: '8px 12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        color: '#c084fc',
+                        border: '1px solid rgba(192, 132, 252, 0.35)',
+                        background: 'rgba(168, 85, 247, 0.08)',
+                        cursor: 'pointer'
+                      }}
+                      title={`Generate AI Tailored Cover Letter for ${job.company}`}
+                    >
+                      <FileText size={13} color="#c084fc" />
+                      Cover Letter
+                    </button>
+
+                    {/* INTERVIEW PREP BUTTON */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (onNavigate) onNavigate('prep');
+                      }}
+                      className="btn-secondary"
+                      style={{
+                        padding: '8px 12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        color: '#38bdf8',
+                        border: '1px solid rgba(56, 189, 248, 0.35)',
+                        background: 'rgba(56, 189, 248, 0.08)',
+                        cursor: 'pointer'
+                      }}
+                      title={`Open Interview Preparation Kit for ${job.title}`}
+                    >
+                      <GraduationCap size={13} color="#38bdf8" />
+                      Prep Interview
+                    </button>
                   </div>
                 </div>
 
@@ -1042,6 +1092,14 @@ export default function JobFeed({ onNavigate }) {
             </div>
           </div>
         </div>
+      )}
+
+      {/* AI Tailored Cover Letter Modal */}
+      {coverLetterModalJob && (
+        <CoverLetterModal
+          job={coverLetterModalJob}
+          onClose={() => setCoverLetterModalJob(null)}
+        />
       )}
     </div>
   );
