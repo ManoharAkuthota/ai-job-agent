@@ -77,40 +77,72 @@ export default function App() {
     <div className="app-container">
       {/* Mobile Top Header (Visible on screens <= 768px) */}
       <header className="mobile-header">
-        <div className="brand" style={{ margin: 0, padding: 0 }}>
-          <Bot size={24} />
-          <span>JobAgent.ai</span>
+        <div className="mobile-brand-title">
+          <Bot size={22} color="#818cf8" style={{ filter: 'drop-shadow(0 0 8px rgba(99, 102, 241, 0.7))' }} />
+          <span>JobAgent<span style={{ color: '#818cf8' }}>.ai</span></span>
+          <span className="mobile-status-pill">
+            <span className="mobile-status-dot"></span>
+            LIVE
+          </span>
         </div>
+
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Quick Settings Icon Button */}
           <button
-            onClick={handleLogout}
-            title="Log Out"
+            onClick={() => handleSelectTab('settings')}
+            title="Settings"
             style={{
-              background: '#111827',
-              color: '#f87171',
-              border: '1px solid rgba(239, 68, 68, 0.3)',
-              padding: '7px 10px',
+              background: activeTab === 'settings' ? 'rgba(99, 102, 241, 0.25)' : '#0f172a',
+              color: activeTab === 'settings' ? '#818cf8' : '#94a3b8',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              width: '36px',
+              height: '36px',
               borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',
-              gap: '4px',
-              fontSize: '12px',
-              fontWeight: '600'
+              justifyContent: 'center',
+              cursor: 'pointer'
             }}
           >
-            <LogOut size={14} />
+            <Settings size={18} />
           </button>
+
+          {/* User Profile Avatar Pill */}
           <button
-            className="mobile-menu-toggle"
             onClick={() => setMobileNavOpen(!mobileNavOpen)}
-            aria-label="Toggle navigation menu"
+            title="User Menu"
+            style={{
+              background: '#111827',
+              border: '1px solid rgba(99, 102, 241, 0.4)',
+              borderRadius: '8px',
+              padding: '4px 8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              color: '#f8fafc',
+              cursor: 'pointer'
+            }}
           >
-            {mobileNavOpen ? <X size={24} /> : <Menu size={24} />}
+            <div style={{
+              width: '24px',
+              height: '24px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #4f46e5 0%, #6366f1 100%)',
+              color: '#ffffff',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontWeight: '700',
+              fontSize: '10px'
+            }}>
+              {initials}
+            </div>
+            {mobileNavOpen ? <X size={16} color="#94a3b8" /> : <Menu size={16} color="#94a3b8" />}
           </button>
         </div>
       </header>
 
-      {/* Backdrop overlay for mobile */}
+      {/* Backdrop overlay for mobile drawer */}
       {mobileNavOpen && (
         <div className="sidebar-backdrop" onClick={() => setMobileNavOpen(false)} />
       )}
@@ -257,6 +289,59 @@ export default function App() {
         {activeTab === 'applications' && <Applications />}
         {activeTab === 'settings' && <AgentSettings />}
       </main>
+
+      {/* Modern Frosted OLED Mobile Bottom Navigation Bar (Visible on screens <= 768px) */}
+      <nav className="mobile-bottom-nav" aria-label="Mobile Navigation">
+        <button
+          onClick={() => handleSelectTab('jobs')}
+          className={`mobile-tab-btn ${activeTab === 'jobs' ? 'active' : ''}`}
+          aria-label="Jobs Feed"
+        >
+          {activeTab === 'jobs' && <span className="mobile-tab-indicator" />}
+          <Briefcase size={20} />
+          <span>Jobs</span>
+        </button>
+
+        <button
+          onClick={() => handleSelectTab('dashboard')}
+          className={`mobile-tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
+          aria-label="Dashboard"
+        >
+          {activeTab === 'dashboard' && <span className="mobile-tab-indicator" />}
+          <LayoutDashboard size={20} />
+          <span>Agent</span>
+        </button>
+
+        <button
+          onClick={() => handleSelectTab('profile')}
+          className={`mobile-tab-btn ${activeTab === 'profile' ? 'active' : ''}`}
+          aria-label="Master Resume"
+        >
+          {activeTab === 'profile' && <span className="mobile-tab-indicator" />}
+          <FileCode2 size={20} />
+          <span>Resume</span>
+        </button>
+
+        <button
+          onClick={() => handleSelectTab('resumes')}
+          className={`mobile-tab-btn ${activeTab === 'resumes' ? 'active' : ''}`}
+          aria-label="Tailored Resumes"
+        >
+          {activeTab === 'resumes' && <span className="mobile-tab-indicator" />}
+          <FileText size={20} />
+          <span>Tailored</span>
+        </button>
+
+        <button
+          onClick={() => handleSelectTab('applications')}
+          className={`mobile-tab-btn ${activeTab === 'applications' ? 'active' : ''}`}
+          aria-label="Application Tracker"
+        >
+          {activeTab === 'applications' && <span className="mobile-tab-indicator" />}
+          <Send size={20} />
+          <span>Tracker</span>
+        </button>
+      </nav>
     </div>
   );
 }

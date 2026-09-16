@@ -82,119 +82,259 @@ export default function Applications() {
           <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>Jobs submitted automatically by the Playwright AI agent will appear here with proof screenshots.</p>
         </div>
       ) : (
-        <div style={{ background: '#0b0f19', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden', overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px', minWidth: '600px' }}>
-            <thead>
-              <tr style={{ background: '#070b14', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontWeight: '600' }}>
-                <th style={{ padding: '14px 18px' }}>Role & Company</th>
-                <th style={{ padding: '14px 18px' }}>Applied Date</th>
-                <th style={{ padding: '14px 18px' }}>Status</th>
-                <th style={{ padding: '14px 18px' }}>Submission Proof</th>
-                <th style={{ padding: '14px 18px' }}>Tailored Resume</th>
-                <th style={{ padding: '14px 18px' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.map((app) => (
-                <tr key={app.id} style={{ borderBottom: '1px solid var(--border)' }}>
-                  <td style={{ padding: '14px 18px' }}>
-                    <div style={{ fontWeight: '600', color: '#ffffff', fontSize: '14px' }}>{app.jobTitle}</div>
-                    <div style={{ color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-                      <Building size={13} /> {app.company} • {app.location}
-                    </div>
-                  </td>
+        <>
+          {/* DESKTOP VIEW: Clean Structured Table (Visible on > 768px) */}
+          <div className="desktop-only-table" style={{ background: '#0b0f19', border: '1px solid var(--border)', borderRadius: 'var(--radius)', overflow: 'hidden', overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px', minWidth: '600px' }}>
+              <thead>
+                <tr style={{ background: '#070b14', borderBottom: '1px solid var(--border)', color: 'var(--text-muted)', fontWeight: '600' }}>
+                  <th style={{ padding: '14px 18px' }}>Role & Company</th>
+                  <th style={{ padding: '14px 18px' }}>Applied Date</th>
+                  <th style={{ padding: '14px 18px' }}>Status</th>
+                  <th style={{ padding: '14px 18px' }}>Submission Proof</th>
+                  <th style={{ padding: '14px 18px' }}>Tailored Resume</th>
+                  <th style={{ padding: '14px 18px' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filtered.map((app) => (
+                  <tr key={app.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td style={{ padding: '14px 18px' }}>
+                      <div style={{ fontWeight: '600', color: '#ffffff', fontSize: '14px' }}>{app.jobTitle}</div>
+                      <div style={{ color: '#38bdf8', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
+                        <Building size={13} /> {app.company} • {app.location}
+                      </div>
+                    </td>
 
-                  <td style={{ padding: '14px 18px', color: 'var(--text-muted)' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                      <Calendar size={13} /> {new Date(app.appliedAt).toLocaleDateString()}
-                    </div>
-                  </td>
+                    <td style={{ padding: '14px 18px', color: 'var(--text-muted)' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                        <Calendar size={13} /> {new Date(app.appliedAt).toLocaleDateString()}
+                      </div>
+                    </td>
 
-                  <td style={{ padding: '14px 18px' }}>
-                    <select
-                      value={app.status}
-                      onChange={(e) => handleStatusChange(app.id, e.target.value)}
-                      style={{
-                        padding: '5px 10px',
-                        fontSize: '12px',
-                        fontWeight: '600',
-                        borderRadius: '6px',
-                        width: 'auto',
-                        background: '#0f172a',
-                        color: app.status === 'INTERVIEW' ? '#34d399' : app.status === 'OFFER' ? '#fbbf24' : '#f8fafc',
-                        border: '1px solid var(--border)'
-                      }}
-                    >
-                      <option value="APPLIED">APPLIED</option>
-                      <option value="REVIEWING">REVIEWING</option>
-                      <option value="INTERVIEW">INTERVIEW</option>
-                      <option value="OFFER">OFFER</option>
-                      <option value="REJECTED">REJECTED</option>
-                    </select>
-                  </td>
-
-                  <td style={{ padding: '14px 18px' }}>
-                    {app.screenshotProofPath ? (
-                      <button
-                        onClick={() => setPreviewProof(app)}
-                        className="btn-secondary"
-                        style={{ padding: '5px 10px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#34d399', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)' }}
-                      >
-                        <ImageIcon size={14} color="#34d399" /> View Proof
-                      </button>
-                    ) : (
-                      <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Pending capture</span>
-                    )}
-                  </td>
-
-                  <td style={{ padding: '14px 18px' }}>
-                    {app.tailoredResumeId ? (
-                      <a
-                        href={getPdfUrl(app.tailoredResumeId)}
-                        download
+                    <td style={{ padding: '14px 18px' }}>
+                      <select
+                        value={app.status}
+                        onChange={(e) => handleStatusChange(app.id, e.target.value)}
                         style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '6px',
-                          color: '#818cf8',
-                          textDecoration: 'none',
-                          fontWeight: '600'
+                          padding: '5px 10px',
+                          fontSize: '12px',
+                          fontWeight: '600',
+                          borderRadius: '6px',
+                          width: 'auto',
+                          background: '#0f172a',
+                          color: app.status === 'INTERVIEW' ? '#34d399' : app.status === 'OFFER' ? '#fbbf24' : '#f8fafc',
+                          border: '1px solid var(--border)'
                         }}
                       >
-                        <Download size={14} /> PDF
-                      </a>
-                    ) : (
-                      <span style={{ color: 'var(--text-muted)' }}>Standard</span>
-                    )}
-                  </td>
+                        <option value="APPLIED">APPLIED</option>
+                        <option value="REVIEWING">REVIEWING</option>
+                        <option value="INTERVIEW">INTERVIEW</option>
+                        <option value="OFFER">OFFER</option>
+                        <option value="REJECTED">REJECTED</option>
+                      </select>
+                    </td>
 
-                  <td style={{ padding: '14px 18px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      {app.jobUrl && (
-                        <a
-                          href={app.jobUrl}
-                          target="_blank"
-                          rel="noreferrer"
-                          title="Open Job Listing"
-                          style={{ color: '#94a3b8', padding: '6px' }}
+                    <td style={{ padding: '14px 18px' }}>
+                      {app.screenshotProofPath ? (
+                        <button
+                          onClick={() => setPreviewProof(app)}
+                          className="btn-secondary"
+                          style={{ padding: '5px 10px', fontSize: '12px', display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#34d399', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid rgba(16, 185, 129, 0.3)' }}
                         >
-                          <ExternalLink size={16} />
-                        </a>
+                          <ImageIcon size={14} color="#34d399" /> View Proof
+                        </button>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)', fontSize: '12px' }}>Pending capture</span>
                       )}
-                      <button
-                        onClick={() => handleDelete(app.id)}
-                        title="Delete Application"
-                        style={{ background: 'none', color: '#ef4444', padding: '6px', cursor: 'pointer' }}
-                      >
-                        <Trash2 size={16} />
-                      </button>
+                    </td>
+
+                    <td style={{ padding: '14px 18px' }}>
+                      {app.tailoredResumeId ? (
+                        <a
+                          href={getPdfUrl(app.tailoredResumeId)}
+                          download
+                          style={{
+                            display: 'inline-flex',
+                            alignItems: 'center',
+                            gap: '6px',
+                            color: '#818cf8',
+                            textDecoration: 'none',
+                            fontWeight: '600'
+                          }}
+                        >
+                          <Download size={14} /> PDF
+                        </a>
+                      ) : (
+                        <span style={{ color: 'var(--text-muted)' }}>Standard</span>
+                      )}
+                    </td>
+
+                    <td style={{ padding: '14px 18px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {app.jobUrl && (
+                          <a
+                            href={app.jobUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            title="Open Job Listing"
+                            style={{ color: '#94a3b8', padding: '6px' }}
+                          >
+                            <ExternalLink size={16} />
+                          </a>
+                        )}
+                        <button
+                          onClick={() => handleDelete(app.id)}
+                          title="Delete Application"
+                          style={{ background: 'none', color: '#ef4444', padding: '6px', cursor: 'pointer' }}
+                        >
+                          <Trash2 size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {/* MOBILE VIEW: Responsive Native Cards (Visible on <= 768px) */}
+          <div className="mobile-only-cards">
+            {filtered.map((app) => (
+              <div
+                key={app.id}
+                style={{
+                  background: '#0b0f19',
+                  border: '1px solid var(--border)',
+                  borderRadius: 'var(--radius)',
+                  padding: '16px',
+                  boxShadow: 'var(--shadow-sm)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '12px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '15px', fontWeight: '700', color: '#ffffff' }}>{app.jobTitle}</h3>
+                    <div style={{ color: '#38bdf8', fontSize: '12px', display: 'flex', alignItems: 'center', gap: '4px', marginTop: '2px' }}>
+                      <Building size={12} /> {app.company} • {app.location}
                     </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+
+                  <select
+                    value={app.status}
+                    onChange={(e) => handleStatusChange(app.id, e.target.value)}
+                    style={{
+                      padding: '4px 8px',
+                      fontSize: '11px',
+                      fontWeight: '700',
+                      borderRadius: '6px',
+                      width: 'auto',
+                      background: '#0f172a',
+                      color: app.status === 'INTERVIEW' ? '#34d399' : app.status === 'OFFER' ? '#fbbf24' : '#f8fafc',
+                      border: '1px solid var(--border)'
+                    }}
+                  >
+                    <option value="APPLIED">APPLIED</option>
+                    <option value="REVIEWING">REVIEWING</option>
+                    <option value="INTERVIEW">INTERVIEW</option>
+                    <option value="OFFER">OFFER</option>
+                    <option value="REJECTED">REJECTED</option>
+                  </select>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '11px', color: 'var(--text-muted)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Calendar size={12} /> {new Date(app.appliedAt).toLocaleDateString()}
+                  </div>
+                  {app.jobUrl && (
+                    <a
+                      href={app.jobUrl}
+                      target="_blank"
+                      rel="noreferrer"
+                      style={{ color: '#818cf8', display: 'inline-flex', alignItems: 'center', gap: '3px', textDecoration: 'none' }}
+                    >
+                      Job Link <ExternalLink size={11} />
+                    </a>
+                  )}
+                </div>
+
+                {/* Mobile Action Buttons (Proof + PDF + Delete) */}
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr auto', gap: '8px', paddingTop: '10px', borderTop: '1px solid var(--border)' }}>
+                  {app.screenshotProofPath ? (
+                    <button
+                      onClick={() => setPreviewProof(app)}
+                      className="btn-secondary"
+                      style={{
+                        padding: '8px 10px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        color: '#34d399',
+                        background: 'rgba(16, 185, 129, 0.12)',
+                        border: '1px solid rgba(16, 185, 129, 0.3)'
+                      }}
+                    >
+                      <ImageIcon size={13} color="#34d399" /> Proof
+                    </button>
+                  ) : (
+                    <span style={{ color: 'var(--text-muted)', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      Pending Proof
+                    </span>
+                  )}
+
+                  {app.tailoredResumeId ? (
+                    <a
+                      href={getPdfUrl(app.tailoredResumeId)}
+                      download
+                      className="btn-secondary"
+                      style={{
+                        padding: '8px 10px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '6px',
+                        color: '#818cf8',
+                        textDecoration: 'none',
+                        border: '1px solid rgba(99, 102, 241, 0.3)'
+                      }}
+                    >
+                      <Download size={13} /> PDF
+                    </a>
+                  ) : (
+                    <span style={{ color: 'var(--text-muted)', fontSize: '11px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      Standard
+                    </span>
+                  )}
+
+                  <button
+                    onClick={() => handleDelete(app.id)}
+                    title="Delete Application"
+                    style={{
+                      background: 'rgba(239, 68, 68, 0.1)',
+                      border: '1px solid rgba(239, 68, 68, 0.25)',
+                      color: '#ef4444',
+                      padding: '8px 10px',
+                      borderRadius: '8px',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Trash2 size={15} />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
       )}
 
       {/* Proof Screenshot Modal */}
