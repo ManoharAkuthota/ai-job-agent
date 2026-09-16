@@ -32,10 +32,11 @@ export default function JobFeed({ onNavigate }) {
   // Proof & Cover Letter Modal State
   const [previewProof, setPreviewProof] = useState(null);
   const [coverLetterModalJob, setCoverLetterModalJob] = useState(null);
+  const [lastUploadedFile, setLastUploadedFile] = useState(null);
 
   const fileInputRef = useRef(null);
 
-  const loadJobs = async () => {
+  const loadJobs = async (retryCount = 0) => {
     setLoading(true);
     try {
       const res = await getJobs(filterStatus, minScore > 0 ? minScore : null, freshnessDays);
@@ -43,9 +44,14 @@ export default function JobFeed({ onNavigate }) {
       setNetworkWarning(null);
     } catch (err) {
       console.error("Error loading jobs:", err);
-      const isNet = !err.response || err.message?.includes('Network') || err.message?.includes('timeout');
+      const isNet = !err.response || err.message?.includes('Network') || err.message?.includes('timeout') || err.response?.status >= 500;
       if (isNet) {
-        setNetworkWarning("Cloud backend is spinning up on Render free tier (takes ~25-35s on first load). Reconnecting...");
+        setNetworkWarning("Cloud backend is waking up from standby (takes ~25-35s on first visit). Reconnecting...");
+        // Auto-retry up to 4 times during container cold boot
+        if (retryCount < 4) {
+          setTimeout(() => loadJobs(retryCount + 1), 4000);
+          return;
+        }
       }
     } finally {
       setLoading(false);
@@ -68,13 +74,16 @@ export default function JobFeed({ onNavigate }) {
     }
   };
 
-  // Resume File Upload & Parsing Handler
-  const handleFileUpload = async (file) => {
+  // Resume File Upload & Parsing Handler with Automatic Cold-Boot Retries
+  const handleFileUpload = async (file, attempt = 1) => {
     if (!file) return;
+    setLastUploadedFile(file);
     setUploading(true);
     setUploadError(null);
-    setUploadSuccess(null);
-    setAtsReport(null);
+    if (attempt === 1) {
+      setUploadSuccess(null);
+      setAtsReport(null);
+    }
 
     try {
       const res = await uploadResume(file);
@@ -96,17 +105,30 @@ export default function JobFeed({ onNavigate }) {
         } else {
           await loadJobs();
         }
+        setUploadError(null);
+        setUploading(false);
       } else {
         setUploadError(res.data?.message || "Failed to parse resume.");
+        setUploading(false);
       }
     } catch (err) {
-      const isNet = !err.response || err.message?.includes('Network') || err.message?.includes('timeout');
+      console.warn(`Upload attempt ${attempt} encountered:`, err);
+      const isNet = !err.response || err.message?.includes('Network') || err.message?.includes('timeout') || err.response?.status >= 500;
+      
+      // If cloud server is waking up on Render, automatically retry after a short delay
+      if (isNet && attempt < 3) {
+        setUploadError(`Cloud server waking up... Auto-retrying upload (attempt ${attempt + 1}/3 in 3s)...`);
+        setTimeout(() => {
+          handleFileUpload(file, attempt + 1);
+        }, 3000);
+        return;
+      }
+
       if (isNet) {
-        setUploadError("Unable to reach cloud server. Render free tier backend takes ~25-35s to wake up on first visit. Please wait a moment and try again.");
+        setUploadError("Cloud server took longer than expected to wake up from standby. Please tap 'Retry Upload Now' below.");
       } else {
         setUploadError(err.response?.data?.error || err.message || "Error uploading resume.");
       }
-    } finally {
       setUploading(false);
     }
   };
@@ -330,18 +352,41 @@ export default function JobFeed({ onNavigate }) {
         {uploadError && (
           <div style={{
             marginTop: '16px',
-            padding: '12px 16px',
+            padding: '14px 18px',
             background: 'rgba(239, 68, 68, 0.12)',
-            border: '1px solid rgba(239, 68, 68, 0.3)',
-            color: '#f87171',
-            borderRadius: '8px',
+            border: '1px solid rgba(239, 68, 68, 0.35)',
+            color: '#fca5a5',
+            borderRadius: '10px',
             fontSize: '13px',
-            display: 'inline-flex',
+            display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            gap: '8px'
+            gap: '10px',
+            maxWidth: '560px',
+            margin: '16px auto 0'
           }}>
-            <AlertCircle size={16} />
-            {uploadError}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', textAlign: 'center' }}>
+              <AlertCircle size={18} color="#f87171" style={{ flexShrink: 0 }} />
+              <span>{uploadError}</span>
+            </div>
+            {lastUploadedFile && !uploading && (
+              <button
+                type="button"
+                onClick={() => handleFileUpload(lastUploadedFile, 1)}
+                className="btn-primary"
+                style={{
+                  padding: '7px 18px',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                  boxShadow: '0 0 14px rgba(239, 68, 68, 0.4)',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                ⚡ Retry Upload Now ({lastUploadedFile.name})
+              </button>
+            )}
           </div>
         )}
 

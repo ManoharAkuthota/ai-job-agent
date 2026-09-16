@@ -7,7 +7,7 @@ import Applications from './pages/Applications';
 import AgentSettings from './pages/AgentSettings';
 import InterviewPrep from './pages/InterviewPrep';
 import LoginModal from './components/LoginModal';
-import { getCurrentUser } from './services/api';
+import { getCurrentUser, pingBackend } from './services/api';
 import { LayoutDashboard, Briefcase, FileText, FileCode2, Send, Settings, Bot, Menu, X, LogOut, UserCheck, GraduationCap } from 'lucide-react';
 
 export default function App() {
@@ -27,7 +27,7 @@ export default function App() {
   const [activeTab, setActiveTab] = useState('jobs');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
-  // Validate session on app load
+  // Validate session on app load & keep cloud container warm
   useEffect(() => {
     const token = localStorage.getItem('jobagent_token');
     if (token) {
@@ -38,11 +38,21 @@ export default function App() {
             localStorage.setItem('jobagent_user', JSON.stringify(res.data));
           }
         })
-        .catch(() => {
-          // Token invalid or expired
-          handleLogout();
+        .catch((err) => {
+          // Only logout if token is explicitly rejected by the server (401/403)
+          // NEVER log out due to cold boot or network hiccups!
+          if (err.response && (err.response.status === 401 || err.response.status === 403)) {
+            handleLogout();
+          }
         });
     }
+
+    // Keep Render free container warm while user is on site (Render sleeps after 15m)
+    const keepWarmInterval = setInterval(() => {
+      pingBackend().catch(() => {});
+    }, 7 * 60 * 1000);
+
+    return () => clearInterval(keepWarmInterval);
   }, []);
 
   const handleSelectTab = (tab) => {

@@ -30,6 +30,11 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  // When sending FormData (multipart file upload), remove default application/json header
+  // so the browser automatically sets multipart/form-data with the correct boundary!
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type'];
+  }
   return config;
 });
 
@@ -39,6 +44,11 @@ api.interceptors.response.use(
   async (error) => {
     const config = error.config;
     if (!config) return Promise.reject(error);
+
+    // Never automatically replay FormData stream because stream is consumed once
+    if (config.data instanceof FormData) {
+      return Promise.reject(error);
+    }
 
     // Retry on network errors or 502/503/504 (common during container wake up)
     const isNetworkOr5xx = !error.response || (error.response.status >= 500 && error.response.status <= 504);
@@ -56,6 +66,7 @@ api.interceptors.response.use(
 );
 
 export const getAgentStatus = () => api.get('/agent/status');
+export const pingBackend = () => api.get('/agent/status', { timeout: 20000 });
 export const getAgentLogs = () => api.get('/agent/logs');
 export const getSettings = () => api.get('/agent/settings');
 export const updateSettings = (settings) => api.post('/agent/settings', settings);
@@ -76,7 +87,10 @@ export const uploadResume = (file) => {
   const formData = new FormData();
   formData.append('file', file);
   return api.post('/profile/upload-resume', formData, {
-    headers: { 'Content-Type': 'multipart/form-data' }
+    headers: {
+      'Content-Type': undefined, // Browser must set multipart/form-data with its own boundary
+    },
+    timeout: 90000, // 90s timeout for mobile upload
   });
 };
 

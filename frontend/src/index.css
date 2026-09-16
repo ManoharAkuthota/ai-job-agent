@@ -455,14 +455,12 @@ select option {
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    background: rgba(7, 11, 20, 0.92);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    background: #030712;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: sticky;
     top: 0;
-    z-index: 50;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    z-index: 60;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
   }
 
   .mobile-brand-title {
