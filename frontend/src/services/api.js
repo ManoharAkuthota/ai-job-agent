@@ -1,13 +1,50 @@
 import axios from 'axios';
 
-const API_BASE = import.meta.env.VITE_API_URL || '';
+// Dynamically resolve API URL:
+// 1. If VITE_API_URL is set at build time, use it.
+// 2. If running on Render (*.onrender.com), default to live Render backend.
+// 3. Otherwise (local dev), fallback to empty string so Vite proxy handles /api.
+const getApiBase = () => {
+  if (import.meta.env.VITE_API_URL) {
+    return import.meta.env.VITE_API_URL;
+  }
+  if (typeof window !== 'undefined' && window.location.hostname.includes('onrender.com')) {
+    return 'https://manohar-ai-job-backend.onrender.com';
+  }
+  return '';
+};
+
+const API_BASE = getApiBase();
 
 const api = axios.create({
   baseURL: `${API_BASE}/api`,
+  timeout: 60000, // 60s timeout for Render free tier container wakeups
   headers: {
     'Content-Type': 'application/json',
   },
 });
+
+// Automatic retry interceptor for Render cold starts / mobile network hiccups
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const config = error.config;
+    if (!config) return Promise.reject(error);
+
+    // Retry on network errors or 502/503/504 (common during container wake up)
+    const isNetworkOr5xx = !error.response || (error.response.status >= 500 && error.response.status <= 504);
+    if (isNetworkOr5xx) {
+      config.__retryCount = config.__retryCount || 0;
+      if (config.__retryCount < 3) {
+        config.__retryCount += 1;
+        const delayMs = config.__retryCount * 2500; // 2.5s, 5s, 7.5s backoff
+        await new Promise((res) => setTimeout(res, delayMs));
+        return api(config);
+      }
+    }
+    return Promise.reject(error);
+  }
+);
 
 export const getAgentStatus = () => api.get('/agent/status');
 export const getAgentLogs = () => api.get('/agent/logs');

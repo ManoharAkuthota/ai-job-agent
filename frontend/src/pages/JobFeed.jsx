@@ -20,6 +20,7 @@ export default function JobFeed({ onNavigate }) {
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(null);
   const [uploadError, setUploadError] = useState(null);
+  const [networkWarning, setNetworkWarning] = useState(null);
   const [atsReport, setAtsReport] = useState(null);
   const [dragActive, setDragActive] = useState(false);
   const [batchApplying, setBatchApplying] = useState(false);
@@ -35,8 +36,13 @@ export default function JobFeed({ onNavigate }) {
     try {
       const res = await getJobs(filterStatus, minScore > 0 ? minScore : null, freshnessDays);
       setJobs(res.data || []);
+      setNetworkWarning(null);
     } catch (err) {
       console.error("Error loading jobs:", err);
+      const isNet = !err.response || err.message?.includes('Network') || err.message?.includes('timeout');
+      if (isNet) {
+        setNetworkWarning("Cloud backend is spinning up on Render free tier (takes ~25-35s on first load). Reconnecting...");
+      }
     } finally {
       setLoading(false);
     }
@@ -90,7 +96,12 @@ export default function JobFeed({ onNavigate }) {
         setUploadError(res.data?.message || "Failed to parse resume.");
       }
     } catch (err) {
-      setUploadError(err.response?.data?.error || err.message || "Error uploading resume.");
+      const isNet = !err.response || err.message?.includes('Network') || err.message?.includes('timeout');
+      if (isNet) {
+        setUploadError("Unable to reach cloud server. Render free tier backend takes ~25-35s to wake up on first visit. Please wait a moment and try again.");
+      } else {
+        setUploadError(err.response?.data?.error || err.message || "Error uploading resume.");
+      }
     } finally {
       setUploading(false);
     }
@@ -209,6 +220,34 @@ export default function JobFeed({ onNavigate }) {
           )}
         </div>
       </div>
+
+      {networkWarning && (
+        <div style={{
+          background: '#fffbeb',
+          border: '1px solid #fde047',
+          borderRadius: 'var(--radius)',
+          padding: '14px 18px',
+          marginBottom: '20px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '10px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#854d0e', fontSize: '13px' }}>
+            <RefreshCw size={16} className={loading ? "spin" : ""} />
+            <span>{networkWarning}</span>
+          </div>
+          <button
+            onClick={() => loadJobs()}
+            disabled={loading}
+            className="btn-secondary"
+            style={{ padding: '6px 14px', fontSize: '12px' }}
+          >
+            {loading ? "Reconnecting..." : "Retry Now"}
+          </button>
+        </div>
+      )}
 
       {/* RESUME UPLOAD SECTION (DRAG & DROP / FILE SELECT) */}
       <div
