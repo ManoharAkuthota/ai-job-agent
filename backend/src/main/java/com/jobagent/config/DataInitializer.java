@@ -13,13 +13,19 @@ public class DataInitializer implements CommandLineRunner {
     private final UserProfileRepository profileRepository;
     private final AgentSettingsRepository settingsRepository;
     private final com.jobagent.service.JobDiscoveryService jobDiscoveryService;
+    private final com.jobagent.repository.UserRepository userRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
     public DataInitializer(UserProfileRepository profileRepository,
                            AgentSettingsRepository settingsRepository,
-                           com.jobagent.service.JobDiscoveryService jobDiscoveryService) {
+                           com.jobagent.service.JobDiscoveryService jobDiscoveryService,
+                           com.jobagent.repository.UserRepository userRepository,
+                           org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.profileRepository = profileRepository;
         this.settingsRepository = settingsRepository;
         this.jobDiscoveryService = jobDiscoveryService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -67,7 +73,17 @@ public class DataInitializer implements CommandLineRunner {
             settingsRepository.save(settings);
         }
 
-        // 3. Purge German/irrelevant jobs and seed verified Indian company jobs
+        // 3. Seed default demo user account if none exists
+        if (!userRepository.existsByEmail("manohar@jobagent.ai")) {
+            com.jobagent.model.User demoUser = new com.jobagent.model.User();
+            demoUser.setFullName("Akuthota Manohar");
+            demoUser.setEmail("manohar@jobagent.ai");
+            demoUser.setPassword(passwordEncoder.encode("Password@123"));
+            demoUser.setRole("ROLE_USER");
+            userRepository.save(demoUser);
+        }
+
+        // 4. Purge German/irrelevant jobs and seed verified Indian company jobs
         jobDiscoveryService.discoverJobs("Java Full Stack Developer", "Java, Spring Boot, React");
     }
 }

@@ -24,6 +24,15 @@ const api = axios.create({
   },
 });
 
+// Attach Bearer JWT token to all requests if user is logged in
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('jobagent_token');
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
 // Automatic retry interceptor for Render cold starts / mobile network hiccups
 api.interceptors.response.use(
   (response) => response,
@@ -81,5 +90,10 @@ export const applyForJob = (jobId, notes) => api.post(`/applications/apply/${job
 export const updateApplicationStatus = (id, status, notes) => api.patch(`/applications/${id}/status`, { status, notes });
 export const deleteApplication = (id) => api.delete(`/applications/${id}`);
 export const getProofUrl = (applicationId) => `${API_BASE}/api/applications/${applicationId}/proof`;
+
+// Authentication APIs
+export const login = (email, password) => api.post('/auth/login', { email, password });
+export const register = (fullName, email, password) => api.post('/auth/register', { fullName, email, password });
+export const getCurrentUser = () => api.get('/auth/me');
 
 export default api;
