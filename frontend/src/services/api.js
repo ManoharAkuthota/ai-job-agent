@@ -38,7 +38,7 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Automatic retry interceptor for Render cold starts / mobile network hiccups
+// Fast retry interceptor for Render cold starts / gateway wakeups (502, 503, 504)
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
@@ -50,13 +50,13 @@ api.interceptors.response.use(
       return Promise.reject(error);
     }
 
-    // Retry on network errors or 502/503/504 (common during container wake up)
-    const isNetworkOr5xx = !error.response || (error.response.status >= 500 && error.response.status <= 504);
-    if (isNetworkOr5xx) {
+    // Only retry transient gateway errors (502, 503, 504) or dropped TCP connections
+    const isWakeupOrNetwork = !error.response || [502, 503, 504].includes(error.response.status);
+    if (isWakeupOrNetwork) {
       config.__retryCount = config.__retryCount || 0;
-      if (config.__retryCount < 3) {
+      if (config.__retryCount < 2) {
         config.__retryCount += 1;
-        const delayMs = config.__retryCount * 2500; // 2.5s, 5s, 7.5s backoff
+        const delayMs = config.__retryCount * 1200; // 1.2s, 2.4s fast retry
         await new Promise((res) => setTimeout(res, delayMs));
         return api(config);
       }
