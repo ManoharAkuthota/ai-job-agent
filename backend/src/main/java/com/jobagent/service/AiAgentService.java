@@ -206,7 +206,7 @@ public class AiAgentService {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(cleanEndpoint + "/api/tags"))
                     .GET()
-                    .timeout(Duration.ofMillis(1800))
+                    .timeout(Duration.ofMillis(200))
                     .build();
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
             return response.statusCode() == 200;

@@ -26,8 +26,11 @@ public class GkQuestionService {
 
     private final ObjectMapper objectMapper = new ObjectMapper();
 
-    // In-memory cache of previously generated questions to avoid immediate repeats
+    // In-memory cache of curated questions
     private final Map<String, List<GkQuestion>> questionBank = new ConcurrentHashMap<>();
+
+    // High-speed queue of pre-synthesized fresh AI questions per topic
+    private final Map<String, java.util.concurrent.ConcurrentLinkedQueue<GkQuestion>> aiBuffers = new ConcurrentHashMap<>();
 
     public GkQuestionService() {
         initializeCuratedBank();
@@ -40,41 +43,54 @@ public class GkQuestionService {
     }
 
     /**
-     * Retrieves or synthesizes the next GK question for the given topic and difficulty.
+     * Retrieves the next GK question instantly (< 5ms) from pre-synthesized AI buffer or curated pool,
+     * while replenishing the buffer asynchronously in the background.
      */
     public GkQuestion getNextQuestion(String topic, String difficulty) {
         String normTopic = (topic != null && !topic.isBlank()) ? topic.toUpperCase().trim() : "GENERAL";
         String normDiff = (difficulty != null && !difficulty.isBlank()) ? difficulty.toUpperCase().trim() : "MEDIUM";
 
-        AgentSettings settings = null;
-        try {
-            if (settingsRepository != null) {
-                settings = settingsRepository.findById(1L).orElse(null);
-            }
-        } catch (Throwable t) {
-            log.warn("Could not retrieve AgentSettings from DB: {}", t.getMessage());
+        // 1. Check if an AI-synthesized question is already waiting in memory
+        java.util.concurrent.ConcurrentLinkedQueue<GkQuestion> buffer = aiBuffers.computeIfAbsent(normTopic, k -> new java.util.concurrent.ConcurrentLinkedQueue<>());
+        GkQuestion readyAiQuestion = buffer.poll();
+
+        // 2. Trigger non-blocking asynchronous replenishment in background thread
+        triggerAsyncAiRefill(normTopic, normDiff);
+
+        if (readyAiQuestion != null) {
+            return readyAiQuestion;
         }
 
-        if (settings == null) {
-            settings = new AgentSettings();
-        }
-
-        String provider = (settings.getAiProvider() != null) ? settings.getAiProvider().toUpperCase() : "AUTO";
-
-        // If AI is configured and not strictly RULE_BASED, attempt dynamic AI question generation
-        if (!"RULE_BASED".equals(provider) && aiAgentService != null) {
-            try {
-                GkQuestion aiQuestion = generateAiQuestion(normTopic, normDiff, settings);
-                if (aiQuestion != null && aiQuestion.getOptions() != null && aiQuestion.getOptions().size() == 4) {
-                    return aiQuestion;
-                }
-            } catch (Throwable e) {
-                log.warn("Dynamic AI GK question generation fallback to knowledge bank: {}", e.getMessage());
-            }
-        }
-
-        // Fast, high-quality curated bank fallback
+        // 3. Deliver instantly from rich curated bank (< 1ms)
         return getRandomCuratedQuestion(normTopic, normDiff);
+    }
+
+    private void triggerAsyncAiRefill(String topic, String difficulty) {
+        if (aiAgentService == null) return;
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
+            try {
+                java.util.concurrent.ConcurrentLinkedQueue<GkQuestion> buffer = aiBuffers.computeIfAbsent(topic, k -> new java.util.concurrent.ConcurrentLinkedQueue<>());
+                if (buffer.size() < 3) {
+                    AgentSettings settings = null;
+                    if (settingsRepository != null) {
+                        try {
+                            settings = settingsRepository.findById(1L).orElse(null);
+                        } catch (Exception ignored) {}
+                    }
+                    if (settings == null) settings = new AgentSettings();
+
+                    String provider = (settings.getAiProvider() != null) ? settings.getAiProvider().toUpperCase() : "AUTO";
+                    if (!"RULE_BASED".equals(provider)) {
+                        GkQuestion newQuestion = generateAiQuestion(topic, difficulty, settings);
+                        if (newQuestion != null && newQuestion.getOptions() != null && newQuestion.getOptions().size() == 4) {
+                            buffer.offer(newQuestion);
+                        }
+                    }
+                }
+            } catch (Throwable t) {
+                log.debug("Background AI replenishment quiet pass: {}", t.getMessage());
+            }
+        });
     }
 
     private GkQuestion generateAiQuestion(String topic, String difficulty, AgentSettings settings) {

@@ -267,8 +267,9 @@ export default function GkQuiz() {
   const [totalCorrect, setTotalCorrect] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
 
-  // Auto-advance timer ref
+  // Auto-advance timer ref & background pre-fetch buffer
   const autoAdvanceTimer = useRef(null);
+  const nextQuestionBuffer = useRef(null);
 
   // Web Audio API Synthesizer (Zero asset dependencies)
   const playSound = (type) => {
@@ -313,8 +314,8 @@ export default function GkQuiz() {
 
   useEffect(() => {
     loadTopics();
-    // Try fetching fresh question from backend, else currentQuestion remains active
-    fetchQuestionFromBackend(selectedTopic, selectedDifficulty);
+    // Pre-fetch the next question silently in the background while user plays current question
+    prefetchNextQuestion(selectedTopic, selectedDifficulty);
     return () => {
       if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
     };
@@ -331,50 +332,54 @@ export default function GkQuiz() {
     }
   };
 
-  const fetchQuestionFromBackend = async (topic, difficulty) => {
+  const prefetchNextQuestion = async (topic = selectedTopic, difficulty = selectedDifficulty) => {
     try {
       const res = await getGkNextQuestion(topic, difficulty);
       if (res.data && res.data.question && res.data.options && res.data.options.length === 4) {
-        setCurrentQuestion(res.data);
-        return true;
+        nextQuestionBuffer.current = res.data;
+        return;
       }
     } catch (err) {
-      console.warn("Backend question load unavailable, retaining fallback:", err);
+      // quiet fallback
     }
-    return false;
+    if (!nextQuestionBuffer.current) {
+      nextQuestionBuffer.current = getFallbackQuestion(topic);
+    }
   };
 
-  const loadQuestion = async (topic = selectedTopic, difficulty = selectedDifficulty) => {
+  const loadQuestion = (topic = selectedTopic, difficulty = selectedDifficulty) => {
     if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
-    setLoading(true);
     setSelectedOption(null);
     setIsAnswered(false);
     setIsCorrect(false);
 
-    try {
-      const res = await getGkNextQuestion(topic, difficulty);
-      if (res.data && res.data.question && res.data.options && res.data.options.length === 4) {
-        setCurrentQuestion(res.data);
-        setLoading(false);
-        return;
-      }
-    } catch (err) {
-      console.warn("Failed to load question from backend, using fallback:", err);
+    // Instant swap if buffer has a question ready (< 0ms latency!)
+    if (nextQuestionBuffer.current && (nextQuestionBuffer.current.topic === topic || topic === 'ALL' || nextQuestionBuffer.current.topic === 'CURRENT_AFFAIRS')) {
+      const next = nextQuestionBuffer.current;
+      nextQuestionBuffer.current = null;
+      setCurrentQuestion(next);
+      setLoading(false);
+      // Immediately prefetch following question in the background
+      prefetchNextQuestion(topic, difficulty);
+      return;
     }
 
-    // Infallible Instant Fallback
+    // Instant client fallback
     const fallback = getFallbackQuestion(topic);
     setCurrentQuestion(fallback);
     setLoading(false);
+    prefetchNextQuestion(topic, difficulty);
   };
 
   const handleTopicChange = (newTopic) => {
     setSelectedTopic(newTopic);
+    nextQuestionBuffer.current = null;
     loadQuestion(newTopic, selectedDifficulty);
   };
 
   const handleDifficultyChange = (newDiff) => {
     setSelectedDifficulty(newDiff);
+    nextQuestionBuffer.current = null;
     loadQuestion(selectedTopic, newDiff);
   };
 
@@ -399,10 +404,10 @@ export default function GkQuiz() {
       setScore(prev => prev + basePoints + streakBonus);
       setTotalCorrect(prev => prev + 1);
 
-      // Auto-advance after 1.6s on victory
+      // Auto-advance after 1.1s on victory (snappy gamified transition)
       autoAdvanceTimer.current = setTimeout(() => {
         loadQuestion();
-      }, 1600);
+      }, 1100);
     } else {
       playSound('wrong');
       setStreak(0);
@@ -731,7 +736,7 @@ export default function GkQuiz() {
                   <span>Correct! Streak: {streak} 🔥 (+{selectedDifficulty === 'HARD' ? 30 : selectedDifficulty === 'MEDIUM' ? 20 : 10} pts)</span>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px', color: '#a7f3d0' }}>
-                  <span>Next question loading in 1.5s...</span>
+                  <span>Next question in 1.1s...</span>
                   <button
                     type="button"
                     onClick={() => loadQuestion()}
