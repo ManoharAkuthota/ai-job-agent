@@ -6,6 +6,194 @@ import {
   Landmark, Film, MapPin, Scroll, Atom, Trophy, Shuffle
 } from 'lucide-react';
 
+const FALLBACK_QUESTIONS = {
+  POLITICS: [
+    {
+      id: 'fb_pol_1',
+      topic: 'POLITICS',
+      difficulty: 'EASY',
+      question: "Who is known as the 'Father of the Indian Constitution'?",
+      options: ["Dr. B.R. Ambedkar", "Mahatma Gandhi", "Jawaharlal Nehru", "Sardar Vallabhbhai Patel"],
+      correctAnswer: "Dr. B.R. Ambedkar",
+      explanation: "Dr. Bhimrao Ramji Ambedkar served as the Chairman of the Drafting Committee of the Constituent Assembly, synthesizing democratic principles and social safeguards into the world's longest written constitution.",
+      funFact: "The original Constitution of India was handwritten in flowing calligraphy by Prem Behari Narain Raizada, not printed or typed."
+    },
+    {
+      id: 'fb_pol_2',
+      topic: 'POLITICS',
+      difficulty: 'MEDIUM',
+      question: "Which Article of the Indian Constitution empowers the President to impose Financial Emergency?",
+      options: ["Article 360", "Article 352", "Article 356", "Article 370"],
+      correctAnswer: "Article 360",
+      explanation: "Article 360 allows the President to declare a Financial Emergency if the financial stability or credit of India is threatened. India has never declared a Financial Emergency under Article 360 since independence.",
+      funFact: "Even during the severe 1991 balance of payments crisis, Article 360 was never invoked."
+    },
+    {
+      id: 'fb_pol_3',
+      topic: 'POLITICS',
+      difficulty: 'HARD',
+      question: "Which Constitutional Amendment added the terms 'Socialist', 'Secular', and 'Integrity' to the Preamble?",
+      options: ["42nd Amendment (1976)", "44th Amendment (1978)", "1st Amendment (1951)", "73rd Amendment (1992)"],
+      correctAnswer: "42nd Amendment (1976)",
+      explanation: "Enacted during the Emergency, the 42nd Amendment Act of 1976 amended the Preamble for the only time in Indian history and is widely known as the 'Mini-Constitution'.",
+      funFact: "The Preamble is based on the 'Objective Resolution' drafted and moved by Pandit Jawaharlal Nehru on December 13, 1946."
+    }
+  ],
+  MOVIES: [
+    {
+      id: 'fb_mov_1',
+      topic: 'MOVIES',
+      difficulty: 'EASY',
+      question: "Which song from the movie 'RRR' won the Academy Award (Oscar) for Best Original Song in 2023?",
+      options: ["Naatu Naatu", "Jai Ho", "Dosti", "Chaiyya Chaiyya"],
+      correctAnswer: "Naatu Naatu",
+      explanation: "Composed by M.M. Keeravani with lyrics by Chandrabose, 'Naatu Naatu' became the first song from an Indian film production to win both an Academy Award and a Golden Globe for Best Original Song.",
+      funFact: "The dance sequence for 'Naatu Naatu' was filmed outside the Mariinskyi Palace, the official residence of the President of Ukraine in Kyiv."
+    },
+    {
+      id: 'fb_mov_2',
+      topic: 'MOVIES',
+      difficulty: 'MEDIUM',
+      question: "What was the first full-length Indian feature film released in 1913?",
+      options: ["Raja Harishchandra", "Alam Ara", "Kisan Kanya", "Sant Tukaram"],
+      correctAnswer: "Raja Harishchandra",
+      explanation: "Directed and produced by Dadasaheb Phalke, 'Raja Harishchandra' premiered on May 3, 1913. As male actors played female roles due to social taboos of the era, the role of Queen Taramati was portrayed by Anna Salunke.",
+      funFact: "Dadasaheb Phalke is revered as the 'Father of Indian Cinema', and India's highest cinema award is named in his honor."
+    },
+    {
+      id: 'fb_mov_3',
+      topic: 'MOVIES',
+      difficulty: 'HARD',
+      question: "Who was the first Indian filmmaker to be awarded an honorary Lifetime Achievement Oscar in 1992?",
+      options: ["Satyajit Ray", "A.R. Rahman", "Bhanu Athaiya", "Guru Dutt"],
+      correctAnswer: "Satyajit Ray",
+      explanation: "Legendary auteur Satyajit Ray was awarded the Honorary Academy Award for Lifetime Achievement in 1992, recognizing his mastery of cinematic art through masterpieces like the Apu Trilogy.",
+      funFact: "Akira Kurosawa famously said: 'Not to have seen the cinema of Ray means existing in the world without seeing the sun or the moon.'"
+    }
+  ],
+  CITIES: [
+    {
+      id: 'fb_cit_1',
+      topic: 'CITIES',
+      difficulty: 'EASY',
+      question: "Which Indian city is famously known as the 'Pink City'?",
+      options: ["Jaipur", "Udaipur", "Jodhpur", "Bhopal"],
+      correctAnswer: "Jaipur",
+      explanation: "In 1876, Maharaja Ram Singh painted the entire city of Jaipur in terracotta pink—a color traditionally symbolizing hospitality—to welcome Prince Albert, the Prince of Wales.",
+      funFact: "A law was enacted in 1877 making it illegal for buildings in the old city of Jaipur to be painted in any color other than Jaipur Pink, which is still respected today."
+    },
+    {
+      id: 'fb_cit_2',
+      topic: 'CITIES',
+      difficulty: 'MEDIUM',
+      question: "Which Indian city is known as the 'Silicon Valley of India'?",
+      options: ["Bengaluru", "Hyderabad", "Pune", "Gurugram"],
+      correctAnswer: "Bengaluru",
+      explanation: "Bengaluru earned the title due to its dominant role as India's leading IT exporter, headquarters of multinational tech giants (Infosys, Wipro), and home to ISRO.",
+      funFact: "Bengaluru is elevated at approximately 920 meters (3,000 feet) above sea level on the Deccan Plateau, giving it a pleasant temperate climate throughout the year."
+    },
+    {
+      id: 'fb_cit_3',
+      topic: 'CITIES',
+      difficulty: 'HARD',
+      question: "Which is the longest natural urban beach in India and the second longest in the world?",
+      options: ["Marina Beach (Chennai)", "Juhu Beach (Mumbai)", "Radhanagar Beach (Andaman)", "Puri Beach (Odisha)"],
+      correctAnswer: "Marina Beach (Chennai)",
+      explanation: "Marina Beach runs along the Coromandel Coast of the Bay of Bengal in Chennai for approximately 13 kilometers (8.1 miles), making it the longest natural urban beach in India and second globally after Praia do Cassino in Brazil.",
+      funFact: "Swimming is legally prohibited at Marina Beach due to strong undercurrents and sudden sea bottom drop-offs."
+    }
+  ],
+  HISTORY: [
+    {
+      id: 'fb_his_1',
+      topic: 'HISTORY',
+      difficulty: 'EASY',
+      question: "In which year did the historic 'Dandi March' (Salt Satyagraha) led by Mahatma Gandhi take place?",
+      options: ["1930", "1920", "1942", "1919"],
+      correctAnswer: "1930",
+      explanation: "Mahatma Gandhi and 78 followers marched 240 miles (385 km) from Sabarmati Ashram in Ahmedabad to Dandi between March 12 and April 6, 1930, to peacefully defy the British salt monopoly, sparking nationwide civil disobedience.",
+      funFact: "Sarojini Naidu shouted 'Hail, Deliverer!' as Gandhi picked up a lump of salty mud on April 6, 1930."
+    },
+    {
+      id: 'fb_his_2',
+      topic: 'HISTORY',
+      difficulty: 'MEDIUM',
+      question: "The historic Battle of Plassey, which established British East India Company rule in Bengal, was fought in which year?",
+      options: ["1757", "1764", "1857", "1707"],
+      correctAnswer: "1757",
+      explanation: "Fought on June 23, 1757, Robert Clive's British forces defeated the young Nawab of Bengal Siraj-ud-Daulah through the betrayal of Mir Jafar, establishing the political foundation of the British Raj in India.",
+      funFact: "The word 'Plassey' comes from the Bengali word 'Palashi', named after the red flowering Palash trees surrounding the battlefield."
+    },
+    {
+      id: 'fb_his_3',
+      topic: 'HISTORY',
+      difficulty: 'HARD',
+      question: "Which ancient Indian emperor renounced warfare and embraced Buddhism following the catastrophic Kalinga War?",
+      options: ["Emperor Ashoka", "Chandragupta Maurya", "Samudragupta", "Harshavardhana"],
+      correctAnswer: "Emperor Ashoka",
+      explanation: "Emperor Ashoka the Great (Mauryan Dynasty) waged the Kalinga War around 261 BCE. Witnessing the death of over 100,000 soldiers caused him profound remorse, prompting his conversion to Buddhism and adoption of Dhamma.",
+      funFact: "The Lion Capital of Ashoka at Sarnath was adopted as the official National Emblem of the Republic of India on January 26, 1950."
+    }
+  ],
+  SCIENCE: [
+    {
+      id: 'fb_sci_1',
+      topic: 'SCIENCE',
+      difficulty: 'EASY',
+      question: "On which day did ISRO's Chandrayaan-3 successfully land near the lunar south pole, celebrated as National Space Day?",
+      options: ["August 23, 2023", "July 14, 2023", "September 2, 2023", "October 22, 2023"],
+      correctAnswer: "August 23, 2023",
+      explanation: "India made history on August 23, 2023, when the Vikram lander achieved a soft landing near the Moon's unexplored southern polar region, making India the first nation to reach this region and fourth nation to soft-land on the Moon.",
+      funFact: "The landing spot of Vikram was officially christened 'Shiv Shakti Point' by Prime Minister Narendra Modi."
+    },
+    {
+      id: 'fb_sci_2',
+      topic: 'SCIENCE',
+      difficulty: 'MEDIUM',
+      question: "Sir C.V. Raman won the 1930 Nobel Prize in Physics for which optical phenomenon, celebrated as National Science Day on Feb 28?",
+      options: ["Raman Effect (Scattering of Light)", "Photoelectric Effect", "Compton Scattering", "Laser Coherence"],
+      correctAnswer: "Raman Effect (Scattering of Light)",
+      explanation: "On February 28, 1928, Sir C.V. Raman discovered that when light traverses a transparent medium, a fraction of the scattered light emerges with shifted wavelengths due to vibrational energy transitions of molecules.",
+      funFact: "C.V. Raman was inspired to study the scattering of light while on a voyage across the Mediterranean Sea in 1921, marveling at its deep opalescent blue color."
+    }
+  ],
+  SPORTS: [
+    {
+      id: 'fb_spo_1',
+      topic: 'SPORTS',
+      difficulty: 'EASY',
+      question: "Who was the captain of the Indian cricket team that won India's first ever ICC Cricket World Cup in 1983?",
+      options: ["Kapil Dev", "Sunil Gavaskar", "Mohinder Amarnath", "Ravi Shastri"],
+      correctAnswer: "Kapil Dev",
+      explanation: "At just 24 years old, Kapil Dev led the underdog Indian cricket team to victory over the formidable two-time champions West Indies at Lord's Cricket Ground on June 25, 1983, transforming cricket into India's most popular sport.",
+      funFact: "Kapil Dev's iconic, counter-attacking 175 not out against Zimbabwe in that tournament was never televised due to a BBC camera strike."
+    },
+    {
+      id: 'fb_spo_2',
+      topic: 'SPORTS',
+      difficulty: 'MEDIUM',
+      question: "Who became the first Indian track and field athlete to win an Olympic Gold Medal at the Tokyo 2020 Olympics?",
+      options: ["Neeraj Chopra", "Milkha Singh", "P.T. Usha", "Abhinav Bindra"],
+      correctAnswer: "Neeraj Chopra",
+      explanation: "Subedar Neeraj Chopra of the Indian Army threw 87.58 meters in the men's javelin throw final on August 7, 2021, to win India's first Olympic gold in athletics and only the second individual Olympic gold medal in Indian history.",
+      funFact: "August 7 was officially designated by the Athletics Federation of India as 'National Javelin Day' to commemorate the historic throw."
+    }
+  ]
+};
+
+const getFallbackQuestion = (topic = 'ALL') => {
+  let pool = [];
+  if (topic && topic !== 'ALL' && FALLBACK_QUESTIONS[topic]) {
+    pool = FALLBACK_QUESTIONS[topic];
+  } else {
+    Object.values(FALLBACK_QUESTIONS).forEach(list => pool.push(...list));
+  }
+  const randomIndex = Math.floor(Math.random() * pool.length);
+  const template = pool[randomIndex];
+  const shuffled = [...template.options].sort(() => Math.random() - 0.5);
+  return { ...template, options: shuffled };
+};
+
 export default function GkQuiz() {
   const [topics, setTopics] = useState([
     { id: 'ALL', name: 'Mixed Trivia', icon: 'Sparkles' },
@@ -19,8 +207,9 @@ export default function GkQuiz() {
 
   const [selectedTopic, setSelectedTopic] = useState('ALL');
   const [selectedDifficulty, setSelectedDifficulty] = useState('MEDIUM');
-  const [currentQuestion, setCurrentQuestion] = useState(null);
-  const [loading, setLoading] = useState(true);
+  // Initialize with an instant verified question so user never sees a blank screen!
+  const [currentQuestion, setCurrentQuestion] = useState(() => getFallbackQuestion('ALL'));
+  const [loading, setLoading] = useState(false);
 
   // Interaction State
   const [selectedOption, setSelectedOption] = useState(null);
@@ -47,7 +236,6 @@ export default function GkQuiz() {
       const ctx = new AudioCtx();
 
       if (type === 'correct') {
-        // High-pitched cheerful major chime (C6 -> E6 -> G6)
         const now = ctx.currentTime;
         [1046.5, 1318.5, 1567.98].forEach((freq, i) => {
           const osc = ctx.createOscillator();
@@ -62,7 +250,6 @@ export default function GkQuiz() {
           osc.stop(now + i * 0.08 + 0.3);
         });
       } else if (type === 'wrong') {
-        // Low warm buzz
         const now = ctx.currentTime;
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
@@ -83,7 +270,8 @@ export default function GkQuiz() {
 
   useEffect(() => {
     loadTopics();
-    loadQuestion(selectedTopic, selectedDifficulty);
+    // Try fetching fresh question from backend, else currentQuestion remains active
+    fetchQuestionFromBackend(selectedTopic, selectedDifficulty);
     return () => {
       if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
     };
@@ -100,6 +288,19 @@ export default function GkQuiz() {
     }
   };
 
+  const fetchQuestionFromBackend = async (topic, difficulty) => {
+    try {
+      const res = await getGkNextQuestion(topic, difficulty);
+      if (res.data && res.data.question && res.data.options && res.data.options.length === 4) {
+        setCurrentQuestion(res.data);
+        return true;
+      }
+    } catch (err) {
+      console.warn("Backend question load unavailable, retaining fallback:", err);
+    }
+    return false;
+  };
+
   const loadQuestion = async (topic = selectedTopic, difficulty = selectedDifficulty) => {
     if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
     setLoading(true);
@@ -109,14 +310,19 @@ export default function GkQuiz() {
 
     try {
       const res = await getGkNextQuestion(topic, difficulty);
-      if (res.data) {
+      if (res.data && res.data.question && res.data.options && res.data.options.length === 4) {
         setCurrentQuestion(res.data);
+        setLoading(false);
+        return;
       }
     } catch (err) {
-      console.error("Failed to load question:", err);
-    } finally {
-      setLoading(false);
+      console.warn("Failed to load question from backend, using fallback:", err);
     }
+
+    // Infallible Instant Fallback
+    const fallback = getFallbackQuestion(topic);
+    setCurrentQuestion(fallback);
+    setLoading(false);
   };
 
   const handleTopicChange = (newTopic) => {

@@ -42,6 +42,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         // Proof screenshots and PDF downloads (must be public so <img> and <a> tags work)
                         .requestMatchers("/api/applications/*/proof", "/api/resumes/*/pdf", "/api/cover-letters/*/pdf").permitAll()
+                        // AI General Knowledge Quiz endpoints (publicly accessible)
+                        .requestMatchers("/api/gk/**").permitAll()
                         // Allow job feed viewing and autonomous operations
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().permitAll()

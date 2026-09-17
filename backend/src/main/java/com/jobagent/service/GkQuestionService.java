@@ -18,12 +18,20 @@ public class GkQuestionService {
 
     private static final Logger log = LoggerFactory.getLogger(GkQuestionService.class);
 
-    private final AiAgentService aiAgentService;
-    private final AgentSettingsRepository settingsRepository;
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private AiAgentService aiAgentService;
+
+    @org.springframework.beans.factory.annotation.Autowired(required = false)
+    private AgentSettingsRepository settingsRepository;
+
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     // In-memory cache of previously generated questions to avoid immediate repeats
     private final Map<String, List<GkQuestion>> questionBank = new ConcurrentHashMap<>();
+
+    public GkQuestionService() {
+        initializeCuratedBank();
+    }
 
     public GkQuestionService(AiAgentService aiAgentService, AgentSettingsRepository settingsRepository) {
         this.aiAgentService = aiAgentService;
@@ -38,17 +46,29 @@ public class GkQuestionService {
         String normTopic = (topic != null && !topic.isBlank()) ? topic.toUpperCase().trim() : "GENERAL";
         String normDiff = (difficulty != null && !difficulty.isBlank()) ? difficulty.toUpperCase().trim() : "MEDIUM";
 
-        AgentSettings settings = settingsRepository.findById(1L).orElseGet(AgentSettings::new);
+        AgentSettings settings = null;
+        try {
+            if (settingsRepository != null) {
+                settings = settingsRepository.findById(1L).orElse(null);
+            }
+        } catch (Throwable t) {
+            log.warn("Could not retrieve AgentSettings from DB: {}", t.getMessage());
+        }
+
+        if (settings == null) {
+            settings = new AgentSettings();
+        }
+
         String provider = (settings.getAiProvider() != null) ? settings.getAiProvider().toUpperCase() : "AUTO";
 
         // If AI is configured and not strictly RULE_BASED, attempt dynamic AI question generation
-        if (!"RULE_BASED".equals(provider)) {
+        if (!"RULE_BASED".equals(provider) && aiAgentService != null) {
             try {
                 GkQuestion aiQuestion = generateAiQuestion(normTopic, normDiff, settings);
                 if (aiQuestion != null && aiQuestion.getOptions() != null && aiQuestion.getOptions().size() == 4) {
                     return aiQuestion;
                 }
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 log.warn("Dynamic AI GK question generation fallback to knowledge bank: {}", e.getMessage());
             }
         }
@@ -119,6 +139,16 @@ public class GkQuestionService {
         List<GkQuestion> pool = questionBank.getOrDefault(topic, questionBank.get("GENERAL"));
         if (pool == null || pool.isEmpty()) {
             pool = questionBank.get("GENERAL");
+        }
+        if (pool == null || pool.isEmpty()) {
+            return new GkQuestion(
+                    "q_def", "GENERAL", difficulty,
+                    "Which planet in our solar system is known as the 'Red Planet'?",
+                    new ArrayList<>(List.of("Mars", "Venus", "Jupiter", "Saturn")),
+                    "Mars",
+                    "Mars is known as the Red Planet because iron minerals in the Martian soil oxidize, or rust, causing the soil and atmosphere to look red.",
+                    "Mars has the largest dust storms in our solar system, which can cover the entire planet and last for months."
+            );
         }
 
         int index = ThreadLocalRandom.current().nextInt(pool.size());
