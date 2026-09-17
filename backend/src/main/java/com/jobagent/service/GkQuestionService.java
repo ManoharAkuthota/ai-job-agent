@@ -79,6 +79,7 @@ public class GkQuestionService {
 
     private GkQuestion generateAiQuestion(String topic, String difficulty, AgentSettings settings) {
         String topicDesc = switch (topic) {
+            case "CURRENT_AFFAIRS" -> "Recent Indian and Global Current Affairs, international summits, major geopolitical developments, national awards, space launches, economic policies, and major 2024-2026 headlines";
             case "POLITICS" -> "Indian politics, Indian constitution, government, landmark laws, and global geopolitical milestones";
             case "MOVIES" -> "Indian cinema (Bollywood, Tollywood, regional cinema, Oscars, iconic actors, directors, and landmark movies)";
             case "CITIES" -> "Famous Indian and world cities, capitals, landmarks, architectural wonders, rivers, and geographic nicknames";
@@ -88,14 +89,26 @@ public class GkQuestionService {
             default -> "General Knowledge covering diverse fascinating facts about India and the world";
         };
 
-        String prompt = "You are an expert quizmaster for an elite General Knowledge (GK) platform. "
-                + "Generate a fresh, fascinating, and accurate multiple-choice question on the topic of " + topicDesc + " at " + difficulty + " difficulty.\n\n"
+        String todayDate = java.time.LocalDate.now().toString();
+        String[] randomAngles = {
+            "focusing on a high-impact national or international milestone",
+            "focusing on an inspiring record-breaking achievement, appointment, or award",
+            "focusing on a critical historic, legal, or scientific breakthrough",
+            "focusing on a fascinating lesser-known historic fact or global revelation",
+            "focusing on influential pioneers, cultural legends, or groundbreaking inventors"
+        };
+        String randomAngle = randomAngles[ThreadLocalRandom.current().nextInt(randomAngles.length)];
+
+        String prompt = "You are an elite quizmaster for a real-time, daily updated General Knowledge (GK) platform. "
+                + "Today's date is " + todayDate + ". "
+                + "Generate a completely fresh, accurate multiple-choice question on " + topicDesc + " at " + difficulty + " difficulty, " + randomAngle + ".\n"
+                + "Ensure the question is authentic, intriguing, and up-to-date for " + todayDate + ".\n\n"
                 + "Return ONLY a valid JSON object with the exact keys:\n"
                 + "{\n"
                 + "  \"question\": \"Interesting, unambiguous question text?\",\n"
                 + "  \"options\": [\"Option A\", \"Option B\", \"Option C\", \"Option D\"],\n"
                 + "  \"correctAnswer\": \"Exact match to one of the 4 options\",\n"
-                + "  \"explanation\": \"A rich 2-3 sentence explanation detailing the historical or scientific context of why this is correct and background facts.\",\n"
+                + "  \"explanation\": \"A rich 2-3 sentence explanation detailing the historical, scientific, or current context of why this is correct.\",\n"
                 + "  \"funFact\": \"A captivating 1-sentence bonus trivia snippet related to the answer.\"\n"
                 + "}\n"
                 + "Do NOT include markdown formatting or extra text, only raw JSON.";
@@ -173,6 +186,7 @@ public class GkQuestionService {
     public List<Map<String, String>> getTopics() {
         return List.of(
                 Map.of("id", "ALL", "name", "Mixed Trivia", "icon", "Sparkles", "desc", "Questions across all categories"),
+                Map.of("id", "CURRENT_AFFAIRS", "name", "Current Affairs 2026", "icon", "Globe", "desc", "Daily News, Summits, Space & Global Headlines"),
                 Map.of("id", "POLITICS", "name", "Politics & Civics", "icon", "Landmark", "desc", "Indian Constitution, Leaders & World Affairs"),
                 Map.of("id", "MOVIES", "name", "Cinema & Movies", "icon", "Film", "desc", "Indian Cinema, Oscars & Iconic Film Lore"),
                 Map.of("id", "CITIES", "name", "Cities & Geography", "icon", "MapPin", "desc", "Monuments, Capitals, Rivers & City Nicknames"),
@@ -340,8 +354,41 @@ public class GkQuestionService {
 
         questionBank.put("SPORTS", sports);
 
-        // 7. GENERAL POOL (Combines all)
+        // 7. CURRENT AFFAIRS & TRENDING
+        List<GkQuestion> currentAffairs = new ArrayList<>();
+        currentAffairs.add(new GkQuestion("ca_1", "CURRENT_AFFAIRS", "EASY",
+                "Which Indian shooter made history at the Paris 2024 Olympics by winning two bronze medals in a single Olympic edition?",
+                List.of("Manu Bhaker", "Swapnil Kusale", "Avani Lekhara", "Sarabjot Singh"),
+                "Manu Bhaker",
+                "Manu Bhaker became the first athlete representing independent India to win two medals in a single Olympic Games edition, winning bronze in the women's 10m air pistol and 10m air pistol mixed team.",
+                "Manu Bhaker was also chosen as India's female flagbearer for the closing ceremony of the Paris 2024 Olympics."));
+
+        currentAffairs.add(new GkQuestion("ca_2", "CURRENT_AFFAIRS", "MEDIUM",
+                "Where was ISRO's solar observatory spacecraft 'Aditya-L1' successfully placed into its final halo orbit?",
+                List.of("Lagrange Point 1 (L1)", "Lagrange Point 2 (L2)", "Lunar Polar Orbit", "Geostationary Transfer Orbit"),
+                "Lagrange Point 1 (L1)",
+                "On January 6, 2024, ISRO successfully inserted Aditya-L1 into a halo orbit around Lagrange point L1, approximately 1.5 million km from Earth, providing an uninterrupted view of the Sun without occultation or eclipses.",
+                "Aditya-L1 carries seven science payloads to study the solar corona, chromosphere, photosphere, and solar wind storms."));
+
+        currentAffairs.add(new GkQuestion("ca_3", "CURRENT_AFFAIRS", "MEDIUM",
+                "Which multilateral alliance was officially launched by Prime Minister Narendra Modi during the G20 New Delhi Summit?",
+                List.of("Global Biofuels Alliance (GBA)", "International Solar Alliance", "BRICS Pay Initiative", "One Sun One World Network"),
+                "Global Biofuels Alliance (GBA)",
+                "The Global Biofuels Alliance (GBA) was launched on September 9, 2023, during the G20 New Delhi Summit with founding members including India, the US, and Brazil to accelerate the global transition to sustainable biofuels.",
+                "India has already advanced its target of achieving 20% ethanol blending in petrol (E20) to 2025-26 from the earlier target of 2030."));
+
+        currentAffairs.add(new GkQuestion("ca_4", "CURRENT_AFFAIRS", "HARD",
+                "Who was posthumously conferred India's highest civilian honour, the Bharat Ratna, in 2024 for championing social justice and OBC welfare?",
+                List.of("Karpoori Thakur", "Babu Jagjivan Ram", "Chowdhry Charan Singh", "K. Kamaraj"),
+                "Karpoori Thakur",
+                "Former Chief Minister of Bihar Karpoori Thakur, affectionately known as 'Jannayak' (Leader of the People), was posthumously conferred the Bharat Ratna in January 2024 for pioneering reservation policies and upliftment of marginalized sections.",
+                "Karpoori Thakur introduced the pioneering 'Karpoori Thakur Formula' in Bihar in 1978, a layered reservation system that preceded the Mandal Commission recommendations."));
+
+        questionBank.put("CURRENT_AFFAIRS", currentAffairs);
+
+        // 8. GENERAL POOL (Combines all)
         List<GkQuestion> general = new ArrayList<>();
+        general.addAll(currentAffairs);
         general.addAll(politics);
         general.addAll(movies);
         general.addAll(cities);

@@ -35,11 +35,11 @@ public class GkQuestionServiceTest {
         assertEquals(200, topicsRes.getStatusCode().value());
         List<Map<String, String>> topics = (List<Map<String, String>>) topicsRes.getBody();
         assertNotNull(topics);
-        assertTrue(topics.size() >= 7);
+        assertTrue(topics.size() >= 8);
         System.out.println("Topics verified: " + topics.size());
 
-        // Test next question for each topic
-        String[] testTopics = {"ALL", "POLITICS", "MOVIES", "CITIES", "HISTORY", "SCIENCE", "SPORTS"};
+        // Test next question for each topic including CURRENT_AFFAIRS
+        String[] testTopics = {"ALL", "CURRENT_AFFAIRS", "POLITICS", "MOVIES", "CITIES", "HISTORY", "SCIENCE", "SPORTS"};
         for (String topic : testTopics) {
             ResponseEntity<?> questionRes = controller.getNextQuestion(topic, "MEDIUM");
             assertNotNull(questionRes);

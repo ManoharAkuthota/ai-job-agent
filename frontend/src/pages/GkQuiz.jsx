@@ -3,10 +3,52 @@ import { getGkNextQuestion, getGkTopics } from '../services/api';
 import {
   Sparkles, Award, Flame, CheckCircle2, XCircle, RefreshCw,
   HelpCircle, Volume2, VolumeX, ArrowRight, BookOpen, Lightbulb,
-  Landmark, Film, MapPin, Scroll, Atom, Trophy, Shuffle
+  Landmark, Film, MapPin, Scroll, Atom, Trophy, Shuffle, Globe, Zap
 } from 'lucide-react';
 
 const FALLBACK_QUESTIONS = {
+  CURRENT_AFFAIRS: [
+    {
+      id: 'fb_ca_1',
+      topic: 'CURRENT_AFFAIRS',
+      difficulty: 'EASY',
+      question: "Which Indian shooter made history at the Paris 2024 Olympics by winning two bronze medals in a single Olympic edition?",
+      options: ["Manu Bhaker", "Swapnil Kusale", "Avani Lekhara", "Sarabjot Singh"],
+      correctAnswer: "Manu Bhaker",
+      explanation: "Manu Bhaker became the first athlete representing independent India to win two medals in a single Olympic Games edition, winning bronze in the women's 10m air pistol and 10m air pistol mixed team.",
+      funFact: "Manu Bhaker was also chosen as India's female flagbearer for the closing ceremony of the Paris 2024 Olympics."
+    },
+    {
+      id: 'fb_ca_2',
+      topic: 'CURRENT_AFFAIRS',
+      difficulty: 'MEDIUM',
+      question: "Where was ISRO's solar observatory spacecraft 'Aditya-L1' successfully placed into its final halo orbit?",
+      options: ["Lagrange Point 1 (L1)", "Lagrange Point 2 (L2)", "Lunar Polar Orbit", "Geostationary Transfer Orbit"],
+      correctAnswer: "Lagrange Point 1 (L1)",
+      explanation: "On January 6, 2024, ISRO successfully inserted Aditya-L1 into a halo orbit around Lagrange point L1, approximately 1.5 million km from Earth, providing an uninterrupted view of the Sun without occultation or eclipses.",
+      funFact: "Aditya-L1 carries seven science payloads to study the solar corona, chromosphere, photosphere, and solar wind storms."
+    },
+    {
+      id: 'fb_ca_3',
+      topic: 'CURRENT_AFFAIRS',
+      difficulty: 'MEDIUM',
+      question: "Which multilateral alliance was officially launched by Prime Minister Narendra Modi during the G20 New Delhi Summit?",
+      options: ["Global Biofuels Alliance (GBA)", "International Solar Alliance", "BRICS Pay Initiative", "One Sun One World Network"],
+      correctAnswer: "Global Biofuels Alliance (GBA)",
+      explanation: "The Global Biofuels Alliance (GBA) was launched on September 9, 2023, during the G20 New Delhi Summit with founding members including India, the US, and Brazil to accelerate the global transition to sustainable biofuels.",
+      funFact: "India has already advanced its target of achieving 20% ethanol blending in petrol (E20) to 2025-26 from the earlier target of 2030."
+    },
+    {
+      id: 'fb_ca_4',
+      topic: 'CURRENT_AFFAIRS',
+      difficulty: 'HARD',
+      question: "Who was posthumously conferred India's highest civilian honour, the Bharat Ratna, in 2024 for championing social justice and OBC welfare?",
+      options: ["Karpoori Thakur", "Babu Jagjivan Ram", "Chowdhry Charan Singh", "K. Kamaraj"],
+      correctAnswer: "Karpoori Thakur",
+      explanation: "Former Chief Minister of Bihar Karpoori Thakur, affectionately known as 'Jannayak' (Leader of the People), was posthumously conferred the Bharat Ratna in January 2024 for pioneering reservation policies and upliftment of marginalized sections.",
+      funFact: "Karpoori Thakur introduced the pioneering 'Karpoori Thakur Formula' in Bihar in 1978, a layered reservation system that preceded the Mandal Commission recommendations."
+    }
+  ],
   POLITICS: [
     {
       id: 'fb_pol_1',
@@ -197,6 +239,7 @@ const getFallbackQuestion = (topic = 'ALL') => {
 export default function GkQuiz() {
   const [topics, setTopics] = useState([
     { id: 'ALL', name: 'Mixed Trivia', icon: 'Sparkles' },
+    { id: 'CURRENT_AFFAIRS', name: 'Current Affairs 2026', icon: 'Globe' },
     { id: 'POLITICS', name: 'Politics & Civics', icon: 'Landmark' },
     { id: 'MOVIES', name: 'Movies & Cinema', icon: 'Film' },
     { id: 'CITIES', name: 'Cities & Geography', icon: 'MapPin' },
@@ -369,6 +412,7 @@ export default function GkQuiz() {
 
   const renderTopicIcon = (iconName) => {
     switch (iconName) {
+      case 'Globe': return <Globe size={15} />;
       case 'Landmark': return <Landmark size={15} />;
       case 'Film': return <Film size={15} />;
       case 'MapPin': return <MapPin size={15} />;
@@ -397,20 +441,24 @@ export default function GkQuiz() {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px' }}>
           <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px', flexWrap: 'wrap' }}>
               <span className="badge badge-purple" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px' }}>
                 <Sparkles size={12} />
                 AI Real-Time Quiz Studio
               </span>
+              <span className="badge badge-success" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px' }}>
+                <Zap size={12} />
+                Daily Live AI Feed • 2026
+              </span>
               <span className="badge badge-blue" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px' }}>
-                Infinite Trivia
+                Unlimited Trivia
               </span>
             </div>
             <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#ffffff', letterSpacing: '-0.5px', margin: 0 }}>
               AI General Knowledge Studio
             </h1>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
-              Politics, Cinema, Cities, History, Science & Sports. Answer correctly to auto-advance, or explore in-depth explanations.
+              Daily Current Affairs, Politics, Cinema, Cities, History, Science & Sports. Unlimited questions generated dynamically by AI every day.
             </p>
           </div>
 
