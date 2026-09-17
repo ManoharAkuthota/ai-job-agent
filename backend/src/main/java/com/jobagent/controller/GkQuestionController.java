@@ -20,20 +20,28 @@ public class GkQuestionController {
 
     private static final Logger log = LoggerFactory.getLogger(GkQuestionController.class);
     private final GkQuestionService gkQuestionService;
+    private final GkScoreRepository gkScoreRepository;
+    private final JwtUtil jwtUtil;
 
-    @Autowired(required = false)
-    private GkScoreRepository gkScoreRepository;
-
-    @Autowired(required = false)
-    private JwtUtil jwtUtil;
+    @Autowired
+    public GkQuestionController(GkQuestionService gkQuestionService,
+                                @Autowired(required = false) GkScoreRepository gkScoreRepository,
+                                @Autowired(required = false) JwtUtil jwtUtil) {
+        this.gkQuestionService = gkQuestionService;
+        this.gkScoreRepository = gkScoreRepository;
+        this.jwtUtil = jwtUtil;
+    }
 
     public GkQuestionController(GkQuestionService gkQuestionService) {
-        this.gkQuestionService = gkQuestionService;
+        this(gkQuestionService, null, null);
     }
 
     public GkQuestionController(GkQuestionService gkQuestionService, GkScoreRepository gkScoreRepository) {
-        this.gkQuestionService = gkQuestionService;
-        this.gkScoreRepository = gkScoreRepository;
+        this(gkQuestionService, gkScoreRepository, null);
+    }
+
+    public GkQuestionController() {
+        this(null, null, null);
     }
 
     @GetMapping("/topics")
