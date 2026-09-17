@@ -6,9 +6,10 @@ import TailoredResumes from './pages/TailoredResumes';
 import Applications from './pages/Applications';
 import AgentSettings from './pages/AgentSettings';
 import InterviewPrep from './pages/InterviewPrep';
+import GkQuiz from './pages/GkQuiz';
 import LoginModal from './components/LoginModal';
 import { getCurrentUser, pingBackend } from './services/api';
-import { LayoutDashboard, Briefcase, FileText, FileCode2, Send, Settings, Bot, Menu, X, LogOut, UserCheck, GraduationCap } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, FileCode2, Send, Settings, Bot, Menu, X, LogOut, UserCheck, GraduationCap, Brain } from 'lucide-react';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -98,6 +99,26 @@ export default function App() {
         </div>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Quick AI GK Studio Button */}
+          <button
+            onClick={() => handleSelectTab('gk')}
+            title="AI GK Studio"
+            style={{
+              background: activeTab === 'gk' ? 'rgba(99, 102, 241, 0.25)' : '#0f172a',
+              color: activeTab === 'gk' ? '#818cf8' : '#94a3b8',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              width: '36px',
+              height: '36px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}
+          >
+            <Brain size={18} />
+          </button>
+
           {/* Quick Settings Icon Button */}
           <button
             onClick={() => handleSelectTab('settings')}
@@ -266,6 +287,14 @@ export default function App() {
           </button>
 
           <button
+            onClick={() => handleSelectTab('gk')}
+            className={`nav-item ${activeTab === 'gk' ? 'active' : ''}`}
+          >
+            <Brain size={18} />
+            AI GK Studio
+          </button>
+
+          <button
             onClick={() => handleSelectTab('applications')}
             className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`}
           >
@@ -306,6 +335,7 @@ export default function App() {
         {activeTab === 'profile' && <ProfileEditor />}
         {activeTab === 'resumes' && <TailoredResumes />}
         {activeTab === 'prep' && <InterviewPrep />}
+        {activeTab === 'gk' && <GkQuiz />}
         {activeTab === 'applications' && <Applications />}
         {activeTab === 'settings' && <AgentSettings />}
       </main>
