@@ -35,11 +35,16 @@ public class GkQuestionController {
         }
     }
 
+    public ResponseEntity<?> getNextQuestion(String topic, String difficulty) {
+        return getNextQuestion(topic, difficulty, null);
+    }
+
     @GetMapping("/next")
     public ResponseEntity<?> getNextQuestion(@RequestParam(required = false, defaultValue = "ALL") String topic,
-                                            @RequestParam(required = false, defaultValue = "MEDIUM") String difficulty) {
+                                            @RequestParam(required = false, defaultValue = "MEDIUM") String difficulty,
+                                            @RequestParam(required = false) String exclude) {
         try {
-            GkQuestion question = gkQuestionService.getNextQuestion(topic, difficulty);
+            GkQuestion question = gkQuestionService.getNextQuestion(topic, difficulty, exclude);
             return ResponseEntity.ok(question);
         } catch (Throwable t) {
             log.error("Failed to retrieve next GK question: {}", t.getMessage(), t);

@@ -52,5 +52,14 @@ public class GkQuestionServiceTest {
             assertNotNull(q.getExplanation(), "Explanation must not be null");
             System.out.println("Topic " + topic + " passed: " + q.getQuestion());
         }
+
+        // Test repetition exclusion: fetching POLITICS questions with exclusion should never return excluded id
+        GkQuestion q1 = (GkQuestion) controller.getNextQuestion("POLITICS", "MEDIUM", null).getBody();
+        assertNotNull(q1);
+        for (int i = 0; i < 5; i++) {
+            GkQuestion qNext = (GkQuestion) controller.getNextQuestion("POLITICS", "MEDIUM", q1.getId()).getBody();
+            assertNotNull(qNext);
+            assertNotEquals(q1.getId(), qNext.getId(), "Question ID " + q1.getId() + " was excluded and must not be repeated");
+        }
     }
 }

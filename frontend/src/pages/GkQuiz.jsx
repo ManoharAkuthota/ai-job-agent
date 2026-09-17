@@ -47,6 +47,26 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Karpoori Thakur",
       explanation: "Former Chief Minister of Bihar Karpoori Thakur, affectionately known as 'Jannayak' (Leader of the People), was posthumously conferred the Bharat Ratna in January 2024 for pioneering reservation policies and upliftment of marginalized sections.",
       funFact: "Karpoori Thakur introduced the pioneering 'Karpoori Thakur Formula' in Bihar in 1978, a layered reservation system that preceded the Mandal Commission recommendations."
+    },
+    {
+      id: 'fb_ca_5',
+      topic: 'CURRENT_AFFAIRS',
+      difficulty: 'MEDIUM',
+      question: "Which Indian state became the first in independent India to pass and implement a Uniform Civil Code (UCC) in 2024?",
+      options: ["Uttarakhand", "Goa", "Gujarat", "Assam"],
+      correctAnswer: "Uttarakhand",
+      explanation: "The Uttarakhand Legislative Assembly passed the Uniform Civil Code Bill in February 2024, creating uniform laws on marriage, divorce, inheritance, and live-in relationships for all citizens irrespective of religion.",
+      funFact: "While Goa retained the 1867 Portuguese Civil Code upon its liberation in 1961, Uttarakhand became the first state to draft and enact a post-independence UCC."
+    },
+    {
+      id: 'fb_ca_6',
+      topic: 'CURRENT_AFFAIRS',
+      difficulty: 'MEDIUM',
+      question: "Who served as the 50th Chief Justice of India (CJI) leading landmark constitutional benches until November 2024?",
+      options: ["Justice D.Y. Chandrachud", "Justice Sanjiv Khanna", "Justice U.U. Lalit", "Justice N.V. Ramana"],
+      correctAnswer: "Justice D.Y. Chandrachud",
+      explanation: "Justice Dhananjaya Yashwant Chandrachud served as the 50th CJI, spearheading widespread technological modernization of Indian courts, live-streaming of constitutional proceedings, and landmark verdicts.",
+      funFact: "His father, Justice Y.V. Chandrachud, was the longest-serving Chief Justice in Indian history, serving for over seven years."
     }
   ],
   POLITICS: [
@@ -79,6 +99,26 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "42nd Amendment (1976)",
       explanation: "Enacted during the Emergency, the 42nd Amendment Act of 1976 amended the Preamble for the only time in Indian history and is widely known as the 'Mini-Constitution'.",
       funFact: "The Preamble is based on the 'Objective Resolution' drafted and moved by Pandit Jawaharlal Nehru on December 13, 1946."
+    },
+    {
+      id: 'fb_pol_4',
+      topic: 'POLITICS',
+      difficulty: 'EASY',
+      question: "Which Indian state was the first to establish the Panchayati Raj system in 1959?",
+      options: ["Rajasthan", "Andhra Pradesh", "Gujarat", "Maharashtra"],
+      correctAnswer: "Rajasthan",
+      explanation: "The Panchayati Raj system was first inaugurated in Nagaur district of Rajasthan on October 2, 1959, by Prime Minister Jawaharlal Nehru, following recommendations of the Balwant Rai Mehta Committee.",
+      funFact: "Andhra Pradesh became the second state to adopt the Panchayati Raj system shortly after Rajasthan in 1959."
+    },
+    {
+      id: 'fb_pol_5',
+      topic: 'POLITICS',
+      difficulty: 'MEDIUM',
+      question: "Who presides over a joint sitting of both Houses of Parliament in India?",
+      options: ["Speaker of Lok Sabha", "President of India", "Chairman of Rajya Sabha", "Prime Minister"],
+      correctAnswer: "Speaker of Lok Sabha",
+      explanation: "Under Article 118(4) of the Indian Constitution, the Speaker of the Lok Sabha presides over a joint sitting of Parliament. If the Speaker is absent, the Deputy Speaker presides.",
+      funFact: "The Vice President of India (Chairman of Rajya Sabha) cannot preside over a joint sitting under any circumstances."
     }
   ],
   MOVIES: [
@@ -111,6 +151,26 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Satyajit Ray",
       explanation: "Legendary auteur Satyajit Ray was awarded the Honorary Academy Award for Lifetime Achievement in 1992, recognizing his mastery of cinematic art through masterpieces like the Apu Trilogy.",
       funFact: "Akira Kurosawa famously said: 'Not to have seen the cinema of Ray means existing in the world without seeing the sun or the moon.'"
+    },
+    {
+      id: 'fb_mov_4',
+      topic: 'MOVIES',
+      difficulty: 'MEDIUM',
+      question: "Who was the first Indian to win an Academy Award (Oscar) in 1983 for Costume Design?",
+      options: ["Bhanu Athaiya", "Satyajit Ray", "A.R. Rahman", "Resul Pookutty"],
+      correctAnswer: "Bhanu Athaiya",
+      explanation: "Bhanu Athaiya made history by winning the Oscar for Best Costume Design in 1983 for Richard Attenborough's biographical epic 'Gandhi'.",
+      funFact: "Bhanu Athaiya had a storied career spanning five decades, styling characters in over 100 films."
+    },
+    {
+      id: 'fb_mov_5',
+      topic: 'MOVIES',
+      difficulty: 'HARD',
+      question: "Which iconic film directed by K. Asif took nearly a decade to make and was India's most expensive film upon release in 1960?",
+      options: ["Mughal-e-Azam", "Mother India", "Sholay", "Pakeezah"],
+      correctAnswer: "Mughal-e-Azam",
+      explanation: "Directed by K. Asif and starring Prithviraj Kapoor, Dilip Kumar, and Madhubala, 'Mughal-e-Azam' set unprecedented box office records and is universally regarded as a magnum opus of Indian cinema.",
+      funFact: "The legendary song 'Pyar Kiya To Darna Kya' was shot in the Sheesh Mahal (Palace of Mirrors) set, which took two years to construct."
     }
   ],
   CITIES: [
@@ -143,6 +203,26 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Marina Beach (Chennai)",
       explanation: "Marina Beach runs along the Coromandel Coast of the Bay of Bengal in Chennai for approximately 13 kilometers (8.1 miles), making it the longest natural urban beach in India and second globally after Praia do Cassino in Brazil.",
       funFact: "Swimming is legally prohibited at Marina Beach due to strong undercurrents and sudden sea bottom drop-offs."
+    },
+    {
+      id: 'fb_cit_4',
+      topic: 'CITIES',
+      difficulty: 'MEDIUM',
+      question: "Which city is known as the 'City of Lakes' and was the historic capital of the Mewar Kingdom?",
+      options: ["Udaipur", "Bhopal", "Nainital", "Srinagar"],
+      correctAnswer: "Udaipur",
+      explanation: "Founded in 1559 by Maharana Udai Singh II, Udaipur is famous for its picturesque interconnected lake system, including Lake Pichola, Fateh Sagar, and the Lake Palace.",
+      funFact: "The Lake Palace in Lake Pichola served as the primary floating palace location in the 1983 James Bond film 'Octopussy'."
+    },
+    {
+      id: 'fb_cit_5',
+      topic: 'CITIES',
+      difficulty: 'HARD',
+      question: "Which ancient Harappan port city in Gujarat featured the world's earliest known tidal dockyard?",
+      options: ["Lothal", "Dholavira", "Kalibangan", "Rakhigarhi"],
+      correctAnswer: "Lothal",
+      explanation: "Discovered in 1954, Lothal possessed a massive, sophisticated tidal dock basin connecting the city to an ancient channel of the Sabarmati River for maritime trade with Mesopotamia and Egypt.",
+      funFact: "Lothal's engineers developed a highly accurate flood-control and water-drainage network over 4,400 years ago."
     }
   ],
   HISTORY: [
@@ -175,6 +255,26 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Emperor Ashoka",
       explanation: "Emperor Ashoka the Great (Mauryan Dynasty) waged the Kalinga War around 261 BCE. Witnessing the death of over 100,000 soldiers caused him profound remorse, prompting his conversion to Buddhism and adoption of Dhamma.",
       funFact: "The Lion Capital of Ashoka at Sarnath was adopted as the official National Emblem of the Republic of India on January 26, 1950."
+    },
+    {
+      id: 'fb_his_4',
+      topic: 'HISTORY',
+      difficulty: 'MEDIUM',
+      question: "Who founded the Maurya Empire in 322 BCE with the guidance of scholar Chanakya?",
+      options: ["Chandragupta Maurya", "Bindusara", "Brihadratha", "Pushyamitra Shunga"],
+      correctAnswer: "Chandragupta Maurya",
+      explanation: "Chandragupta Maurya established the Maurya Empire after defeating the Nanda Empire with the mentorship of Chanakya (Kautilya), the master strategist who authored the Arthashastra.",
+      funFact: "Greek historians referred to Chandragupta Maurya as 'Sandrokottos', who negotiated treaties with Seleucus I Nicator."
+    },
+    {
+      id: 'fb_his_5',
+      topic: 'HISTORY',
+      difficulty: 'HARD',
+      question: "Which queen of Jhansi led heroic resistance against British troops during the Indian Rebellion of 1857?",
+      options: ["Rani Lakshmibai", "Rani Chennamma", "Begum Hazrat Mahal", "Rani Durgavati"],
+      correctAnswer: "Rani Lakshmibai",
+      explanation: "Rani Lakshmibai fought against the British after Lord Dalhousie annexed Jhansi under the Doctrine of Lapse, becoming an enduring symbol of resistance and courage in India's independence struggle.",
+      funFact: "British General Sir Hugh Rose commended Rani Lakshmibai as 'the bravest of the rebel leaders' following the battle of Gwalior."
     }
   ],
   SCIENCE: [
@@ -197,6 +297,26 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Raman Effect (Scattering of Light)",
       explanation: "On February 28, 1928, Sir C.V. Raman discovered that when light traverses a transparent medium, a fraction of the scattered light emerges with shifted wavelengths due to vibrational energy transitions of molecules.",
       funFact: "C.V. Raman was inspired to study the scattering of light while on a voyage across the Mediterranean Sea in 1921, marveling at its deep opalescent blue color."
+    },
+    {
+      id: 'fb_sci_3',
+      topic: 'SCIENCE',
+      difficulty: 'MEDIUM',
+      question: "Which visionary scientist is widely revered as the 'Father of the Indian Space Program'?",
+      options: ["Dr. Vikram Sarabhai", "Dr. Homi J. Bhabha", "Dr. A.P.J. Abdul Kalam", "Prof. Satish Dhawan"],
+      correctAnswer: "Dr. Vikram Sarabhai",
+      explanation: "Dr. Vikram Sarabhai established the Indian National Committee for Space Research (INCOSPAR) in 1962, which later evolved into ISRO in 1969, steering India's space vision toward national and humanitarian progress.",
+      funFact: "India's very first rocket launched in 1963 from Thumba, Kerala, had components transported using bicycles and bullock carts."
+    },
+    {
+      id: 'fb_sci_4',
+      topic: 'SCIENCE',
+      difficulty: 'HARD',
+      question: "Which subatomic particle class is named in honor of the eminent Indian physicist Satyendra Nath Bose?",
+      options: ["Boson", "Fermion", "Lepton", "Quark"],
+      correctAnswer: "Boson",
+      explanation: "Paul Dirac coined the name 'Boson' to honor Satyendra Nath Bose for developing Bose-Einstein statistics with Albert Einstein, which characterizes particles with integer spin.",
+      funFact: "Satyendra Nath Bose's 1924 research paper was initially rejected by journals until Albert Einstein personally translated it into German for publication."
     }
   ],
   SPORTS: [
@@ -219,19 +339,52 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Neeraj Chopra",
       explanation: "Subedar Neeraj Chopra of the Indian Army threw 87.58 meters in the men's javelin throw final on August 7, 2021, to win India's first Olympic gold in athletics and only the second individual Olympic gold medal in Indian history.",
       funFact: "August 7 was officially designated by the Athletics Federation of India as 'National Javelin Day' to commemorate the historic throw."
+    },
+    {
+      id: 'fb_spo_3',
+      topic: 'SPORTS',
+      difficulty: 'EASY',
+      question: "Who is the only cricketer in international cricket history to score 100 centuries?",
+      options: ["Sachin Tendulkar", "Virat Kohli", "Ricky Ponting", "Brian Lara"],
+      correctAnswer: "Sachin Tendulkar",
+      explanation: "Sachin Tendulkar completed his historic 100th international century (51 Test tons and 49 ODI tons) in March 2012, cementing his status as the highest run-scorer in international cricket history.",
+      funFact: "Sachin Tendulkar made his international debut in 1989 against Pakistan at the age of just 16 years and 205 days."
+    },
+    {
+      id: 'fb_spo_4',
+      topic: 'SPORTS',
+      difficulty: 'MEDIUM',
+      question: "Who is the first Indian woman athlete to win two consecutive individual Olympic medals?",
+      options: ["P.V. Sindhu", "Saina Nehwal", "Mary Kom", "Mirabai Chanu"],
+      correctAnswer: "P.V. Sindhu",
+      explanation: "P.V. Sindhu won the Badminton Women's Singles Silver at Rio 2016 and Bronze at Tokyo 2020, becoming the first Indian woman and only the second Indian athlete after Sushil Kumar to achieve back-to-back Olympic podium finishes.",
+      funFact: "Sindhu was also the first Indian to be crowned BWF World Champion in badminton in Basel, 2019."
     }
   ]
 };
 
-const getFallbackQuestion = (topic = 'ALL') => {
+const getFallbackQuestion = (topic = 'ALL', seenSet = null) => {
   let pool = [];
   if (topic && topic !== 'ALL' && FALLBACK_QUESTIONS[topic]) {
     pool = FALLBACK_QUESTIONS[topic];
   } else {
     Object.values(FALLBACK_QUESTIONS).forEach(list => pool.push(...list));
   }
-  const randomIndex = Math.floor(Math.random() * pool.length);
-  const template = pool[randomIndex];
+
+  // Filter out any questions that have already been seen in this session
+  let candidates = pool;
+  if (seenSet && seenSet.size > 0) {
+    candidates = pool.filter(q => {
+      const idMatch = q.id && seenSet.has(String(q.id).toLowerCase());
+      const textMatch = q.question && seenSet.has(q.question.trim().toLowerCase());
+      return !idMatch && !textMatch;
+    });
+  }
+
+  // If all questions were seen, fallback to full pool
+  const activePool = candidates.length > 0 ? candidates : pool;
+  const randomIndex = Math.floor(Math.random() * activePool.length);
+  const template = activePool[randomIndex];
   const shuffled = [...template.options].sort(() => Math.random() - 0.5);
   return { ...template, options: shuffled };
 };
@@ -253,6 +406,15 @@ export default function GkQuiz() {
   // Initialize with an instant verified question so user never sees a blank screen!
   const [currentQuestion, setCurrentQuestion] = useState(() => getFallbackQuestion('ALL'));
   const [loading, setLoading] = useState(false);
+
+  // Anti-repetition tracking: keeps track of all question IDs and texts seen during the session
+  const seenQuestionIds = useRef(new Set());
+
+  const markSeen = (q) => {
+    if (!q) return;
+    if (q.id) seenQuestionIds.current.add(String(q.id).toLowerCase());
+    if (q.question) seenQuestionIds.current.add(q.question.trim().toLowerCase());
+  };
 
   // Interaction State
   const [selectedOption, setSelectedOption] = useState(null);
@@ -313,6 +475,10 @@ export default function GkQuiz() {
   };
 
   useEffect(() => {
+    // Seed initial question into seen set so it cannot repeat
+    if (currentQuestion) {
+      markSeen(currentQuestion);
+    }
     loadTopics();
     // Pre-fetch the next question silently in the background while user plays current question
     prefetchNextQuestion(selectedTopic, selectedDifficulty);
@@ -334,16 +500,24 @@ export default function GkQuiz() {
 
   const prefetchNextQuestion = async (topic = selectedTopic, difficulty = selectedDifficulty) => {
     try {
-      const res = await getGkNextQuestion(topic, difficulty);
+      // Send up to 30 most recent seen IDs or questions to backend for server-side exclusion
+      const excludeList = Array.from(seenQuestionIds.current).slice(-30).join(',');
+      const res = await getGkNextQuestion(topic, difficulty, excludeList);
       if (res.data && res.data.question && res.data.options && res.data.options.length === 4) {
-        nextQuestionBuffer.current = res.data;
-        return;
+        const id = res.data.id ? String(res.data.id).toLowerCase() : null;
+        const qText = res.data.question ? res.data.question.trim().toLowerCase() : null;
+        // Verify that the incoming question is truly unseen before buffering
+        const alreadySeen = (id && seenQuestionIds.current.has(id)) || (qText && seenQuestionIds.current.has(qText));
+        if (!alreadySeen) {
+          nextQuestionBuffer.current = res.data;
+          return;
+        }
       }
     } catch (err) {
       // quiet fallback
     }
     if (!nextQuestionBuffer.current) {
-      nextQuestionBuffer.current = getFallbackQuestion(topic);
+      nextQuestionBuffer.current = getFallbackQuestion(topic, seenQuestionIds.current);
     }
   };
 
@@ -353,21 +527,29 @@ export default function GkQuiz() {
     setIsAnswered(false);
     setIsCorrect(false);
 
-    // Instant swap if buffer has a question ready (< 0ms latency!)
+    let next = null;
+
+    // Check if buffer has a ready question that is genuinely unseen
     if (nextQuestionBuffer.current && (nextQuestionBuffer.current.topic === topic || topic === 'ALL' || nextQuestionBuffer.current.topic === 'CURRENT_AFFAIRS')) {
-      const next = nextQuestionBuffer.current;
-      nextQuestionBuffer.current = null;
-      setCurrentQuestion(next);
-      setLoading(false);
-      // Immediately prefetch following question in the background
-      prefetchNextQuestion(topic, difficulty);
-      return;
+      const cand = nextQuestionBuffer.current;
+      const id = cand.id ? String(cand.id).toLowerCase() : null;
+      const qText = cand.question ? cand.question.trim().toLowerCase() : null;
+      const alreadySeen = (id && seenQuestionIds.current.has(id)) || (qText && seenQuestionIds.current.has(qText));
+      if (!alreadySeen) {
+        next = cand;
+      }
+    }
+    nextQuestionBuffer.current = null;
+
+    // If buffer was empty or contained a seen question, pick a guaranteed unseen question from fallback pool
+    if (!next) {
+      next = getFallbackQuestion(topic, seenQuestionIds.current);
     }
 
-    // Instant client fallback
-    const fallback = getFallbackQuestion(topic);
-    setCurrentQuestion(fallback);
+    markSeen(next);
+    setCurrentQuestion(next);
     setLoading(false);
+    // Immediately prefetch following question in the background with updated exclusion list
     prefetchNextQuestion(topic, difficulty);
   };
 
