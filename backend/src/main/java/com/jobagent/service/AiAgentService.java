@@ -59,6 +59,21 @@ public class AiAgentService {
 
         double ratio = (double) matchedCount / Math.min(profileKeywords.size(), 15);
         int score = (int) Math.round(ratio * 100);
+
+        String domainLower = (profile.getTargetDomain() != null ? profile.getTargetDomain() : "").toLowerCase();
+        String titleLower = (job.getTitle() != null ? job.getTitle() : "").toLowerCase();
+        boolean isFrontendCandidate = domainLower.contains("front") || domainLower.contains("react") || domainLower.contains("ui");
+        boolean isFrontendJob = titleLower.contains("front") || titleLower.contains("react") || titleLower.contains("ui") || titleLower.contains("web");
+        boolean isBackendJob = (titleLower.contains("backend") || titleLower.contains("microservice") || titleLower.contains("core banking") || titleLower.contains("java")) && !isFrontendJob;
+
+        if (isFrontendCandidate) {
+            if (isFrontendJob) {
+                score += 25;
+            } else if (isBackendJob) {
+                score = Math.max(30, score - 30);
+            }
+        }
+
         return Math.min(Math.max(score, 35), 98);
     }
 

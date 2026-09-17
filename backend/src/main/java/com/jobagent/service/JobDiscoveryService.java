@@ -335,6 +335,165 @@ public class JobDiscoveryService {
                 "6 days ago",
                 now.minusDays(6)
         ));
+
+        // ==========================================
+        // Top Indian Tech Companies - FRONTEND ROLES
+        // ==========================================
+        list.add(new Job(
+                "Senior Frontend Engineer (React / TypeScript / Next.js)",
+                "Razorpay",
+                "Bengaluru, Karnataka, India",
+                "Hybrid",
+                "₹ 18 - 32 LPA",
+                "Razorpay is hiring Senior Frontend Engineers to build world-class checkout, payment gateway dashboard, and fintech web applications. Core stack: React 18/19, TypeScript, Next.js, Web Performance, Core Web Vitals (LCP, INP, CLS), Redux Toolkit, Tailwind CSS, and Webpack/Vite. Deep expertise in browser rendering, bundle optimization, and responsive design systems.",
+                "https://razorpay.com/jobs/?department=frontend",
+                "Indian Tech Careers",
+                "Today",
+                now
+        ));
+
+        list.add(new Job(
+                "Frontend Software Development Engineer (React, Redux, Web Performance)",
+                "Swiggy",
+                "Bengaluru, Karnataka, India",
+                "Remote, India",
+                "₹ 15 - 28 LPA",
+                "Swiggy is seeking Frontend Engineers for our consumer web app and partner portals. Responsibilities: Design and build lightning-fast web applications using React, Next.js, TypeScript, Redux, and Tailwind CSS. Optimize web vitals, implement lazy loading, PWA caching with Service Workers, and cross-browser responsiveness.",
+                "https://careers.swiggy.com/frontend",
+                "Indian Tech Careers",
+                "Today",
+                now
+        ));
+
+        list.add(new Job(
+                "UI / Frontend Software Engineer (React / Tailwind / Web Vitals)",
+                "Zepto",
+                "Bengaluru / Mumbai, India",
+                "Full-Time",
+                "₹ 16 - 30 LPA",
+                "Zepto is looking for talented Frontend Engineers to build ultra-fast 10-minute grocery delivery web experiences. Required skills: React, TypeScript, Next.js, Tailwind CSS, modern state management (Zustand / Redux), and client-side performance optimization.",
+                "https://www.zeptonow.com/careers/frontend",
+                "Indian Tech Careers",
+                "1 day ago",
+                now.minusDays(1)
+        ));
+
+        list.add(new Job(
+                "Frontend Developer - Web Platforms (React, Next.js, Modern JavaScript)",
+                "Flipkart",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 18 - 32 LPA",
+                "Flipkart engineering team is hiring Frontend Developers to build high-scale e-commerce web applications. Key competencies: React, TypeScript, Next.js, HTML5, CSS3, DOM optimization, Web Workers, REST API consumption, and unit testing with Jest / React Testing Library.",
+                "https://www.flipkartcareers.com/frontend",
+                "Indian Tech Careers",
+                "1 day ago",
+                now.minusDays(1)
+        ));
+
+        list.add(new Job(
+                "Frontend Software Engineer (React, Micro-frontends, Component Systems)",
+                "Zomato",
+                "Gurugram, Haryana, India",
+                "Remote, India",
+                "₹ 16 - 28 LPA",
+                "Zomato is hiring Frontend Engineers to build partner portals and dining interfaces. Hands-on experience with React, TypeScript, modern CSS, Webpack/Vite, micro-frontends, client-side caching, and responsive web performance.",
+                "https://www.zomato.com/careers/frontend",
+                "Official Career Portal",
+                "2 days ago",
+                now.minusDays(2)
+        ));
+
+        list.add(new Job(
+                "Frontend Engineer - Design Systems & Web Apps (React, TypeScript)",
+                "CRED",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 22 - 38 LPA",
+                "CRED is looking for Frontend Engineers with obsessive craft for UI/UX. Build responsive web applications using React, TypeScript, Framer Motion, CSS Modules, Tailwind CSS, and scalable design system component architecture.",
+                "https://careers.cred.club/frontend",
+                "Official Career Portal",
+                "2 days ago",
+                now.minusDays(2)
+        ));
+
+        list.add(new Job(
+                "Frontend Web Developer (React / Modern JavaScript / HTML5)",
+                "Zoho Corporation",
+                "Chennai, Tamil Nadu, India",
+                "Full-Time",
+                "₹ 8 - 14 LPA",
+                "Zoho Corporation is hiring Frontend Developers for enterprise SaaS productivity apps. Strong proficiency in React, JavaScript (ES6+), HTML5, CSS3/SASS, REST API integration, and cross-browser accessibility (a11y).",
+                "https://www.zoho.com/careers/frontend",
+                "Official Career Portal",
+                "3 days ago",
+                now.minusDays(3)
+        ));
+
+        list.add(new Job(
+                "Frontend Software Engineer (React, High-Concurrency Web)",
+                "PhonePe",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 18 - 34 LPA",
+                "PhonePe fintech engineering is looking for Frontend Engineers. Build highly responsive merchant dashboards and consumer web interfaces using React, Redux Toolkit, TypeScript, WebSockets, and PWA capabilities.",
+                "https://www.phonepe.com/careers/frontend",
+                "Official Career Portal",
+                "3 days ago",
+                now.minusDays(3)
+        ));
+
+        list.add(new Job(
+                "UI Engineer (React, Next.js, Component Architecture)",
+                "Paytm",
+                "Noida, Uttar Pradesh, India",
+                "Full-Time",
+                "₹ 14 - 24 LPA",
+                "Paytm is hiring UI Engineers to architect user experiences across payments and banking portals. Expertise in React, Next.js, TypeScript, Jest, CSS-in-JS, and web accessibility standards.",
+                "https://jobs.lever.co/paytm/frontend",
+                "Official Career Portal",
+                "4 days ago",
+                now.minusDays(4)
+        ));
+
+        list.add(new Job(
+                "Frontend Developer (React, Redux Toolkit, Tailwind)",
+                "Meesho",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 15 - 26 LPA",
+                "Meesho is hiring Frontend Developers to build high-performance e-commerce experiences. Key skills: React, Redux Toolkit, Tailwind CSS, Mobile-First Web, Image Optimization, and REST APIs.",
+                "https://www.meesho.io/careers/frontend",
+                "Official Career Portal",
+                "4 days ago",
+                now.minusDays(4)
+        ));
+
+        list.add(new Job(
+                "React Frontend Developer (TypeScript & Modern Web)",
+                "Tata Consultancy Services (TCS)",
+                "Hyderabad / Bengaluru, India",
+                "Full-Time",
+                "₹ 8 - 14 LPA",
+                "TCS Digital is hiring React Frontend Developers. Build enterprise web applications with React, TypeScript, Redux, Tailwind, REST API consumption, and automated unit testing using Jest/React Testing Library.",
+                "https://ibegin.tcs.com/iBegin/frontend",
+                "Official Career Portal",
+                "5 days ago",
+                now.minusDays(5)
+        ));
+
+        list.add(new Job(
+                "Frontend Engineer (React / Modern Web Architecture)",
+                "LTI Mindtree",
+                "Pune / Bengaluru, India",
+                "Hybrid",
+                "₹ 8 - 14 LPA",
+                "LTI Mindtree is seeking Frontend Engineers with strong command of React, modern JavaScript, CSS3/Tailwind, and state management. Collaborate on enterprise web portal development and cloud UI modernization.",
+                "https://www.ltimindtree.com/careers/frontend",
+                "Official Career Portal",
+                "5 days ago",
+                now.minusDays(5)
+        ));
     }
 
     private void fetchFromJobicy(List<Job> list, String tag) {
@@ -458,7 +617,8 @@ public class JobDiscoveryService {
         return t.contains("developer") || t.contains("engineer") || t.contains("software")
                 || t.contains("java") || t.contains("spring") || t.contains("react") || t.contains("fullstack")
                 || t.contains("full stack") || t.contains("backend") || t.contains("frontend")
-                || full.contains("java") || full.contains("spring boot");
+                || t.contains("ui") || t.contains("web") || t.contains("next") || t.contains("typescript")
+                || full.contains("java") || full.contains("spring boot") || full.contains("react") || full.contains("frontend");
     }
 
     private boolean isGermanJob(String title, String location, String description) {
@@ -487,7 +647,8 @@ public class JobDiscoveryService {
                 || c.contains("swiggy") || c.contains("zomato") || c.contains("razorpay") || c.contains("phonepe")
                 || c.contains("jio") || c.contains("flipkart") || c.contains("cred") || c.contains("paytm")
                 || c.contains("persistent") || c.contains("mindtree") || c.contains("cognizant")
-                || c.contains("hcl") || c.contains("zoho") || c.contains("zepto") || c.contains("keyanna");
+                || c.contains("hcl") || c.contains("zoho") || c.contains("zepto") || c.contains("keyanna")
+                || c.contains("meesho");
     }
 
     public void purgeIrrelevantJobs() {

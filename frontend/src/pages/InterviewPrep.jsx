@@ -7,6 +7,10 @@ import {
 } from 'lucide-react';
 
 const FALLBACK_JOBS = [
+  { id: 70001, title: 'Senior Frontend Engineer (React / TypeScript / Next.js)', company: 'Razorpay' },
+  { id: 70002, title: 'Frontend Software Development Engineer (React, Redux, Web Performance)', company: 'Swiggy' },
+  { id: 70003, title: 'UI / Frontend Software Engineer (React / Tailwind / Web Vitals)', company: 'Zepto' },
+  { id: 70004, title: 'Frontend Developer - Web Platforms (React, Next.js)', company: 'Flipkart' },
   { id: 60001, title: 'Java Full Stack Developer (React & Spring Cloud)', company: 'Cognizant India' },
   { id: 60012, title: 'Software Engineer - Core Banking & Payments (Java / Spring)', company: 'Paytm' },
   { id: 120001, title: 'Backend Software Engineer (Java / Microservices)', company: 'Zomato' },
@@ -19,95 +23,191 @@ const FALLBACK_JOBS = [
 
 const generateLocalPrepKit = (jobId, targetJob) => {
   const job = targetJob || FALLBACK_JOBS.find(j => j.id == jobId) || FALLBACK_JOBS[0];
-  const role = job.title || 'Java Full Stack Developer';
+  const role = job.title || 'Frontend Engineer';
   const company = job.company || 'Enterprise Tech';
 
-  const technical = [
-    {
-      id: 1,
-      question: `How does Spring Boot ensure thread safety when multiple concurrent HTTP requests execute singleton bean service methods for ${company}?`,
-      expectedAnswer: "Spring singleton beans maintain only one instance per ApplicationContext. Thread safety is achieved by making beans stateless—no shared mutable instance fields. All request-specific state is confined to method stack frames or ThreadLocal variables.",
-      difficulty: "HARD",
-      focusArea: "Spring Concurrency & JVM",
-      proTip: "Highlight that creating instance variables in a @Service bean causes race conditions under high concurrent traffic."
-    },
-    {
-      id: 2,
-      question: "How do you detect, diagnose, and resolve the JPA/Hibernate N+1 select problem in high-throughput microservices?",
-      expectedAnswer: "The N+1 problem occurs when fetching an entity with lazy relationships executes 1 initial query plus N additional queries for each related record. Fix it using JOIN FETCH in JPQL, @EntityGraph with attributePaths, or Hibernate batch fetching (default_batch_fetch_size).",
-      difficulty: "MEDIUM",
-      focusArea: "JPA / Hibernate Optimization",
-      proTip: "Mention enabling 'spring.jpa.properties.hibernate.generate_statistics=true' during load testing."
-    },
-    {
-      id: 3,
-      question: `In Apache Kafka event streaming, what happens during consumer group rebalancing and how do you achieve exactly-once processing for ${company}?`,
-      expectedAnswer: "Rebalancing occurs when consumers join, leave, or fail heartbeats. Consumer partitions are reassigned, briefly halting message consumption. Exactly-once processing is guaranteed using idempotent producers (enable.idempotence=true) and transactional producer APIs across consumer offsets.",
-      difficulty: "HARD",
-      focusArea: "Distributed Messaging / Kafka",
-      proTip: "Cite production experience with CooperativeStickyAssignor to minimize rebalance pauses."
-    },
-    {
-      id: 4,
-      question: "Explain the architectural difference between clustered and non-clustered composite indexes in MySQL InnoDB.",
-      expectedAnswer: "InnoDB's clustered index defines the physical table ordering based on the primary key, storing full row data in leaf nodes. Secondary (non-clustered) indexes store indexed columns plus the primary key pointer. Covering indexes resolve queries directly from index leaf nodes without secondary B-tree lookups.",
-      difficulty: "HARD",
-      focusArea: "Database Engineering & Indexing",
-      proTip: "Use EXPLAIN ANALYZE to show index scans vs full table scans."
-    },
-    {
-      id: 5,
-      question: "How do stateless JWT tokens handle immediate user revocation or role downgrades securely without querying the database on every request?",
-      expectedAnswer: "Stateless JWTs cannot be revoked natively until expiry. Best practice uses short-lived access tokens (5-15 mins) paired with revocable refresh tokens. Immediate revocation uses an in-memory Redis blacklist or user-token version epoch check.",
-      difficulty: "MEDIUM",
-      focusArea: "Spring Security & Auth",
-      proTip: "Explain how Redis TTL matches access token expiration to prevent unbounded memory growth."
-    }
-  ];
+  const roleLower = role.toLowerCase();
+  const isFrontend = roleLower.includes('front') || roleLower.includes('react') || roleLower.includes('ui') || roleLower.includes('web');
 
-  const behavioral = [
-    {
-      id: 1,
-      situation: "At Keyanna Technologies, our CPaaS backend experienced latency spikes during peak automated SMS delivery broadcasts.",
-      task: "I was tasked with identifying the bottleneck and preventing message drop-offs without increasing cloud infrastructure spend.",
-      action: "I refactored the synchronous REST dispatch into an asynchronous Apache Kafka event-driven pipeline and optimized database connection pooling with HikariCP.",
-      result: "Reduced average message delivery latency by 68% and achieved zero dropped broadcasts under peak load of 2500+ messages/min.",
-      competency: "Performance & Scalability"
-    },
-    {
-      id: 2,
-      situation: "During an urgent sprint release, a production patch broke JWT validation for incoming third-party webhook requests.",
-      task: "I needed to remediate the authentication failure immediately while maintaining zero downtime for live clients.",
-      action: "I analyzed gateway logs, identified the missing bearer prefix parser, quickly wrote an integration test, and deployed a zero-downtime hotfix.",
-      result: "Restored 100% service uptime within 18 minutes and implemented automated pre-commit integration checks.",
-      competency: "Crisis Management & Accountability"
-    },
-    {
-      id: 3,
-      situation: "Collaborating with frontend engineers on an Angular/React CPaaS analytics dashboard, we faced frequent API contract mismatches.",
-      task: "Ensure cross-functional alignment so backend and frontend could develop in parallel without blocking blockers.",
-      action: "Introduced OpenAPI/Swagger specifications before writing code, establishing a shared contract mock for frontend developers.",
-      result: "Sprint delivery completed 2 days ahead of schedule with zero integration regression defects.",
-      competency: "Cross-Functional Collaboration"
-    }
-  ];
+  let technical = [];
+  let behavioral = [];
+  let systemDesign = null;
 
-  const systemDesign = {
-    title: `Distributed High-Throughput Notification Engine for ${company}`,
-    requirements: [
-      "Process 10,000 notifications per second with sub-50ms latency",
-      "Strict idempotency to guarantee no duplicate SMS/email/webhook deliveries",
-      "Automatic retry with exponential backoff and Dead Letter Queue (DLQ)",
-      "Multi-tenant rate limiting per client tier"
-    ],
-    architecture: [
-      "API Gateway (Spring Cloud Gateway) for rate limiting with Redis token bucket",
-      "Kafka ingestion topic partitioned by tenant ID for ordered parallel consumption",
-      "Worker microservices executing deduplication via Redis SETNX locks before dispatch",
-      "Dead Letter Queue (DLQ) for failed messages with automated alerting"
-    ],
-    keyTradeoffs: "Chose Kafka partitioning over simple message queues to preserve strict order per client account while enabling horizontal partition scaling."
-  };
+  if (isFrontend) {
+    technical = [
+      {
+        id: 1,
+        question: `How does React's Fiber reconciler break render work into interruptible units, and how do useTransition and Suspense prevent UI freeze on high-scale web apps at ${company}?`,
+        expectedAnswer: "The Fiber reconciler models each element as a fiber node in a doubly-linked tree. In Concurrent React, rendering is divided into two phases: an asynchronous interruptible render phase and a synchronous commit phase (DOM mutations). useTransition marks state transitions as non-urgent, allowing the browser main thread to process urgent typing/click events while rendering continues in the background. Suspense coordinates asynchronous resource boundaries to prevent layout cascades.",
+        difficulty: "HARD",
+        focusArea: "React 18/19 & Concurrent Engine",
+        proTip: "Use useTransition to keep typing sub-16ms responsive while deferring large filtered list recalculations."
+      },
+      {
+        id: 2,
+        question: `When would you choose Zustand or Redux Toolkit over React Context API in complex web applications at ${company}, and how do selector subscriptions eliminate unnecessary re-renders?`,
+        expectedAnswer: "React Context is a dependency injection mechanism where any provider update triggers re-renders across all consumers. Zustand and Redux Toolkit implement selector-based store subscriptions (useSyncExternalStore). Components subscribe only to specific state slices (e.g., state => state.user.avatar), and shallow equality checks ensure re-renders occur strictly when the selected reference changes.",
+        difficulty: "MEDIUM",
+        focusArea: "State Architecture & Performance",
+        proTip: "Never store high-frequency state in React Context; use selector-based stores to isolate render trees."
+      },
+      {
+        id: 3,
+        question: "How do you systematically diagnose and optimize Core Web Vitals—specifically Largest Contentful Paint (LCP), Interaction to Next Paint (INP), and Cumulative Layout Shift (CLS)?",
+        expectedAnswer: "For LCP (target < 2.5s): Preload hero images with <link rel='preload'>, eliminate render-blocking scripts with defer/async, and serve responsive AVIF/WebP. For INP (target < 200ms): Break long tasks (>50ms) using requestIdleCallback, scheduler.yield(), or Web Workers, and debounce inputs with useTransition. For CLS (target < 0.1): Declare width/height on all media and reserve layout space for dynamic elements.",
+        difficulty: "HARD",
+        focusArea: "Web Performance & Core Web Vitals",
+        proTip: "Audit using Chrome DevTools Performance panel and Lighthouse; always reserve container dimensions."
+      },
+      {
+        id: 4,
+        question: "Explain the execution order of the JavaScript Event Loop across Microtasks and Macrotasks, and how improper event listeners or closures cause SPA memory leaks.",
+        expectedAnswer: "The Call Stack executes synchronous code. When empty, it completely drains the Microtask Queue (Promises, queueMicrotask) before picking one Macrotask (setTimeout, setInterval, UI render). Memory leaks happen in SPAs when window event listeners or timers retain closures to unmounted component state or DOM nodes. Fix by always returning cleanup functions in useEffect and using AbortController.",
+        difficulty: "HARD",
+        focusArea: "JavaScript Runtime & Memory",
+        proTip: "Microtasks always execute before macrotasks; always clean up DOM listeners and subscriptions in useEffect returns."
+      },
+      {
+        id: 5,
+        question: "Compare CSS Grid vs Flexbox for complex responsive layouts, and explain how Tailwind CSS or CSS Modules prevent specificity wars and bloated production bundles.",
+        expectedAnswer: "Flexbox is one-dimensional (row/column) for aligning elements along a single axis. CSS Grid is two-dimensional for overall page scaffolding and responsive auto-fit card grids. Tailwind purges unused CSS at build time via PostCSS, producing a compact stylesheet (~15-20KB gzipped) and eliminating CSS specificity conflicts (!important). CSS Modules solve scoping via local class hashing.",
+        difficulty: "MEDIUM",
+        focusArea: "Modern CSS & Tailwind Architecture",
+        proTip: "Combine CSS Grid for page structure with Flexbox for internal component alignment."
+      }
+    ];
+
+    behavioral = [
+      {
+        id: 1,
+        situation: `During peak traffic at ${company}, our product catalog web app experienced severe frame drops (down to 12 FPS) and frozen scrolling on mobile browsers during long list rendering.`,
+        task: "I was tasked with identifying the rendering bottleneck and restoring smooth 60 FPS interactions across mobile devices.",
+        action: "I profiled the application using Chrome DevTools, replaced unbounded DOM rendering with virtualized windowing (react-window) to keep DOM nodes under 15, and deferred heavy search filtering using useTransition.",
+        result: "Reduced memory usage by 74%, restored 60 FPS scrolling, and reduced page load by 2.1 seconds.",
+        competency: "Performance Engineering & Problem Solving"
+      },
+      {
+        id: 2,
+        situation: "Our design team requested complex, nested glassmorphism blurs and multiple simultaneous micro-animations across an analytics table.",
+        task: "Preserve the high-craft aesthetic without causing GPU thermal throttling or UI latency on consumer devices.",
+        action: "Built an interactive prototype measuring draw call overhead, presented hardware-accelerated CSS alternatives (transform: translate3d), and collaborated on a shared design token system.",
+        result: "Delivered an interface with 98% stakeholder approval and zero dropped frames.",
+        competency: "Design & Engineering Collaboration"
+      },
+      {
+        id: 3,
+        situation: "Inherited a legacy frontend containing mixed class components and manual jQuery DOM mutations with frequent state synchronization bugs.",
+        task: "Modernize to React 19 functional components and TypeScript without blocking ongoing feature development.",
+        action: "Designed an incremental strangler migration plan, established reusable atomic UI primitives, and migrated bottom-up with automated Jest and Playwright tests.",
+        result: "Migrated 100% of core customer journeys over two sprints with zero production regression defects.",
+        competency: "Architecture Modernization & Code Quality"
+      }
+    ];
+
+    systemDesign = {
+      title: `High-Performance Collaborative Real-Time Analytics Dashboard for ${company}`,
+      requirements: [
+        "Display thousands of real-time metrics with sub-100ms INP and 60 FPS scroll performance",
+        "WebSocket streaming connection with reconnection backoff and RAF throttling",
+        "Virtualized viewport rendering (react-window) keeping active DOM nodes under 50",
+        "Offline viewing capability with Service Worker and IndexedDB query caching"
+      ],
+      architecture: [
+        "Component Design System with accessible Radix primitives and Tailwind CSS",
+        "Zustand atomic state store combined with TanStack Query for cache invalidation",
+        "In-browser WebSocket connection manager batching incoming updates via requestAnimationFrame",
+        "Vite / Next.js build pipeline with route-based code-splitting and sub-50KB initial bundles"
+      ],
+      keyTradeoffs: "Chose atomic Zustand selectors over React Context to isolate high-frequency WebSocket updates from triggering full dashboard tree re-renders."
+    };
+  } else {
+    technical = [
+      {
+        id: 1,
+        question: `How does Spring Boot ensure thread safety when multiple concurrent HTTP requests execute singleton bean service methods for ${company}?`,
+        expectedAnswer: "Spring singleton beans maintain only one instance per ApplicationContext. Thread safety is achieved by making beans stateless—no shared mutable instance fields. All request-specific state is confined to method stack frames or ThreadLocal variables.",
+        difficulty: "HARD",
+        focusArea: "Spring Concurrency & JVM",
+        proTip: "Highlight that creating instance variables in a @Service bean causes race conditions under high concurrent traffic."
+      },
+      {
+        id: 2,
+        question: "How do you detect, diagnose, and resolve the JPA/Hibernate N+1 select problem in high-throughput microservices?",
+        expectedAnswer: "The N+1 problem occurs when fetching an entity with lazy relationships executes 1 initial query plus N additional queries for each related record. Fix it using JOIN FETCH in JPQL, @EntityGraph with attributePaths, or Hibernate batch fetching (default_batch_fetch_size).",
+        difficulty: "MEDIUM",
+        focusArea: "JPA / Hibernate Optimization",
+        proTip: "Mention enabling 'spring.jpa.properties.hibernate.generate_statistics=true' during load testing."
+      },
+      {
+        id: 3,
+        question: `In Apache Kafka event streaming, what happens during consumer group rebalancing and how do you achieve exactly-once processing for ${company}?`,
+        expectedAnswer: "Rebalancing occurs when consumers join, leave, or fail heartbeats. Consumer partitions are reassigned, briefly halting message consumption. Exactly-once processing is guaranteed using idempotent producers (enable.idempotence=true) and transactional producer APIs across consumer offsets.",
+        difficulty: "HARD",
+        focusArea: "Distributed Messaging / Kafka",
+        proTip: "Cite production experience with CooperativeStickyAssignor to minimize rebalance pauses."
+      },
+      {
+        id: 4,
+        question: "Explain the architectural difference between clustered and non-clustered composite indexes in MySQL InnoDB.",
+        expectedAnswer: "InnoDB's clustered index defines the physical table ordering based on the primary key, storing full row data in leaf nodes. Secondary (non-clustered) indexes store indexed columns plus the primary key pointer. Covering indexes resolve queries directly from index leaf nodes without secondary B-tree lookups.",
+        difficulty: "HARD",
+        focusArea: "Database Engineering & Indexing",
+        proTip: "Use EXPLAIN ANALYZE to show index scans vs full table scans."
+      },
+      {
+        id: 5,
+        question: "How do stateless JWT tokens handle immediate user revocation or role downgrades securely without querying the database on every request?",
+        expectedAnswer: "Stateless JWTs cannot be revoked natively until expiry. Best practice uses short-lived access tokens (5-15 mins) paired with revocable refresh tokens. Immediate revocation uses an in-memory Redis blacklist or user-token version epoch check.",
+        difficulty: "MEDIUM",
+        focusArea: "Spring Security & Auth",
+        proTip: "Explain how Redis TTL matches access token expiration to prevent unbounded memory growth."
+      }
+    ];
+
+    behavioral = [
+      {
+        id: 1,
+        situation: "At Keyanna Technologies, our CPaaS backend experienced latency spikes during peak automated SMS delivery broadcasts.",
+        task: "I was tasked with identifying the bottleneck and preventing message drop-offs without increasing cloud infrastructure spend.",
+        action: "I refactored the synchronous REST dispatch into an asynchronous Apache Kafka event-driven pipeline and optimized database connection pooling with HikariCP.",
+        result: "Reduced average message delivery latency by 68% and achieved zero dropped broadcasts under peak load of 2500+ messages/min.",
+        competency: "Performance & Scalability"
+      },
+      {
+        id: 2,
+        situation: "During an urgent sprint release, a production patch broke JWT validation for incoming third-party webhook requests.",
+        task: "I needed to remediate the authentication failure immediately while maintaining zero downtime for live clients.",
+        action: "I analyzed gateway logs, identified the missing bearer prefix parser, quickly wrote an integration test, and deployed a zero-downtime hotfix.",
+        result: "Restored 100% service uptime within 18 minutes and implemented automated pre-commit integration checks.",
+        competency: "Crisis Management & Accountability"
+      },
+      {
+        id: 3,
+        situation: "Collaborating with frontend engineers on an Angular/React CPaaS analytics dashboard, we faced frequent API contract mismatches.",
+        task: "Ensure cross-functional alignment so backend and frontend could develop in parallel without blocking blockers.",
+        action: "Introduced OpenAPI/Swagger specifications before writing code, establishing a shared contract mock for frontend developers.",
+        result: "Sprint delivery completed 2 days ahead of schedule with zero integration regression defects.",
+        competency: "Cross-Functional Collaboration"
+      }
+    ];
+
+    systemDesign = {
+      title: `Distributed High-Throughput Notification Engine for ${company}`,
+      requirements: [
+        "Process 10,000 notifications per second with sub-50ms latency",
+        "Strict idempotency to guarantee no duplicate SMS/email/webhook deliveries",
+        "Automatic retry with exponential backoff and Dead Letter Queue (DLQ)",
+        "Multi-tenant rate limiting per client tier"
+      ],
+      architecture: [
+        "API Gateway (Spring Cloud Gateway) for rate limiting with Redis token bucket",
+        "Kafka ingestion topic partitioned by tenant ID for ordered parallel consumption",
+        "Worker microservices executing deduplication via Redis SETNX locks before dispatch",
+        "Dead Letter Queue (DLQ) for failed messages with automated alerting"
+      ],
+      keyTradeoffs: "Chose Kafka partitioning over simple message queues to preserve strict order per client account while enabling horizontal partition scaling."
+    };
+  }
 
   return {
     id: jobId || 1,

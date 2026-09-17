@@ -14,6 +14,7 @@ export default function JobFeed({ onNavigate }) {
   const [minScore, setMinScore] = useState(0);
   const [freshnessDays, setFreshnessDays] = useState(7);
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('ALL'); // 'ALL', 'FRONTEND', 'FULLSTACK', 'BACKEND'
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState({});
   const [expandedDesc, setExpandedDesc] = useState({});
@@ -98,6 +99,15 @@ export default function JobFeed({ onNavigate }) {
 
         if (res.data.atsAnalysis) {
           setAtsReport(res.data.atsAnalysis);
+        }
+
+        const domain = (res.data.profile?.targetDomain || '').toLowerCase();
+        if (domain.includes('front') || domain.includes('react') || domain.includes('ui')) {
+          setSelectedCategory('FRONTEND');
+        } else if (domain.includes('backend') || domain.includes('java')) {
+          setSelectedCategory('BACKEND');
+        } else if (domain.includes('full')) {
+          setSelectedCategory('FULLSTACK');
         }
 
         if (res.data.matchedJobs && res.data.matchedJobs.length > 0) {
@@ -220,7 +230,25 @@ export default function JobFeed({ onNavigate }) {
 
   const filteredJobs = jobs.filter((job) => {
     const q = searchTerm.toLowerCase();
-    return job.title?.toLowerCase().includes(q) || job.company?.toLowerCase().includes(q);
+    const title = (job.title || '').toLowerCase();
+    const company = (job.company || '').toLowerCase();
+    const matchesSearch = title.includes(q) || company.includes(q);
+    if (!matchesSearch) return false;
+
+    const isFrontendJob = title.includes('front') || title.includes('react') || title.includes('ui ') || title.includes('ui/') || title.includes('web developer');
+    const isBackendJob = (title.includes('backend') || title.includes('java') || title.includes('microservice') || title.includes('spring') || title.includes('payments core')) && !isFrontendJob;
+    const isFullStackJob = title.includes('full stack') || title.includes('fullstack');
+
+    if (selectedCategory === 'FRONTEND') {
+      return isFrontendJob;
+    }
+    if (selectedCategory === 'BACKEND') {
+      return isBackendJob;
+    }
+    if (selectedCategory === 'FULLSTACK') {
+      return isFullStackJob;
+    }
+    return true;
   });
 
   return (
@@ -675,6 +703,98 @@ export default function JobFeed({ onNavigate }) {
         </div>
       </div>
 
+      {/* Role / Domain Filter Tabs */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+        marginBottom: '16px',
+        flexWrap: 'wrap'
+      }}>
+        <span style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-muted)', marginRight: '4px' }}>
+          Role Category:
+        </span>
+        {[
+          { key: 'ALL', label: 'All Openings', count: jobs.length },
+          {
+            key: 'FRONTEND',
+            label: '⚡ Frontend / React / UI',
+            count: jobs.filter(j => {
+              const t = (j.title || '').toLowerCase();
+              return t.includes('front') || t.includes('react') || t.includes('ui ') || t.includes('ui/') || t.includes('web developer');
+            }).length,
+            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('front')
+          },
+          {
+            key: 'FULLSTACK',
+            label: '🔄 Full Stack',
+            count: jobs.filter(j => (j.title || '').toLowerCase().includes('full')).length,
+            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('full')
+          },
+          {
+            key: 'BACKEND',
+            label: '☕ Backend / Java / Kafka',
+            count: jobs.filter(j => {
+              const t = (j.title || '').toLowerCase();
+              return (t.includes('backend') || t.includes('java') || t.includes('microservice') || t.includes('spring')) && !t.includes('front');
+            }).length,
+            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('backend')
+          }
+        ].map(cat => {
+          const isSelected = selectedCategory === cat.key;
+          return (
+            <button
+              key={cat.key}
+              type="button"
+              onClick={() => setSelectedCategory(cat.key)}
+              style={{
+                padding: '7px 14px',
+                fontSize: '12px',
+                fontWeight: isSelected ? '700' : '500',
+                borderRadius: '20px',
+                border: isSelected
+                  ? '1px solid var(--primary)'
+                  : '1px solid var(--border)',
+                background: isSelected
+                  ? 'rgba(99, 102, 241, 0.22)'
+                  : 'rgba(255, 255, 255, 0.03)',
+                color: isSelected ? '#c7d2fe' : 'var(--text-muted)',
+                cursor: 'pointer',
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                transition: 'all 0.15s ease'
+              }}
+            >
+              <span>{cat.label}</span>
+              <span style={{
+                background: isSelected ? 'var(--primary)' : 'rgba(255, 255, 255, 0.1)',
+                color: '#ffffff',
+                padding: '1px 6px',
+                borderRadius: '10px',
+                fontSize: '11px',
+                fontWeight: '600'
+              }}>
+                {cat.count}
+              </span>
+              {cat.isUserDomain && (
+                <span style={{
+                  color: '#34d399',
+                  background: 'rgba(16, 185, 129, 0.15)',
+                  border: '1px solid rgba(16, 185, 129, 0.3)',
+                  padding: '1px 6px',
+                  borderRadius: '6px',
+                  fontSize: '10px',
+                  fontWeight: '700'
+                }}>
+                  Your Domain
+                </span>
+              )}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Filter & Search Bar */}
       <div style={{
         background: '#0b0f19',
@@ -766,6 +886,16 @@ export default function JobFeed({ onNavigate }) {
                       <span className={`badge ${job.matchScore >= 80 ? 'badge-green' : job.matchScore >= 60 ? 'badge-blue' : 'badge-yellow'}`}>
                         {job.matchScore}% Resume Match
                       </span>
+                      {((job.title || '').toLowerCase().includes('front') || (job.title || '').toLowerCase().includes('react') || (job.title || '').toLowerCase().includes('ui')) && (
+                        <span className="badge" style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8', border: '1px solid rgba(56, 189, 248, 0.3)', fontSize: '11px' }}>
+                          ⚡ Frontend
+                        </span>
+                      )}
+                      {uploadSuccess?.targetDomain?.toLowerCase().includes('front') && ((job.title || '').toLowerCase().includes('front') || (job.title || '').toLowerCase().includes('react')) && (
+                        <span className="badge" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399', border: '1px solid rgba(16, 185, 129, 0.3)', fontWeight: '700', fontSize: '11px' }}>
+                          🎯 Target Match
+                        </span>
+                      )}
                       {job.postedDate && (
                         <span className="badge badge-purple" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px' }}>
                           <Calendar size={11} /> {job.postedDate}

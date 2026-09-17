@@ -27,14 +27,19 @@ public class ResumeParserService {
 
     private static final List<String> KNOWN_TECH_KEYWORDS = List.of(
             "java", "spring boot", "spring security", "jwt", "microservices", "kafka", "apache kafka",
-            "react", "angular", "vue", "javascript", "typescript", "node.js", "nodejs", "express",
+            "react", "angular", "vue", "javascript", "typescript", "next.js", "nextjs", "node.js", "nodejs", "express",
+            "redux", "zustand", "tailwind", "html", "css", "sass", "scss", "webpack", "vite", "graphql",
             "mysql", "postgresql", "mongodb", "redis", "oracle", "sql",
             "docker", "kubernetes", "aws", "azure", "gcp", "git", "github", "ci/cd", "rest", "rest api", "restful",
-            "hibernate", "jpa", "maven", "gradle", "python", "html", "css", "tailwind", "c++", "c#"
+            "hibernate", "jpa", "maven", "gradle", "python", "jest", "cypress", "responsive design", "web performance", "c++", "c#"
     );
 
     private static final List<String> HIGH_DEMAND_BACKEND_SKILLS = List.of(
             "Docker", "Kubernetes", "AWS", "Redis", "Apache Kafka", "CI/CD", "Spring Security", "Microservices"
+    );
+
+    private static final List<String> HIGH_DEMAND_FRONTEND_SKILLS = List.of(
+            "TypeScript", "Next.js", "Redux", "Tailwind", "Vite", "CI/CD", "Web Performance", "Jest"
     );
 
     private static final List<String> STRONG_ACTION_VERBS = List.of(
@@ -92,7 +97,7 @@ public class ResumeParserService {
         UserProfile savedProfile = profileRepository.save(profile);
 
         // 5. Compute In-Depth ATS Score & Detailed Deduction Analysis
-        AtsScoreBreakdown atsAnalysis = evaluateAts(rawText, matchedSkills, email, phone, linkedin, github);
+        AtsScoreBreakdown atsAnalysis = evaluateAts(rawText, matchedSkills, domain, email, phone, linkedin, github);
 
         // 6. Re-score strictly fresh jobs within the 7-day window
         LocalDateTime cutoff = LocalDateTime.now().minusDays(7);
@@ -126,7 +131,7 @@ public class ResumeParserService {
         );
     }
 
-    private AtsScoreBreakdown evaluateAts(String rawText, List<String> matchedSkills,
+    private AtsScoreBreakdown evaluateAts(String rawText, List<String> matchedSkills, String domain,
                                           String email, String phone, String linkedin, String github) {
         String lowerText = rawText.toLowerCase();
         List<AtsFeedbackItem> improvements = new ArrayList<>();
@@ -193,57 +198,107 @@ public class ResumeParserService {
         // Pillar 2: Technical Skills & Category Coverage (Max 30 pts)
         // ----------------------------------------------------
         int skillsScore = 0;
-        // Core Backend (Up to 12 pts)
-        int backendCount = 0;
-        List<String> coreBackend = List.of("java", "spring boot", "spring security", "jwt", "microservices", "rest api", "restful", "kafka", "apache kafka");
-        for (String b : coreBackend) {
-            if (lowerText.contains(b)) backendCount++;
-        }
-        skillsScore += Math.min(12, backendCount * 2);
+        boolean isFrontendDomain = (domain != null && domain.toLowerCase().contains("front")) ||
+                matchedSkills.stream().anyMatch(s -> s.equalsIgnoreCase("React") || s.equalsIgnoreCase("Next.js") || s.equalsIgnoreCase("Vue"));
 
-        // Frontend & Scripting (Up to 8 pts)
-        int feCount = 0;
-        List<String> feSkills = List.of("react", "angular", "javascript", "node.js", "nodejs", "express", "html", "css");
-        for (String f : feSkills) {
-            if (lowerText.contains(f)) feCount++;
-        }
-        skillsScore += Math.min(8, feCount * 2);
-
-        // Databases (Up to 4 pts)
-        int dbCount = 0;
-        List<String> dbs = List.of("mysql", "mongodb", "postgresql", "sql", "oracle");
-        for (String d : dbs) {
-            if (lowerText.contains(d)) dbCount++;
-        }
-        skillsScore += Math.min(4, dbCount * 2);
-
-        // Cloud, DevOps & Caching (Up to 6 pts)
-        int cloudCount = 0;
-        List<String> cloudSkills = List.of("docker", "kubernetes", "aws", "redis", "ci/cd", "azure", "gcp");
-        for (String c : cloudSkills) {
-            if (lowerText.contains(c)) cloudCount++;
-        }
-        skillsScore += Math.min(6, cloudCount * 2);
-
-        // Check high demand missing skills
-        for (String highDemand : HIGH_DEMAND_BACKEND_SKILLS) {
-            boolean found = matchedSkills.stream().anyMatch(s -> s.equalsIgnoreCase(highDemand));
-            if (!found) {
-                missingKeywords.add(highDemand);
+        if (isFrontendDomain) {
+            // Core Frontend Frameworks & Libraries (Up to 14 pts)
+            int feFrameworks = 0;
+            List<String> coreFe = List.of("react", "next.js", "nextjs", "javascript", "typescript", "redux", "zustand", "vue", "angular");
+            for (String f : coreFe) {
+                if (lowerText.contains(f)) feFrameworks++;
             }
-        }
+            skillsScore += Math.min(14, feFrameworks * 3);
 
-        if (!missingKeywords.isEmpty()) {
-            String missingListStr = String.join(", ", missingKeywords.subList(0, Math.min(4, missingKeywords.size())));
-            improvements.add(new AtsFeedbackItem(
-                    "Core Skills",
-                    "CRITICAL",
-                    "Missing High-Demand Cloud & DevOps Skills (" + missingListStr + ")",
-                    "Modern enterprise ATS systems screen specifically for cloud, caching, and containerization buzzwords.",
-                    "Integrate skills like " + missingListStr + " into your projects or technical skills section."
-            ));
+            // Styling & Responsive UI (Up to 8 pts)
+            int stylingCount = 0;
+            List<String> styles = List.of("tailwind", "html", "css", "sass", "scss", "responsive design");
+            for (String s : styles) {
+                if (lowerText.contains(s)) stylingCount++;
+            }
+            skillsScore += Math.min(8, stylingCount * 2);
+
+            // Tooling, Testing & APIs (Up to 8 pts)
+            int toolCount = 0;
+            List<String> tools = List.of("vite", "webpack", "jest", "cypress", "rest", "rest api", "git", "github", "web performance", "ci/cd");
+            for (String t : tools) {
+                if (lowerText.contains(t)) toolCount++;
+            }
+            skillsScore += Math.min(8, toolCount * 2);
+
+            // Check high demand missing frontend skills
+            for (String highDemand : HIGH_DEMAND_FRONTEND_SKILLS) {
+                boolean found = matchedSkills.stream().anyMatch(s -> s.equalsIgnoreCase(highDemand));
+                if (!found) {
+                    missingKeywords.add(highDemand);
+                }
+            }
+
+            if (!missingKeywords.isEmpty()) {
+                String missingListStr = String.join(", ", missingKeywords.subList(0, Math.min(4, missingKeywords.size())));
+                improvements.add(new AtsFeedbackItem(
+                        "Core Skills",
+                        "CRITICAL",
+                        "Missing High-Demand Modern Frontend Skills (" + missingListStr + ")",
+                        "Modern engineering hiring systems screen specifically for modern component, state, and bundler tooling.",
+                        "Integrate skills like " + missingListStr + " into your projects or technical skills section."
+                ));
+            } else {
+                strengths.add("Exceptional coverage of modern frontend, React ecosystem, and web performance keywords.");
+            }
         } else {
-            strengths.add("Exceptional coverage of modern backend, full-stack, and cloud keywords.");
+            // Core Backend (Up to 12 pts)
+            int backendCount = 0;
+            List<String> coreBackend = List.of("java", "spring boot", "spring security", "jwt", "microservices", "rest api", "restful", "kafka", "apache kafka");
+            for (String b : coreBackend) {
+                if (lowerText.contains(b)) backendCount++;
+            }
+            skillsScore += Math.min(12, backendCount * 2);
+
+            // Frontend & Scripting (Up to 8 pts)
+            int feCount = 0;
+            List<String> feSkills = List.of("react", "angular", "javascript", "node.js", "nodejs", "express", "html", "css");
+            for (String f : feSkills) {
+                if (lowerText.contains(f)) feCount++;
+            }
+            skillsScore += Math.min(8, feCount * 2);
+
+            // Databases (Up to 4 pts)
+            int dbCount = 0;
+            List<String> dbs = List.of("mysql", "mongodb", "postgresql", "sql", "oracle");
+            for (String d : dbs) {
+                if (lowerText.contains(d)) dbCount++;
+            }
+            skillsScore += Math.min(4, dbCount * 2);
+
+            // Cloud, DevOps & Caching (Up to 6 pts)
+            int cloudCount = 0;
+            List<String> cloudSkills = List.of("docker", "kubernetes", "aws", "redis", "ci/cd", "azure", "gcp");
+            for (String c : cloudSkills) {
+                if (lowerText.contains(c)) cloudCount++;
+            }
+            skillsScore += Math.min(6, cloudCount * 2);
+
+            // Check high demand missing backend skills
+            for (String highDemand : HIGH_DEMAND_BACKEND_SKILLS) {
+                boolean found = matchedSkills.stream().anyMatch(s -> s.equalsIgnoreCase(highDemand));
+                if (!found) {
+                    missingKeywords.add(highDemand);
+                }
+            }
+
+            if (!missingKeywords.isEmpty()) {
+                String missingListStr = String.join(", ", missingKeywords.subList(0, Math.min(4, missingKeywords.size())));
+                improvements.add(new AtsFeedbackItem(
+                        "Core Skills",
+                        "CRITICAL",
+                        "Missing High-Demand Cloud & DevOps Skills (" + missingListStr + ")",
+                        "Modern enterprise ATS systems screen specifically for cloud, caching, and containerization buzzwords.",
+                        "Integrate skills like " + missingListStr + " into your projects or technical skills section."
+                ));
+            } else {
+                strengths.add("Exceptional coverage of modern backend, full-stack, and cloud keywords.");
+            }
         }
 
         // ----------------------------------------------------
@@ -455,7 +510,8 @@ public class ResumeParserService {
             return "Java Full Stack Developer";
         } else if (lowerSkills.contains("spring") || lowerSkills.contains("microservices") || lowerSkills.contains("kafka")) {
             return "Java Backend Developer";
-        } else if (lowerSkills.contains("react") || lowerSkills.contains("angular") || lowerSkills.contains("vue")) {
+        } else if (lowerSkills.contains("react") || lowerSkills.contains("angular") || lowerSkills.contains("vue")
+                || lowerSkills.contains("frontend") || lowerSkills.contains("next")) {
             return "Frontend Developer";
         } else if (lowerSkills.contains("python")) {
             return "Python / AI Engineer";
@@ -467,6 +523,8 @@ public class ResumeParserService {
         int score = 42;
         String jobText = ((job.getTitle() != null ? job.getTitle() : "") + " " +
                 (job.getDescription() != null ? job.getDescription() : "")).toLowerCase();
+        String titleLower = (job.getTitle() != null ? job.getTitle() : "").toLowerCase();
+        String domainLower = (targetDomain != null ? targetDomain : "").toLowerCase();
 
         int skillMatches = 0;
         for (String skill : candidateSkills) {
@@ -477,17 +535,42 @@ public class ResumeParserService {
 
         score += Math.min(46, skillMatches * 7);
 
-        if (job.getTitle() != null) {
-            String titleLower = job.getTitle().toLowerCase();
-            if (titleLower.contains("java") && targetDomain.toLowerCase().contains("java")) {
+        boolean isFrontendCandidate = domainLower.contains("front") || domainLower.contains("react") || domainLower.contains("ui");
+        boolean isBackendCandidate = domainLower.contains("backend") || domainLower.contains("java") || domainLower.contains("spring");
+        boolean isFullStackCandidate = domainLower.contains("full stack") || domainLower.contains("fullstack");
+
+        boolean isFrontendJob = titleLower.contains("front") || titleLower.contains("react") || titleLower.contains("ui ")
+                || titleLower.contains("ui/") || titleLower.contains("ui engineer") || titleLower.contains("web developer");
+        boolean isBackendJob = (titleLower.contains("backend") || titleLower.contains("microservice") || titleLower.contains("core banking") || titleLower.contains("java"))
+                && !isFrontendJob;
+        boolean isFullStackJob = titleLower.contains("full stack") || titleLower.contains("fullstack");
+
+        if (isFrontendCandidate) {
+            if (isFrontendJob) {
+                // High priority match bonus for frontend roles
+                score += 26;
+                if (skillMatches >= 2) score += 8;
+            } else if (isFullStackJob) {
                 score += 8;
+            } else if (isBackendJob) {
+                // Strongly down-rank pure backend roles so frontend candidates see frontend roles on top
+                score = Math.max(30, score - 32);
             }
-            if (titleLower.contains("full stack") || titleLower.contains("fullstack")) {
-                score += 4;
+        } else if (isBackendCandidate && !isFullStackCandidate) {
+            if (isBackendJob) {
+                score += 20;
+            } else if (isFrontendJob) {
+                score = Math.max(30, score - 24);
+            }
+        } else if (isFullStackCandidate) {
+            if (isFullStackJob) {
+                score += 22;
+            } else {
+                score += 10;
             }
         }
 
-        return Math.min(99, Math.max(40, score));
+        return Math.min(99, Math.max(30, score));
     }
 
     public record AtsFeedbackItem(
