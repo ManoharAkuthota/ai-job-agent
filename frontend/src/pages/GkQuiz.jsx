@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { getGkNextQuestion, getGkTopics } from '../services/api';
+import { getGkNextQuestion, getGkTopics, saveGkScore, getGkScore } from '../services/api';
 import {
   Sparkles, Award, Flame, CheckCircle2, XCircle, RefreshCw,
   HelpCircle, Volume2, VolumeX, ArrowRight, BookOpen, Lightbulb,
@@ -416,18 +416,38 @@ export default function GkQuiz() {
     if (q.question) seenQuestionIds.current.add(q.question.trim().toLowerCase());
   };
 
+  // User & DB persistence helpers
+  const getStoredUser = () => {
+    try {
+      const raw = localStorage.getItem('jobagent_user');
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const getGuestId = () => {
+    let gid = localStorage.getItem('jobagent_gk_guest_id');
+    if (!gid) {
+      gid = 'guest_' + Math.random().toString(36).substring(2, 11);
+      localStorage.setItem('jobagent_gk_guest_id', gid);
+    }
+    return gid;
+  };
+
   // Interaction State
   const [selectedOption, setSelectedOption] = useState(null);
   const [isAnswered, setIsAnswered] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
 
-  // Score & Game Stats
+  // Score & Game Stats (Only score/stats are persisted in the database, questions are 100% ephemeral)
   const [score, setScore] = useState(0);
   const [streak, setStreak] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [totalCorrect, setTotalCorrect] = useState(0);
   const [soundEnabled, setSoundEnabled] = useState(true);
+  const [savedToCloud, setSavedToCloud] = useState(false);
 
   // Auto-advance timer ref & background pre-fetch buffer
   const autoAdvanceTimer = useRef(null);
@@ -480,12 +500,52 @@ export default function GkQuiz() {
       markSeen(currentQuestion);
     }
     loadTopics();
+    loadSavedScore();
     // Pre-fetch the next question silently in the background while user plays current question
     prefetchNextQuestion(selectedTopic, selectedDifficulty);
     return () => {
       if (autoAdvanceTimer.current) clearTimeout(autoAdvanceTimer.current);
     };
   }, []);
+
+  const loadSavedScore = async () => {
+    try {
+      const user = getStoredUser();
+      const guestId = getGuestId();
+      const identifier = user?.email || guestId;
+      const res = await getGkScore(identifier);
+      if (res.data && typeof res.data.score === 'number') {
+        if (res.data.score > 0) setScore(res.data.score);
+        if (res.data.bestStreak > 0) setBestStreak(res.data.bestStreak);
+        if (res.data.totalAnswered > 0) setTotalAnswered(res.data.totalAnswered);
+        if (res.data.totalCorrect > 0) setTotalCorrect(res.data.totalCorrect);
+        setSavedToCloud(true);
+      }
+    } catch (e) {
+      console.warn("Could not load score from database:", e);
+    }
+  };
+
+  const syncScoreToDb = async (newScore, newStreak, newBestStreak, newAnswered, newCorrect) => {
+    try {
+      const user = getStoredUser();
+      const guestId = getGuestId();
+      await saveGkScore({
+        userIdentifier: user?.email || guestId,
+        userName: user?.fullName || 'Trivia Player',
+        score: newScore,
+        streak: newStreak,
+        bestStreak: newBestStreak,
+        totalAnswered: newAnswered,
+        totalCorrect: newCorrect,
+        lastTopic: selectedTopic,
+        lastDifficulty: selectedDifficulty
+      });
+      setSavedToCloud(true);
+    } catch (e) {
+      console.warn("Could not sync score to database:", e);
+    }
+  };
 
   const loadTopics = async () => {
     try {
@@ -573,18 +633,25 @@ export default function GkQuiz() {
 
     const correct = option.trim().toLowerCase() === currentQuestion.correctAnswer.trim().toLowerCase();
     setIsCorrect(correct);
-    setTotalAnswered(prev => prev + 1);
+    const newAnswered = totalAnswered + 1;
+    setTotalAnswered(newAnswered);
 
     if (correct) {
       playSound('correct');
       const newStreak = streak + 1;
       setStreak(newStreak);
+      const newBestStreak = Math.max(bestStreak, newStreak);
       if (newStreak > bestStreak) setBestStreak(newStreak);
 
       const basePoints = selectedDifficulty === 'HARD' ? 30 : selectedDifficulty === 'MEDIUM' ? 20 : 10;
       const streakBonus = Math.min(newStreak * 5, 25);
-      setScore(prev => prev + basePoints + streakBonus);
-      setTotalCorrect(prev => prev + 1);
+      const newScore = score + basePoints + streakBonus;
+      setScore(newScore);
+      const newCorrect = totalCorrect + 1;
+      setTotalCorrect(newCorrect);
+
+      // Persist updated score & stats to database
+      syncScoreToDb(newScore, newStreak, newBestStreak, newAnswered, newCorrect);
 
       // Auto-advance after 1.1s on victory (snappy gamified transition)
       autoAdvanceTimer.current = setTimeout(() => {
@@ -593,6 +660,8 @@ export default function GkQuiz() {
     } else {
       playSound('wrong');
       setStreak(0);
+      // Persist stats on wrong answer too (streak resets, totalAnswered increments)
+      syncScoreToDb(score, 0, bestStreak, newAnswered, totalCorrect);
       // On wrong answer, do NOT auto-advance so user can read explanation
     }
   };
@@ -637,15 +706,18 @@ export default function GkQuiz() {
                 <Zap size={12} />
                 Daily Live AI Feed • 2026
               </span>
-              <span className="badge badge-blue" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px' }}>
-                Unlimited Trivia
-              </span>
+              {savedToCloud && (
+                <span className="badge badge-blue" style={{ display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '11px' }}>
+                  <Award size={12} />
+                  Score Stored in DB
+                </span>
+              )}
             </div>
             <h1 style={{ fontSize: '22px', fontWeight: '800', color: '#ffffff', letterSpacing: '-0.5px', margin: 0 }}>
               AI General Knowledge Studio
             </h1>
             <p style={{ fontSize: '13px', color: 'var(--text-muted)', marginTop: '4px' }}>
-              Daily Current Affairs, Politics, Cinema, Cities, History, Science & Sports. Unlimited questions generated dynamically by AI every day.
+              Daily Current Affairs, Politics, Cinema, Cities, History, Science & Sports. Questions are dynamic & in-memory — only your score & statistics are stored in the database.
             </p>
           </div>
 
@@ -685,6 +757,7 @@ export default function GkQuiz() {
           <div style={{ display: 'flex', flexDirection: 'column' }}>
             <span style={{ fontSize: '11px', color: 'var(--text-muted)', textTransform: 'uppercase', fontWeight: '700' }}>Score</span>
             <span style={{ fontSize: '20px', fontWeight: '800', color: '#ffffff' }}>{score} <span style={{ fontSize: '11px', color: '#818cf8' }}>pts</span></span>
+            <span style={{ fontSize: '10px', color: '#10b981', marginTop: '2px', display: 'flex', alignItems: 'center', gap: '3px' }}>● Saved in Database</span>
           </div>
 
           {/* Current Streak */}

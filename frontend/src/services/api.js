@@ -129,5 +129,8 @@ export const getCurrentUser = () => api.get('/auth/me');
 // General Knowledge (GK) Interactive Quiz APIs
 export const getGkTopics = () => api.get('/gk/topics');
 export const getGkNextQuestion = (topic, difficulty, exclude) => api.get('/gk/next', { params: { topic, difficulty, exclude } });
+export const saveGkScore = (scoreData) => api.post('/gk/score', scoreData);
+export const getGkScore = (userIdentifier) => api.get('/gk/score', { params: { userIdentifier } });
+export const getGkLeaderboard = () => api.get('/gk/leaderboard');
 
 export default api;
