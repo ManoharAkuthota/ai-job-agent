@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getApplications, updateApplicationStatus, deleteApplication, getPdfUrl, getProofUrl } from '../services/api';
 import { Send, Building, Calendar, ExternalLink, Download, Trash2, CheckCircle2, Image as ImageIcon, X } from 'lucide-react';
 
-export default function Applications() {
+export default function Applications({ onNavigate }) {
   const [applications, setApplications] = useState([]);
   const [statusFilter, setStatusFilter] = useState('');
   const [loading, setLoading] = useState(false);
@@ -25,21 +25,25 @@ export default function Applications() {
   }, []);
 
   const handleStatusChange = async (id, newStatus) => {
+    // Instant optimistic update (0ms UI lag)
+    setApplications(prev => prev.map(a => a.id === id ? { ...a, status: newStatus } : a));
     try {
       await updateApplicationStatus(id, newStatus);
-      await loadApps();
     } catch (err) {
-      alert("Error updating status: " + err.message);
+      console.error("Error updating status:", err);
+      loadApps();
     }
   };
 
   const handleDelete = async (id) => {
     if (window.confirm("Remove this application from tracking?")) {
+      // Instant optimistic update (0ms UI lag)
+      setApplications(prev => prev.filter(a => a.id !== id));
       try {
         await deleteApplication(id);
-        await loadApps();
       } catch (err) {
-        alert("Error deleting application: " + err.message);
+        console.error("Error deleting application:", err);
+        loadApps();
       }
     }
   };

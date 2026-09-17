@@ -2,21 +2,23 @@ import React, { useState, useEffect, useRef } from 'react';
 import { getProfile, saveProfile, uploadResume } from '../services/api';
 import { User, Mail, Phone, MapPin, Globe, Award, CheckCircle2, Save, UploadCloud, RefreshCw } from 'lucide-react';
 
-export default function ProfileEditor() {
-  const [profile, setProfile] = useState({
-    fullName: '',
-    email: '',
-    phone: '',
-    location: '',
-    linkedinUrl: '',
-    githubUrl: '',
-    portfolioUrl: '',
-    targetDomain: '',
-    summary: '',
-    skills: '',
-    experience: '',
-    education: ''
-  });
+const DEFAULT_PROFILE = {
+  fullName: 'Akuthota Manohar',
+  email: 'manoharsriakuthota@gmail.com',
+  phone: '8096870549',
+  location: 'Ahmedabad, India',
+  linkedinUrl: 'https://linkedin.com/in/manoharsriakuthota',
+  githubUrl: 'https://github.com/ManoharAkuthota',
+  portfolioUrl: '',
+  targetDomain: 'Java Full Stack Developer',
+  summary: 'Computer Science (AI) graduate and Java developer with hands-on experience building backend microservices for a production CPaaS (Communications Platform as a Service) using Spring Boot, Spring Security, JWT, and Apache Kafka. Combines strong full-stack fundamentals (Java, JavaScript, React, Angular) with practical experience across content strategy and web development. Proven ability to design secure, scalable systems and deliver responsive, user-friendly applications.',
+  skills: 'Java, Spring Boot, Spring Security, JWT, Microservices, Apache Kafka, React, Angular, Node.js, Express, MySQL, MongoDB, GitHub, REST APIs, Postman, JavaScript, Python, HTML, CSS, DSA',
+  experience: 'Junior Java Developer | Keyanna Technologies, Ahmedabad (Jan 2026 - Present)\n- Built and maintained backend microservices for the company CPaaS product using Spring Boot.\n- Implemented secure authentication and authorization flows with Spring Security and JWT-based token management.\n- Integrated Apache Kafka for real-time, event-driven messaging between services.\n\nContent Writer | Parul University, Vadodara (Apr 2025 - Dec 2025)\n- Created and oversaw academic and technical content for the CDOE department.\n\nWeb Developer Intern | Talent Lad, Vijayawada (Feb 2025 - May 2025)\n- Designed and developed responsive, mobile-friendly web pages using HTML, CSS, and JavaScript.',
+  education: 'B.Tech in Computer Science (Artificial Intelligence) | Parul University, Vadodara (2022 - 2026) -- CGPA: 8.26/10\nClass XII | Sri Vidwan Junior College, Warangal, Telangana (2020 - 2022) -- Score: 96.4%\nClass X | Vidyodaya High School, Nekkonda, Warangal, Telangana (2019 - 2020) -- GPA: 10/10'
+};
+
+export default function ProfileEditor({ onNavigate }) {
+  const [profile, setProfile] = useState(DEFAULT_PROFILE);
   const [saving, setSaving] = useState(false);
   const [savedSuccess, setSavedSuccess] = useState(false);
   const [uploadingResume, setUploadingResume] = useState(false);
@@ -25,9 +27,9 @@ export default function ProfileEditor() {
   useEffect(() => {
     getProfile()
       .then((res) => {
-        if (res.data) setProfile(res.data);
+        if (res?.data && res.data.fullName) setProfile(res.data);
       })
-      .catch((err) => console.error("Error loading profile:", err));
+      .catch((err) => console.warn("Using instant local profile defaults:", err));
   }, []);
 
   const handleResumeUpload = async (e) => {

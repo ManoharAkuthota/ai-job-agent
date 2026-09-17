@@ -208,7 +208,9 @@ export default function JobFeed({ onNavigate }) {
     try {
       await tailorResume(jobId);
       await loadJobs();
-      alert("Resume tailored successfully! View or download in the 'Tailored Resumes' tab.");
+      if (onNavigate) {
+        onNavigate('resumes');
+      }
     } catch (err) {
       alert("Error tailoring resume: " + (err.response?.data || err.message));
     } finally {
@@ -912,7 +914,7 @@ export default function JobFeed({ onNavigate }) {
                     <button
                       type="button"
                       onClick={() => {
-                        if (onNavigate) onNavigate('prep');
+                        if (onNavigate) onNavigate('prep', { jobId: job.id });
                       }}
                       className="btn-secondary"
                       style={{

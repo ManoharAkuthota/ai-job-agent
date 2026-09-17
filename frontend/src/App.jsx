@@ -26,6 +26,7 @@ export default function App() {
   });
 
   const [activeTab, setActiveTab] = useState('jobs');
+  const [activeJobIdForPrep, setActiveJobIdForPrep] = useState(null);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
 
   // Validate session on app load & keep cloud container warm
@@ -56,8 +57,11 @@ export default function App() {
     return () => clearInterval(keepWarmInterval);
   }, []);
 
-  const handleSelectTab = (tab) => {
+  const handleSelectTab = (tab, params = null) => {
     setActiveTab(tab);
+    if (params?.jobId) {
+      setActiveJobIdForPrep(params.jobId);
+    }
     setMobileNavOpen(false);
   };
 
@@ -332,12 +336,12 @@ export default function App() {
       <main className="main-content">
         {activeTab === 'dashboard' && <Dashboard onNavigate={handleSelectTab} />}
         {activeTab === 'jobs' && <JobFeed onNavigate={handleSelectTab} />}
-        {activeTab === 'profile' && <ProfileEditor />}
-        {activeTab === 'resumes' && <TailoredResumes />}
-        {activeTab === 'prep' && <InterviewPrep />}
-        {activeTab === 'gk' && <GkQuiz />}
-        {activeTab === 'applications' && <Applications />}
-        {activeTab === 'settings' && <AgentSettings />}
+        {activeTab === 'profile' && <ProfileEditor onNavigate={handleSelectTab} />}
+        {activeTab === 'resumes' && <TailoredResumes onNavigate={handleSelectTab} />}
+        {activeTab === 'prep' && <InterviewPrep initialJobId={activeJobIdForPrep} onNavigate={handleSelectTab} />}
+        {activeTab === 'gk' && <GkQuiz onNavigate={handleSelectTab} />}
+        {activeTab === 'applications' && <Applications onNavigate={handleSelectTab} />}
+        {activeTab === 'settings' && <AgentSettings onNavigate={handleSelectTab} />}
       </main>
 
       {/* Modern Frosted OLED Mobile Bottom Navigation Bar (Visible on screens <= 768px) */}

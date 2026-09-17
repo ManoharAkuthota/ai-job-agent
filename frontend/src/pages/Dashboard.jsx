@@ -143,7 +143,7 @@ export default function Dashboard({ onNavigate }) {
 
       {/* Metrics Grid */}
       <div className="grid-4">
-        <div className="stat-card" onClick={() => onNavigate('jobs')} style={{ cursor: 'pointer' }}>
+        <div className="stat-card" onClick={() => onNavigate && onNavigate('jobs')} style={{ cursor: 'pointer' }}>
           <div className="stat-icon" style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38bdf8' }}>
             <Briefcase size={24} />
           </div>
@@ -153,7 +153,7 @@ export default function Dashboard({ onNavigate }) {
           </div>
         </div>
 
-        <div className="stat-card" onClick={() => onNavigate('resumes')} style={{ cursor: 'pointer' }}>
+        <div className="stat-card" onClick={() => onNavigate && onNavigate('resumes')} style={{ cursor: 'pointer' }}>
           <div className="stat-icon" style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#fbbf24' }}>
             <FileText size={24} />
           </div>
@@ -163,7 +163,7 @@ export default function Dashboard({ onNavigate }) {
           </div>
         </div>
 
-        <div className="stat-card" onClick={() => onNavigate('applications')} style={{ cursor: 'pointer' }}>
+        <div className="stat-card" onClick={() => onNavigate && onNavigate('applications')} style={{ cursor: 'pointer' }}>
           <div className="stat-icon" style={{ background: 'rgba(99, 102, 241, 0.15)', color: '#818cf8' }}>
             <Send size={24} />
           </div>
@@ -173,7 +173,7 @@ export default function Dashboard({ onNavigate }) {
           </div>
         </div>
 
-        <div className="stat-card" onClick={() => onNavigate('applications')} style={{ cursor: 'pointer' }}>
+        <div className="stat-card" onClick={() => onNavigate && onNavigate('applications')} style={{ cursor: 'pointer' }}>
           <div className="stat-icon" style={{ background: 'rgba(16, 185, 129, 0.15)', color: '#34d399' }}>
             <Calendar size={24} />
           </div>

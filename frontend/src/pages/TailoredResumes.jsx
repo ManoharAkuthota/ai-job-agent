@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getResumes, getPdfUrl } from '../services/api';
 import { FileText, Download, Eye, Building, Calendar, X, Sparkles } from 'lucide-react';
 
-export default function TailoredResumes() {
+export default function TailoredResumes({ onNavigate }) {
   const [resumes, setResumes] = useState([]);
   const [loading, setLoading] = useState(false);
   const [previewResume, setPreviewResume] = useState(null);
@@ -43,9 +43,16 @@ export default function TailoredResumes() {
         }}>
           <FileText size={40} style={{ margin: '0 auto 12px auto', opacity: 0.4, color: '#818cf8' }} />
           <h3 style={{ fontSize: '16px', color: '#ffffff', marginBottom: '6px' }}>No tailored resumes yet</h3>
-          <p style={{ fontSize: '14px', color: 'var(--text-muted)' }}>
+          <p style={{ fontSize: '14px', color: 'var(--text-muted)', maxWidth: '480px', margin: '0 auto 16px auto' }}>
             Go to the "Job Feed" and click "Tailor Resume", or run the AI Agent from the Dashboard to generate them.
           </p>
+          <button
+            onClick={() => onNavigate && onNavigate('jobs')}
+            className="btn-primary"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+          >
+            Browse Job Feed
+          </button>
         </div>
       ) : (
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '16px' }}>

@@ -121,10 +121,10 @@ const generateLocalPrepKit = (jobId, targetJob) => {
   };
 };
 
-export default function InterviewPrep() {
+export default function InterviewPrep({ initialJobId, onNavigate }) {
   const [jobs, setJobs] = useState(FALLBACK_JOBS);
-  const [selectedJobId, setSelectedJobId] = useState(FALLBACK_JOBS[0].id);
-  const [prepData, setPrepData] = useState(() => generateLocalPrepKit(FALLBACK_JOBS[0].id, FALLBACK_JOBS[0]));
+  const [selectedJobId, setSelectedJobId] = useState(initialJobId || FALLBACK_JOBS[0].id);
+  const [prepData, setPrepData] = useState(() => generateLocalPrepKit(initialJobId || FALLBACK_JOBS[0].id));
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('technical'); // 'technical', 'behavioral', 'system'
   const [expandedAnswers, setExpandedAnswers] = useState({ 1: true }); // Q1 open by default
@@ -133,6 +133,13 @@ export default function InterviewPrep() {
   useEffect(() => {
     loadInitialData();
   }, []);
+
+  useEffect(() => {
+    if (initialJobId && initialJobId !== selectedJobId) {
+      setSelectedJobId(initialJobId);
+      handleGenerate(initialJobId);
+    }
+  }, [initialJobId]);
 
   const loadInitialData = async () => {
     try {
