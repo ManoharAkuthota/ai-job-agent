@@ -14,7 +14,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/cover-letters")
-@CrossOrigin(origins = "*")
 public class CoverLetterController {
 
     private final CoverLetterService coverLetterService;

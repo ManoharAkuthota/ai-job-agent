@@ -16,7 +16,6 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/gk")
-@CrossOrigin(origins = "*")
 public class GkQuestionController {
 
     private static final Logger log = LoggerFactory.getLogger(GkQuestionController.class);

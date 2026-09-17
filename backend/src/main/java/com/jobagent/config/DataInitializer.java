@@ -83,7 +83,15 @@ public class DataInitializer implements CommandLineRunner {
             userRepository.save(demoUser);
         }
 
-        // 4. Purge German/irrelevant jobs and seed verified Indian company jobs
-        jobDiscoveryService.discoverJobs("Java Full Stack Developer", "Java, Spring Boot, React");
+        // 4. Purge German/irrelevant jobs and seed verified Indian company jobs asynchronously
+        // Running this in a background thread ensures Spring Boot binds the HTTP port in < 3s,
+        // completely eliminating Render's "Port scan timeout reached" error!
+        java.util.concurrent.CompletableFuture.runAsync(() -> {
+            try {
+                jobDiscoveryService.discoverJobs("Java Full Stack Developer", "Java, Spring Boot, React");
+            } catch (Exception e) {
+                System.err.println("Async job discovery initialization error: " + e.getMessage());
+            }
+        });
     }
 }
