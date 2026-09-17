@@ -41,7 +41,7 @@ public class SecurityConfig {
                         // Auth endpoints
                         .requestMatchers("/api/auth/**").permitAll()
                         // Proof screenshots and PDF downloads (must be public so <img> and <a> tags work)
-                        .requestMatchers("/api/applications/*/proof", "/api/resumes/*/pdf").permitAll()
+                        .requestMatchers("/api/applications/*/proof", "/api/resumes/*/pdf", "/api/cover-letters/*/pdf").permitAll()
                         // Allow job feed viewing and autonomous operations
                         .requestMatchers("/api/**").permitAll()
                         .anyRequest().permitAll()

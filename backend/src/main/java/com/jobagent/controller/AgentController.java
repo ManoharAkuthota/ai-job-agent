@@ -57,6 +57,7 @@ public class AgentController {
         stats.put("interviewsScheduled", applicationRepository.countByStatus("INTERVIEW"));
         stats.put("schedulerActive", true);
         stats.put("dailyExecutionTime", "09:00 AM IST (Scheduled Daily)");
+        stats.put("version", "2.1.0-interview-prep-active");
 
         AgentSettings settings = settingsRepository.findById(1L).orElseGet(AgentSettings::new);
         stats.put("targetDomain", settings.getTargetDomain());

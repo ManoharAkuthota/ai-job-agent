@@ -33,21 +33,43 @@ public class InterviewPrepController {
     }
 
     @GetMapping
-    public ResponseEntity<List<InterviewPrep>> getAllInterviewPreps() {
-        return ResponseEntity.ok(interviewPrepService.getAllInterviewPreps());
+    public ResponseEntity<?> getAllInterviewPreps() {
+        try {
+            return ResponseEntity.ok(interviewPrepService.getAllInterviewPreps());
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return ResponseEntity.status(500).body(java.util.Map.of(
+                    "error", t.getMessage() != null ? t.getMessage() : t.toString(),
+                    "type", t.getClass().getSimpleName()
+            ));
+        }
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<InterviewPrep> getInterviewPrepById(@PathVariable Long id) {
-        return interviewPrepService.getInterviewPrepById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getInterviewPrepById(@PathVariable Long id) {
+        try {
+            return interviewPrepService.getInterviewPrepById(id)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return ResponseEntity.status(500).body(java.util.Map.of(
+                    "error", t.getMessage() != null ? t.getMessage() : t.toString()
+            ));
+        }
     }
 
     @GetMapping("/job/{jobId}")
-    public ResponseEntity<InterviewPrep> getLatestByJobId(@PathVariable Long jobId) {
-        return interviewPrepService.getLatestByJobId(jobId)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getLatestByJobId(@PathVariable Long jobId) {
+        try {
+            return interviewPrepService.getLatestByJobId(jobId)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build());
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return ResponseEntity.status(500).body(java.util.Map.of(
+                    "error", t.getMessage() != null ? t.getMessage() : t.toString()
+            ));
+        }
     }
 }

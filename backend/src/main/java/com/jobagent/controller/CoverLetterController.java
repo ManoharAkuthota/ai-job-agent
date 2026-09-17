@@ -24,18 +24,30 @@ public class CoverLetterController {
     }
 
     @PostMapping("/generate/{jobId}")
-    public ResponseEntity<CoverLetter> generateCoverLetter(@PathVariable Long jobId) {
+    public ResponseEntity<?> generateCoverLetter(@PathVariable Long jobId) {
         try {
             CoverLetter coverLetter = coverLetterService.generateCoverLetter(jobId);
             return ResponseEntity.ok(coverLetter);
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(java.util.Map.of(
+                    "error", e.getMessage() != null ? e.getMessage() : "Error generating cover letter",
+                    "type", e.getClass().getSimpleName()
+            ));
         }
     }
 
     @GetMapping
-    public ResponseEntity<List<CoverLetter>> getAllCoverLetters() {
-        return ResponseEntity.ok(coverLetterService.getAllCoverLetters());
+    public ResponseEntity<?> getAllCoverLetters() {
+        try {
+            return ResponseEntity.ok(coverLetterService.getAllCoverLetters());
+        } catch (Throwable t) {
+            t.printStackTrace();
+            return ResponseEntity.status(500).body(java.util.Map.of(
+                    "error", t.getMessage() != null ? t.getMessage() : t.toString(),
+                    "type", t.getClass().getSimpleName()
+            ));
+        }
     }
 
     @GetMapping("/{id}")
