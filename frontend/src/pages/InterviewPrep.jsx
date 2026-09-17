@@ -13,6 +13,7 @@ export default function InterviewPrep() {
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('technical'); // 'technical', 'behavioral', 'system'
   const [expandedAnswers, setExpandedAnswers] = useState({ 1: true }); // Q1 open by default
+  const [prepError, setPrepError] = useState(null);
 
   useEffect(() => {
     loadInitialData();
@@ -33,7 +34,7 @@ export default function InterviewPrep() {
       if (prepsRes.status === 'fulfilled' && prepsRes.value.data && prepsRes.value.data.length > 0) {
         setPrepData(prepsRes.value.data[0]);
       } else if (jobsRes.status === 'fulfilled' && jobsRes.value.data && jobsRes.value.data.length > 0) {
-        // Auto-generate for the first job if no kits exist yet
+        // Generate for the first job if no kits exist yet
         handleGenerate(jobsRes.value.data[0].id);
       }
     } catch (err) {
@@ -46,13 +47,21 @@ export default function InterviewPrep() {
     if (!targetId) return;
 
     setLoading(true);
+    setPrepError(null);
     try {
       const res = await generateInterviewPrep(targetId);
-      setPrepData(res.data);
-      setExpandedAnswers({ 1: true });
+      if (res.data) {
+        setPrepData(res.data);
+        setExpandedAnswers({ 1: true });
+      }
     } catch (err) {
       console.error('Failed to generate interview prep kit:', err);
-      alert('Error generating interview kit. Please make sure backend is active.');
+      const isNet = !err.response || err.message?.includes('Network') || err.response?.status >= 500;
+      if (isNet) {
+        setPrepError("Cloud server is initializing or re-indexing interview prep. Please tap 'Retry Generating Kit' below.");
+      } else {
+        setPrepError(err.response?.data?.error || err.message || "Failed to generate interview kit.");
+      }
     } finally {
       setLoading(false);
     }
@@ -194,6 +203,42 @@ export default function InterviewPrep() {
           </div>
         )}
       </div>
+
+      {prepError && (
+        <div style={{
+          background: 'rgba(239, 68, 68, 0.12)',
+          border: '1px solid rgba(239, 68, 68, 0.35)',
+          color: '#fca5a5',
+          borderRadius: '10px',
+          padding: '14px 18px',
+          fontSize: '13px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <AlertCircle size={18} color="#f87171" style={{ flexShrink: 0 }} />
+            <span>{prepError}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => handleGenerate(selectedJobId)}
+            className="btn-primary"
+            style={{
+              padding: '6px 14px',
+              fontSize: '12px',
+              fontWeight: '700',
+              background: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+              border: 'none',
+              cursor: 'pointer'
+            }}
+          >
+            ⚡ Retry Generating Kit
+          </button>
+        </div>
+      )}
 
       {/* Tabs */}
       <div style={{

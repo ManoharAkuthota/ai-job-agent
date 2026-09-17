@@ -19,12 +19,16 @@ public class InterviewPrepController {
     }
 
     @PostMapping("/generate/{jobId}")
-    public ResponseEntity<InterviewPrep> generateInterviewPrep(@PathVariable Long jobId) {
+    public ResponseEntity<?> generateInterviewPrep(@PathVariable Long jobId) {
         try {
             InterviewPrep prep = interviewPrepService.generateInterviewPrep(jobId);
             return ResponseEntity.ok(prep);
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().build();
+            e.printStackTrace();
+            return ResponseEntity.status(500).body(java.util.Map.of(
+                    "error", e.getMessage() != null ? e.getMessage() : "Error generating interview kit",
+                    "type", e.getClass().getSimpleName()
+            ));
         }
     }
 
