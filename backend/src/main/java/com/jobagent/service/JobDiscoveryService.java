@@ -494,6 +494,229 @@ public class JobDiscoveryService {
                 "5 days ago",
                 now.minusDays(5)
         ));
+
+        // ==========================================
+        // Top Indian Tech Companies - AI / ML ROLES
+        // ==========================================
+        list.add(new Job(
+                "Machine Learning Engineer (NLP / LLMs / PyTorch)",
+                "Fractal Analytics",
+                "Bengaluru / Mumbai, India",
+                "Hybrid",
+                "₹ 16 - 28 LPA",
+                "Fractal Analytics is hiring Machine Learning Engineers to design and scale deep learning and Generative AI systems. Requirements: PyTorch, TensorFlow, Hugging Face, LLMs, LangChain, vector databases (Pinecone/Milvus), and Python. Deploy high-throughput AI inference pipelines using FastAPI and Docker.",
+                "https://careers.fractalanalytics.com/",
+                "Official Career Portal",
+                "1 day ago",
+                now.minusDays(1)
+        ));
+
+        list.add(new Job(
+                "AI / GenAI Applied Engineer (Python / LangChain / VectorDB)",
+                "Swiggy",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 18 - 32 LPA",
+                "Swiggy AI Labs is building next-generation conversational ordering and recommendation systems. Seeking AI Engineers proficient in Python, PyTorch, LangChain, RAG architectures, prompt engineering, and LLM fine-tuning. Production experience deploying models on AWS with Docker.",
+                "https://careers.swiggy.com/",
+                "Indian Tech Careers",
+                "2 days ago",
+                now.minusDays(2)
+        ));
+
+        list.add(new Job(
+                "Machine Learning Engineer (Deep Learning & Recommendation Systems)",
+                "Jio Platforms",
+                "Bengaluru / Mumbai, India",
+                "Full-Time",
+                "₹ 14 - 25 LPA",
+                "Jio AI Platform is seeking ML Engineers to scale personalized content recommendations across 400M+ users. Hands-on expertise in Python, Scikit-Learn, PyTorch, distributed model training, Kafka feature streams, and MLflow pipeline automation.",
+                "https://careers.jio.com/",
+                "Indian Tech Careers",
+                "3 days ago",
+                now.minusDays(3)
+        ));
+
+        list.add(new Job(
+                "AI Systems & LLM Engineer (Python / FastAPI / Docker)",
+                "Yellow.ai",
+                "Bengaluru / Remote, India",
+                "Remote, India",
+                "₹ 15 - 28 LPA",
+                "Yellow.ai is expanding its enterprise conversational AI platform. Looking for AI Engineers with deep experience in Python, LLMs, NLP tokenization, LangChain, FastAPI async services, and containerized deployment in Kubernetes.",
+                "https://yellow.ai/careers/",
+                "Indian Tech Careers",
+                "3 days ago",
+                now.minusDays(3)
+        ));
+
+        // ==========================================
+        // Top Indian Tech Companies - DEVOPS & CLOUD
+        // ==========================================
+        list.add(new Job(
+                "DevOps & Cloud Platform Engineer (Kubernetes / Terraform / AWS)",
+                "Razorpay",
+                "Bengaluru, Karnataka, India",
+                "Hybrid",
+                "₹ 18 - 30 LPA",
+                "Razorpay infrastructure engineering is hiring DevOps Engineers to manage hyper-scale cloud environments. Must have strong skills in AWS, Kubernetes (EKS), Terraform infrastructure-as-code, Docker, Helm charts, and automated CI/CD pipelines (GitHub Actions/Jenkins).",
+                "https://razorpay.com/jobs/",
+                "Indian Tech Careers",
+                "1 day ago",
+                now.minusDays(1)
+        ));
+
+        list.add(new Job(
+                "Site Reliability Engineer / SRE (Kubernetes / Prometheus / Linux)",
+                "Groww",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 16 - 28 LPA",
+                "Groww is scaling its financial investment platform to tens of millions of users. SRE team seeks engineers with deep Linux internals, Prometheus/Grafana observability, Kubernetes cluster reliability, incident response, and Python/Bash automation.",
+                "https://groww.in/careers",
+                "Indian Tech Careers",
+                "2 days ago",
+                now.minusDays(2)
+        ));
+
+        list.add(new Job(
+                "Cloud Infrastructure & DevOps Engineer (AWS / Docker / Terraform)",
+                "Paytm",
+                "Noida / Bengaluru, India",
+                "Full-Time",
+                "₹ 14 - 24 LPA",
+                "Paytm Payments Core is seeking Cloud Infrastructure Engineers. Manage high-concurrency payment infrastructure on AWS, automate multi-region deployments with Terraform, ensure zero-downtime blue/green releases, and enforce SOC-2 security protocols.",
+                "https://jobs.lever.co/paytm",
+                "Official Career Portal",
+                "3 days ago",
+                now.minusDays(3)
+        ));
+
+        list.add(new Job(
+                "DevOps & Infrastructure Automation Engineer",
+                "Zepto",
+                "Mumbai / Bengaluru, India",
+                "Full-Time",
+                "₹ 15 - 26 LPA",
+                "Zepto quick-commerce is looking for DevOps Engineers to automate continuous deployment and optimize cloud costs across AWS and Kubernetes. Experience with Terraform, Docker, monitoring stacks, and production incident management.",
+                "https://www.zeptonow.com/careers",
+                "Indian Tech Careers",
+                "4 days ago",
+                now.minusDays(4)
+        ));
+
+        // ==========================================
+        // Top Indian Tech Companies - DATA ENGINEERING
+        // ==========================================
+        list.add(new Job(
+                "Data Engineer (Apache Spark / Airflow / Delta Lakehouse)",
+                "Flipkart",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 18 - 32 LPA",
+                "Flipkart Data Platform is hiring Data Engineers to build petabyte-scale streaming and batch data architectures. Required: Apache Spark, Apache Airflow, Delta Lake/Snowflake, Python, SQL, and Kafka streaming ingestion. Optimize SQL queries and data pipelines.",
+                "https://www.flipkartcareers.com/",
+                "Official Career Portal",
+                "2 days ago",
+                now.minusDays(2)
+        ));
+
+        list.add(new Job(
+                "Big Data & Streaming Pipeline Engineer (Kafka / Spark / Snowflake)",
+                "PhonePe",
+                "Bengaluru, Karnataka, India",
+                "Hybrid",
+                "₹ 18 - 30 LPA",
+                "PhonePe analytics platform processes over 100M daily UPI transactions. Looking for Data Engineers proficient in distributed systems, Apache Spark, Kafka real-time pipelines, Snowflake data warehousing, and AWS cloud storage optimization.",
+                "https://www.phonepe.com/careers/",
+                "Indian Tech Careers",
+                "3 days ago",
+                now.minusDays(3)
+        ));
+
+        list.add(new Job(
+                "Data Engineer (Python / SQL / Snowflake / AWS)",
+                "Zomato",
+                "Gurugram, Haryana, India",
+                "Full-Time",
+                "₹ 15 - 26 LPA",
+                "Zomato is hiring Data Engineers to manage warehouse ETL workflows powering live business intelligence and merchant analytics. Strong background in Python, SQL schema design, Snowflake, dbt, and Apache Airflow orchestration.",
+                "https://www.zomato.com/careers",
+                "Official Career Portal",
+                "4 days ago",
+                now.minusDays(4)
+        ));
+
+        // ==========================================
+        // Top Indian Tech Companies - QA AUTOMATION & SDET
+        // ==========================================
+        list.add(new Job(
+                "SDET / Senior QA Automation Engineer (Playwright / Java / CI/CD)",
+                "Swiggy",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 14 - 25 LPA",
+                "Swiggy Consumer Tech is hiring SDETs to architect automated test suites across web and backend microservices. Expertise in Playwright, Selenium WebDriver, Java/TypeScript, Rest Assured API testing, TestNG, and CI/CD quality gate integrations.",
+                "https://careers.swiggy.com/",
+                "Indian Tech Careers",
+                "1 day ago",
+                now.minusDays(1)
+        ));
+
+        list.add(new Job(
+                "QA Automation Engineer (Selenium / TestNG / API Automation)",
+                "CRED",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 16 - 28 LPA",
+                "CRED is seeking QA Automation Engineers to build scalable test frameworks for financial transactions and mobile/web apps. Strong hands-on coding in Java or Python, Selenium, Appium, Postman/RestAssured API automation, and performance testing.",
+                "https://careers.cred.club/",
+                "Indian Tech Careers",
+                "2 days ago",
+                now.minusDays(2)
+        ));
+
+        list.add(new Job(
+                "Software Development Engineer in Test (SDET - Mobile & Web)",
+                "Meesho",
+                "Bengaluru, Karnataka, India",
+                "Full-Time",
+                "₹ 13 - 22 LPA",
+                "Meesho is hiring SDETs to ensure top-notch quality across our e-commerce platform. Build automated end-to-end regression frameworks using Playwright/Cypress, mobile Appium, and automated load testing.",
+                "https://www.meesho.io/careers",
+                "Official Career Portal",
+                "3 days ago",
+                now.minusDays(3)
+        ));
+
+        // ==========================================
+        // Top Indian Tech Companies - MOBILE DEV
+        // ==========================================
+        list.add(new Job(
+                "Android Engineer (Kotlin / Coroutines / Jetpack Compose)",
+                "Zomato",
+                "Gurugram, Haryana, India",
+                "Full-Time",
+                "₹ 16 - 28 LPA",
+                "Zomato is hiring Android Engineers to engineer high-performance mobile experiences for millions of foodies. Required: Kotlin, Jetpack Compose, Coroutines, MVVM architecture, clean code, offline sync, and app startup latency optimization.",
+                "https://www.zomato.com/careers",
+                "Official Career Portal",
+                "2 days ago",
+                now.minusDays(2)
+        ));
+
+        list.add(new Job(
+                "Mobile Application Developer (Flutter / React Native / Mobile)",
+                "Zepto",
+                "Mumbai / Bengaluru, India",
+                "Full-Time",
+                "₹ 14 - 24 LPA",
+                "Zepto is hiring Mobile Developers to power our rider delivery app and customer shopping apps. Expertise in cross-platform mobile development (Flutter / React Native / Kotlin), state management, location tracking, and smooth 60fps UI rendering.",
+                "https://www.zeptonow.com/careers",
+                "Indian Tech Careers",
+                "3 days ago",
+                now.minusDays(3)
+        ));
     }
 
     private void fetchFromJobicy(List<Job> list, String tag) {
@@ -618,7 +841,11 @@ public class JobDiscoveryService {
                 || t.contains("java") || t.contains("spring") || t.contains("react") || t.contains("fullstack")
                 || t.contains("full stack") || t.contains("backend") || t.contains("frontend")
                 || t.contains("ui") || t.contains("web") || t.contains("next") || t.contains("typescript")
-                || full.contains("java") || full.contains("spring boot") || full.contains("react") || full.contains("frontend");
+                || t.contains("data") || t.contains("devops") || t.contains("cloud") || t.contains("sre")
+                || t.contains("ai") || t.contains("machine learning") || t.contains("ml") || t.contains("sdet")
+                || t.contains("qa") || t.contains("test") || t.contains("mobile") || t.contains("android") || t.contains("ios")
+                || full.contains("java") || full.contains("spring boot") || full.contains("react") || full.contains("frontend")
+                || full.contains("python") || full.contains("kubernetes") || full.contains("devops") || full.contains("spark");
     }
 
     private boolean isGermanJob(String title, String location, String description) {
@@ -648,7 +875,8 @@ public class JobDiscoveryService {
                 || c.contains("jio") || c.contains("flipkart") || c.contains("cred") || c.contains("paytm")
                 || c.contains("persistent") || c.contains("mindtree") || c.contains("cognizant")
                 || c.contains("hcl") || c.contains("zoho") || c.contains("zepto") || c.contains("keyanna")
-                || c.contains("meesho");
+                || c.contains("meesho") || c.contains("fractal") || c.contains("groww") || c.contains("yellow.ai")
+                || c.contains("ola") || c.contains("postman");
     }
 
     public void purgeIrrelevantJobs() {

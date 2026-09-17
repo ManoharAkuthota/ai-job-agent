@@ -22,7 +22,7 @@ public class AtsEvaluationInspectorTest {
             String text = stripper.getText(doc);
 
             ResumeParserService service = new ResumeParserService(null, null);
-            java.lang.reflect.Method method = ResumeParserService.class.getDeclaredMethod("evaluateAts", String.class, java.util.List.class, String.class, String.class, String.class, String.class);
+            java.lang.reflect.Method method = ResumeParserService.class.getDeclaredMethod("evaluateAts", String.class, java.util.List.class, String.class, String.class, String.class, String.class, String.class);
             method.setAccessible(true);
 
             java.lang.reflect.Method skillsMethod = ResumeParserService.class.getDeclaredMethod("extractSkills", String.class);
@@ -30,7 +30,7 @@ public class AtsEvaluationInspectorTest {
             @SuppressWarnings("unchecked")
             java.util.List<String> skills = (java.util.List<String>) skillsMethod.invoke(service, text);
 
-            ResumeParserService.AtsScoreBreakdown result = (ResumeParserService.AtsScoreBreakdown) method.invoke(service, text, skills, "manoharsriakuthota@gmail.com", "8096870549", null, null);
+            ResumeParserService.AtsScoreBreakdown result = (ResumeParserService.AtsScoreBreakdown) method.invoke(service, text, skills, "Frontend Developer", "manoharsriakuthota@gmail.com", "8096870549", null, null);
 
             System.out.println("=================================================");
             System.out.println("ACCURATE ATS EVALUATION FOR AKUTHOTA MANOHAR");

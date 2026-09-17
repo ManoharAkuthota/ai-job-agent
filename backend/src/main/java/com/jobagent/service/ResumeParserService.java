@@ -26,12 +26,23 @@ public class ResumeParserService {
     private final JobRepository jobRepository;
 
     private static final List<String> KNOWN_TECH_KEYWORDS = List.of(
-            "java", "spring boot", "spring security", "jwt", "microservices", "kafka", "apache kafka",
+            // Java & Backend
+            "java", "spring boot", "spring security", "jwt", "microservices", "kafka", "apache kafka", "hibernate", "jpa", "maven", "gradle",
+            // Frontend & Web
             "react", "angular", "vue", "javascript", "typescript", "next.js", "nextjs", "node.js", "nodejs", "express",
-            "redux", "zustand", "tailwind", "html", "css", "sass", "scss", "webpack", "vite", "graphql",
-            "mysql", "postgresql", "mongodb", "redis", "oracle", "sql",
-            "docker", "kubernetes", "aws", "azure", "gcp", "git", "github", "ci/cd", "rest", "rest api", "restful",
-            "hibernate", "jpa", "maven", "gradle", "python", "jest", "cypress", "responsive design", "web performance", "c++", "c#"
+            "redux", "zustand", "tailwind", "html", "css", "sass", "scss", "webpack", "vite", "graphql", "responsive design", "web performance",
+            // AI, ML & Data Science
+            "machine learning", "deep learning", "pytorch", "tensorflow", "langchain", "llm", "llms", "hugging face", "nlp", "computer vision", "generative ai", "genai", "scikit-learn", "pandas", "numpy", "fastapi", "flask", "django",
+            // Data Engineering
+            "spark", "apache spark", "airflow", "snowflake", "databricks", "hadoop", "etl", "sql",
+            // DevOps & Cloud
+            "docker", "kubernetes", "aws", "azure", "gcp", "terraform", "ansible", "jenkins", "linux", "prometheus", "grafana", "ci/cd",
+            // QA Automation & Testing
+            "selenium", "playwright", "cypress", "testng", "junit", "cucumber", "postman", "jest",
+            // Mobile
+            "android", "kotlin", "ios", "swift", "flutter", "react native",
+            // Databases & Misc
+            "mysql", "postgresql", "mongodb", "redis", "oracle", "git", "github", "rest", "rest api", "c++", "c#", "go", "golang"
     );
 
     private static final List<String> HIGH_DEMAND_BACKEND_SKILLS = List.of(
@@ -40,6 +51,22 @@ public class ResumeParserService {
 
     private static final List<String> HIGH_DEMAND_FRONTEND_SKILLS = List.of(
             "TypeScript", "Next.js", "Redux", "Tailwind", "Vite", "CI/CD", "Web Performance", "Jest"
+    );
+
+    private static final List<String> HIGH_DEMAND_AI_SKILLS = List.of(
+            "PyTorch", "FastAPI", "LLM", "LangChain", "Docker", "Pandas", "Scikit-Learn", "CI/CD"
+    );
+
+    private static final List<String> HIGH_DEMAND_DEVOPS_SKILLS = List.of(
+            "Kubernetes", "Terraform", "AWS", "Docker", "CI/CD", "Prometheus", "Linux", "Grafana"
+    );
+
+    private static final List<String> HIGH_DEMAND_DATA_SKILLS = List.of(
+            "Apache Spark", "Airflow", "Snowflake", "SQL", "Python", "Kafka", "AWS", "Databricks"
+    );
+
+    private static final List<String> HIGH_DEMAND_QA_SKILLS = List.of(
+            "Playwright", "Selenium", "Cypress", "API Testing", "Postman", "CI/CD", "Git", "TestNG"
     );
 
     private static final List<String> STRONG_ACTION_VERBS = List.of(
@@ -90,7 +117,7 @@ public class ResumeParserService {
         }
 
         // 4. Infer Domain
-        String domain = inferDomain(matchedSkills);
+        String domain = inferDomain(matchedSkills, rawText);
         profile.setTargetDomain(domain);
 
         // Update profile in DB
@@ -198,10 +225,9 @@ public class ResumeParserService {
         // Pillar 2: Technical Skills & Category Coverage (Max 30 pts)
         // ----------------------------------------------------
         int skillsScore = 0;
-        boolean isFrontendDomain = (domain != null && domain.toLowerCase().contains("front")) ||
-                matchedSkills.stream().anyMatch(s -> s.equalsIgnoreCase("React") || s.equalsIgnoreCase("Next.js") || s.equalsIgnoreCase("Vue"));
+        DomainCategory domCat = categorizeDomain(domain);
 
-        if (isFrontendDomain) {
+        if (domCat == DomainCategory.FRONTEND) {
             // Core Frontend Frameworks & Libraries (Up to 14 pts)
             int feFrameworks = 0;
             List<String> coreFe = List.of("react", "next.js", "nextjs", "javascript", "typescript", "redux", "zustand", "vue", "angular");
@@ -245,6 +271,142 @@ public class ResumeParserService {
                 ));
             } else {
                 strengths.add("Exceptional coverage of modern frontend, React ecosystem, and web performance keywords.");
+            }
+        } else if (domCat == DomainCategory.AI_ML) {
+            int aiCore = 0;
+            List<String> coreAi = List.of("pytorch", "tensorflow", "python", "machine learning", "deep learning", "langchain", "llm", "scikit-learn");
+            for (String a : coreAi) {
+                if (lowerText.contains(a)) aiCore++;
+            }
+            skillsScore += Math.min(16, aiCore * 3);
+
+            int dataOps = 0;
+            List<String> ops = List.of("docker", "fastapi", "pandas", "numpy", "git", "ci/cd", "rest", "rest api");
+            for (String o : ops) {
+                if (lowerText.contains(o)) dataOps++;
+            }
+            skillsScore += Math.min(14, dataOps * 2);
+
+            for (String highDemand : HIGH_DEMAND_AI_SKILLS) {
+                boolean found = matchedSkills.stream().anyMatch(s -> s.equalsIgnoreCase(highDemand));
+                if (!found) {
+                    missingKeywords.add(highDemand);
+                }
+            }
+
+            if (!missingKeywords.isEmpty()) {
+                String missingListStr = String.join(", ", missingKeywords.subList(0, Math.min(4, missingKeywords.size())));
+                improvements.add(new AtsFeedbackItem(
+                        "Core Skills",
+                        "CRITICAL",
+                        "Missing High-Demand AI/ML Frameworks (" + missingListStr + ")",
+                        "Modern AI & Data science tech screens require clear mentions of production model deployment, inference, and vector/LLM workflows.",
+                        "Add practical project bullets demonstrating " + missingListStr + "."
+                ));
+            } else {
+                strengths.add("Outstanding coverage of modern Machine Learning, Deep Learning, and Python frameworks.");
+            }
+        } else if (domCat == DomainCategory.DEVOPS) {
+            int devopsCore = 0;
+            List<String> coreOps = List.of("kubernetes", "docker", "terraform", "aws", "azure", "gcp", "ci/cd", "jenkins", "linux");
+            for (String o : coreOps) {
+                if (lowerText.contains(o)) devopsCore++;
+            }
+            skillsScore += Math.min(16, devopsCore * 3);
+
+            int obsCount = 0;
+            List<String> obs = List.of("prometheus", "grafana", "ansible", "helm", "git", "bash", "python");
+            for (String b : obs) {
+                if (lowerText.contains(b)) obsCount++;
+            }
+            skillsScore += Math.min(14, obsCount * 2);
+
+            for (String highDemand : HIGH_DEMAND_DEVOPS_SKILLS) {
+                boolean found = matchedSkills.stream().anyMatch(s -> s.equalsIgnoreCase(highDemand));
+                if (!found) {
+                    missingKeywords.add(highDemand);
+                }
+            }
+
+            if (!missingKeywords.isEmpty()) {
+                String missingListStr = String.join(", ", missingKeywords.subList(0, Math.min(4, missingKeywords.size())));
+                improvements.add(new AtsFeedbackItem(
+                        "Core Skills",
+                        "CRITICAL",
+                        "Missing High-Demand Cloud & Infrastructure Skills (" + missingListStr + ")",
+                        "Enterprise DevOps screeners prioritize automated provisioning, cloud architecture, and observability.",
+                        "Integrate skills like " + missingListStr + " into your infrastructure and deployment sections."
+                ));
+            } else {
+                strengths.add("Strong coverage of cloud infrastructure, Kubernetes orchestration, and CI/CD pipelines.");
+            }
+        } else if (domCat == DomainCategory.DATA) {
+            int dataCore = 0;
+            List<String> coreData = List.of("spark", "apache spark", "airflow", "snowflake", "sql", "databricks", "hadoop", "etl");
+            for (String d : coreData) {
+                if (lowerText.contains(d)) dataCore++;
+            }
+            skillsScore += Math.min(16, dataCore * 3);
+
+            int dataTools = 0;
+            List<String> tools = List.of("python", "kafka", "aws", "docker", "git", "ci/cd", "nosql");
+            for (String t : tools) {
+                if (lowerText.contains(t)) dataTools++;
+            }
+            skillsScore += Math.min(14, dataTools * 2);
+
+            for (String highDemand : HIGH_DEMAND_DATA_SKILLS) {
+                boolean found = matchedSkills.stream().anyMatch(s -> s.equalsIgnoreCase(highDemand));
+                if (!found) {
+                    missingKeywords.add(highDemand);
+                }
+            }
+
+            if (!missingKeywords.isEmpty()) {
+                String missingListStr = String.join(", ", missingKeywords.subList(0, Math.min(4, missingKeywords.size())));
+                improvements.add(new AtsFeedbackItem(
+                        "Core Skills",
+                        "CRITICAL",
+                        "Missing High-Demand Big Data & Pipeline Skills (" + missingListStr + ")",
+                        "Enterprise Data Engineering screeners check for distributed compute, warehousing, and orchestration tools.",
+                        "Add practical experience or projects utilizing " + missingListStr + "."
+                ));
+            } else {
+                strengths.add("Superb coverage of modern distributed data processing, ETL, and warehouse technologies.");
+            }
+        } else if (domCat == DomainCategory.QA) {
+            int qaCore = 0;
+            List<String> coreQa = List.of("selenium", "playwright", "cypress", "testng", "junit", "cucumber", "postman", "rest assured");
+            for (String q : coreQa) {
+                if (lowerText.contains(q)) qaCore++;
+            }
+            skillsScore += Math.min(16, qaCore * 3);
+
+            int qaTools = 0;
+            List<String> tools = List.of("java", "javascript", "python", "ci/cd", "jenkins", "git", "api testing", "sql");
+            for (String t : tools) {
+                if (lowerText.contains(t)) qaTools++;
+            }
+            skillsScore += Math.min(14, qaTools * 2);
+
+            for (String highDemand : HIGH_DEMAND_QA_SKILLS) {
+                boolean found = matchedSkills.stream().anyMatch(s -> s.equalsIgnoreCase(highDemand));
+                if (!found) {
+                    missingKeywords.add(highDemand);
+                }
+            }
+
+            if (!missingKeywords.isEmpty()) {
+                String missingListStr = String.join(", ", missingKeywords.subList(0, Math.min(4, missingKeywords.size())));
+                improvements.add(new AtsFeedbackItem(
+                        "Core Skills",
+                        "CRITICAL",
+                        "Missing High-Demand Test Automation Skills (" + missingListStr + ")",
+                        "SDET screening algorithms look for end-to-end framework architecture, API contract testing, and CI pipeline triggers.",
+                        "Add details demonstrating test automation using " + missingListStr + "."
+                ));
+            } else {
+                strengths.add("Excellent coverage of modern QA automation frameworks, CI test gates, and API testing.");
             }
         } else {
             // Core Backend (Up to 12 pts)
@@ -504,73 +666,150 @@ public class ResumeParserService {
         return sb.toString();
     }
 
-    private String inferDomain(List<String> skills) {
-        String lowerSkills = skills.stream().map(String::toLowerCase).collect(Collectors.joining(" "));
-        if (lowerSkills.contains("react") && lowerSkills.contains("spring")) {
-            return "Java Full Stack Developer";
-        } else if (lowerSkills.contains("spring") || lowerSkills.contains("microservices") || lowerSkills.contains("kafka")) {
-            return "Java Backend Developer";
-        } else if (lowerSkills.contains("react") || lowerSkills.contains("angular") || lowerSkills.contains("vue")
-                || lowerSkills.contains("frontend") || lowerSkills.contains("next")) {
-            return "Frontend Developer";
-        } else if (lowerSkills.contains("python")) {
-            return "Python / AI Engineer";
+    public enum DomainCategory {
+        FRONTEND, BACKEND, FULLSTACK, AI_ML, DEVOPS, DATA, QA, MOBILE, GENERAL
+    }
+
+    public static DomainCategory categorizeDomain(String text) {
+        if (text == null || text.isBlank()) return DomainCategory.GENERAL;
+        String t = text.toLowerCase();
+        if (t.contains("ai") || t.contains("machine learning") || t.contains("ml ") || t.contains("ml/") || t.contains("deep learning")
+                || t.contains("nlp") || t.contains("llm") || t.contains("genai") || t.contains("langchain") || t.contains("pytorch") || t.contains("tensorflow")) {
+            return DomainCategory.AI_ML;
         }
+        if (t.contains("devops") || t.contains("cloud") || t.contains("sre") || t.contains("site reliability")
+                || t.contains("infrastructure") || t.contains("platform engineer") || t.contains("kubernetes") || t.contains("terraform")) {
+            return DomainCategory.DEVOPS;
+        }
+        if (t.contains("data engineer") || t.contains("data engineering") || t.contains("big data")
+                || t.contains("etl") || t.contains("snowflake") || t.contains("spark") || t.contains("airflow") || t.contains("databricks")) {
+            return DomainCategory.DATA;
+        }
+        if (t.contains("qa") || t.contains("sdet") || t.contains("test automation") || t.contains("quality assurance")
+                || t.contains("test engineer") || t.contains("selenium") || t.contains("playwright") || t.contains("cypress")) {
+            return DomainCategory.QA;
+        }
+        if (t.contains("mobile") || t.contains("android") || t.contains("ios") || t.contains("flutter") || t.contains("react native") || t.contains("swift") || t.contains("kotlin app")) {
+            return DomainCategory.MOBILE;
+        }
+        if (t.contains("full stack") || t.contains("fullstack") || t.contains("mern")) {
+            return DomainCategory.FULLSTACK;
+        }
+        if (t.contains("front") || t.contains("react") || t.contains("ui ") || t.contains("ui/")
+                || t.contains("ui engineer") || t.contains("ui developer") || t.contains("web developer") || t.contains("angular") || t.contains("vue") || t.contains("next")) {
+            return DomainCategory.FRONTEND;
+        }
+        if (t.contains("backend") || t.contains("java") || t.contains("spring") || t.contains("microservice")
+                || t.contains("server") || t.contains("api engineer") || t.contains("python backend") || t.contains("core banking") || t.contains("golang") || t.contains("node")) {
+            return DomainCategory.BACKEND;
+        }
+        return DomainCategory.GENERAL;
+    }
+
+    private String inferDomain(List<String> skills, String rawText) {
+        String lowerText = (rawText != null ? rawText : "").toLowerCase();
+        String lowerSkills = skills.stream().map(String::toLowerCase).collect(Collectors.joining(" "));
+        String combined = lowerSkills + " " + lowerText;
+
+        // Check AI / Machine Learning
+        if (combined.contains("pytorch") || combined.contains("tensorflow") || combined.contains("langchain")
+                || combined.contains("generative ai") || combined.contains("genai") || combined.contains("llm")
+                || combined.contains("hugging face") || combined.contains("machine learning") || combined.contains("deep learning")) {
+            return "AI / Machine Learning Engineer";
+        }
+
+        // Check DevOps / Cloud
+        if (combined.contains("kubernetes") || combined.contains("terraform") || combined.contains("ansible")
+                || combined.contains("devops") || combined.contains("sre") || combined.contains("site reliability")
+                || combined.contains("cloud engineer") || (combined.contains("docker") && combined.contains("aws") && combined.contains("ci/cd"))) {
+            return "DevOps & Cloud Engineer";
+        }
+
+        // Check Data Engineering
+        if (combined.contains("apache spark") || combined.contains("spark") || combined.contains("airflow")
+                || combined.contains("snowflake") || combined.contains("databricks") || combined.contains("data engineer")
+                || combined.contains("etl pipeline")) {
+            return "Data Engineer";
+        }
+
+        // Check QA Automation / SDET
+        if (combined.contains("selenium") || combined.contains("playwright") || combined.contains("cypress")
+                || combined.contains("testng") || combined.contains("sdet") || combined.contains("qa automation")
+                || combined.contains("test automation")) {
+            return "QA Automation Engineer / SDET";
+        }
+
+        // Check Mobile Developer
+        if (combined.contains("flutter") || combined.contains("react native") || combined.contains("android")
+                || combined.contains("ios developer") || combined.contains("swift") || combined.contains("kotlin app")) {
+            return "Mobile Application Developer";
+        }
+
+        // Check Java Full Stack
+        if ((lowerSkills.contains("react") || lowerSkills.contains("angular") || lowerSkills.contains("vue") || lowerText.contains("frontend"))
+                && (lowerSkills.contains("spring") || lowerSkills.contains("java") || lowerSkills.contains("microservices"))) {
+            return "Java Full Stack Developer";
+        }
+
+        // Check Pure Frontend
+        if (lowerSkills.contains("react") || lowerSkills.contains("angular") || lowerSkills.contains("vue")
+                || lowerSkills.contains("next.js") || lowerSkills.contains("nextjs") || lowerSkills.contains("tailwind")
+                || combined.contains("frontend developer") || combined.contains("ui developer") || combined.contains("front-end")) {
+            return "Frontend Developer";
+        }
+
+        // Check Java Backend
+        if (lowerSkills.contains("spring") || lowerSkills.contains("microservices") || lowerSkills.contains("kafka") || lowerSkills.contains("hibernate") || lowerSkills.contains("java")) {
+            return "Java Backend Developer";
+        }
+
+        // Check Python Backend
+        if (lowerSkills.contains("python") || lowerSkills.contains("fastapi") || lowerSkills.contains("django") || lowerSkills.contains("flask")) {
+            return "Python Backend Developer";
+        }
+
         return "Software Engineer";
     }
 
     private int calculateMatchScore(Job job, List<String> candidateSkills, String targetDomain) {
         int score = 42;
-        String jobText = ((job.getTitle() != null ? job.getTitle() : "") + " " +
-                (job.getDescription() != null ? job.getDescription() : "")).toLowerCase();
-        String titleLower = (job.getTitle() != null ? job.getTitle() : "").toLowerCase();
-        String domainLower = (targetDomain != null ? targetDomain : "").toLowerCase();
+        String jobTitle = job.getTitle() != null ? job.getTitle() : "";
+        String jobDesc = job.getDescription() != null ? job.getDescription() : "";
+        String jobCombined = (jobTitle + " " + jobDesc).toLowerCase();
 
         int skillMatches = 0;
         for (String skill : candidateSkills) {
-            if (jobText.contains(skill.toLowerCase())) {
+            if (jobCombined.contains(skill.toLowerCase())) {
                 skillMatches++;
             }
         }
+        score += Math.min(35, skillMatches * 7);
 
-        score += Math.min(46, skillMatches * 7);
+        DomainCategory candidateCat = categorizeDomain(targetDomain);
+        // Categorize job by title first
+        DomainCategory jobCat = categorizeDomain(jobTitle);
+        if (jobCat == DomainCategory.GENERAL) {
+            jobCat = categorizeDomain(jobCombined);
+        }
 
-        boolean isFrontendCandidate = domainLower.contains("front") || domainLower.contains("react") || domainLower.contains("ui");
-        boolean isBackendCandidate = domainLower.contains("backend") || domainLower.contains("java") || domainLower.contains("spring");
-        boolean isFullStackCandidate = domainLower.contains("full stack") || domainLower.contains("fullstack");
-
-        boolean isFrontendJob = titleLower.contains("front") || titleLower.contains("react") || titleLower.contains("ui ")
-                || titleLower.contains("ui/") || titleLower.contains("ui engineer") || titleLower.contains("web developer");
-        boolean isBackendJob = (titleLower.contains("backend") || titleLower.contains("microservice") || titleLower.contains("core banking") || titleLower.contains("java"))
-                && !isFrontendJob;
-        boolean isFullStackJob = titleLower.contains("full stack") || titleLower.contains("fullstack");
-
-        if (isFrontendCandidate) {
-            if (isFrontendJob) {
-                // High priority match bonus for frontend roles
-                score += 26;
+        if (candidateCat != DomainCategory.GENERAL && jobCat != DomainCategory.GENERAL) {
+            if (candidateCat == jobCat) {
+                // Perfect domain match bonus
+                score += 28;
                 if (skillMatches >= 2) score += 8;
-            } else if (isFullStackJob) {
-                score += 8;
-            } else if (isBackendJob) {
-                // Strongly down-rank pure backend roles so frontend candidates see frontend roles on top
-                score = Math.max(30, score - 32);
-            }
-        } else if (isBackendCandidate && !isFullStackCandidate) {
-            if (isBackendJob) {
-                score += 20;
-            } else if (isFrontendJob) {
-                score = Math.max(30, score - 24);
-            }
-        } else if (isFullStackCandidate) {
-            if (isFullStackJob) {
-                score += 22;
+            } else if (candidateCat == DomainCategory.FULLSTACK && (jobCat == DomainCategory.FRONTEND || jobCat == DomainCategory.BACKEND)) {
+                // Fullstack candidate matches frontend and backend reasonably well
+                score += 15;
+            } else if (jobCat == DomainCategory.FULLSTACK && (candidateCat == DomainCategory.FRONTEND || candidateCat == DomainCategory.BACKEND)) {
+                // Frontend or Backend candidate matches Fullstack well
+                score += 15;
             } else {
-                score += 10;
+                // Incompatible domains (e.g. Frontend vs Java Backend, AI vs QA, DevOps vs Frontend)
+                score = Math.max(25, score - 35);
             }
         }
 
-        return Math.min(99, Math.max(30, score));
+        return Math.min(99, Math.max(25, score));
     }
 
     public record AtsFeedbackItem(

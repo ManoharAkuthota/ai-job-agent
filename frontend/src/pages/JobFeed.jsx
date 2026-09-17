@@ -102,7 +102,17 @@ export default function JobFeed({ onNavigate }) {
         }
 
         const domain = (res.data.profile?.targetDomain || '').toLowerCase();
-        if (domain.includes('front') || domain.includes('react') || domain.includes('ui')) {
+        if (domain.includes('ai') || domain.includes('machine learning') || domain.includes('ml')) {
+          setSelectedCategory('AI_ML');
+        } else if (domain.includes('devops') || domain.includes('cloud') || domain.includes('sre')) {
+          setSelectedCategory('DEVOPS');
+        } else if (domain.includes('data')) {
+          setSelectedCategory('DATA');
+        } else if (domain.includes('qa') || domain.includes('sdet') || domain.includes('test')) {
+          setSelectedCategory('QA');
+        } else if (domain.includes('mobile') || domain.includes('android') || domain.includes('ios')) {
+          setSelectedCategory('MOBILE');
+        } else if (domain.includes('front') || domain.includes('react') || domain.includes('ui')) {
           setSelectedCategory('FRONTEND');
         } else if (domain.includes('backend') || domain.includes('java')) {
           setSelectedCategory('BACKEND');
@@ -236,8 +246,13 @@ export default function JobFeed({ onNavigate }) {
     if (!matchesSearch) return false;
 
     const isFrontendJob = title.includes('front') || title.includes('react') || title.includes('ui ') || title.includes('ui/') || title.includes('web developer');
-    const isBackendJob = (title.includes('backend') || title.includes('java') || title.includes('microservice') || title.includes('spring') || title.includes('payments core')) && !isFrontendJob;
+    const isAiJob = title.includes('ai') || title.includes('machine learning') || title.includes('ml') || title.includes('deep learning') || title.includes('llm');
+    const isDevopsJob = title.includes('devops') || title.includes('cloud') || title.includes('sre') || title.includes('infrastructure') || title.includes('kubernetes');
+    const isDataJob = title.includes('data') || title.includes('spark') || title.includes('snowflake') || title.includes('airflow') || title.includes('etl');
+    const isQaJob = title.includes('qa') || title.includes('sdet') || title.includes('test');
+    const isMobileJob = title.includes('mobile') || title.includes('android') || title.includes('ios') || title.includes('flutter');
     const isFullStackJob = title.includes('full stack') || title.includes('fullstack');
+    const isBackendJob = (title.includes('backend') || title.includes('java') || title.includes('microservice') || title.includes('spring') || title.includes('payments core')) && !isFrontendJob && !isAiJob && !isDevopsJob && !isDataJob && !isQaJob;
 
     if (selectedCategory === 'FRONTEND') {
       return isFrontendJob;
@@ -247,6 +262,21 @@ export default function JobFeed({ onNavigate }) {
     }
     if (selectedCategory === 'FULLSTACK') {
       return isFullStackJob;
+    }
+    if (selectedCategory === 'AI_ML') {
+      return isAiJob;
+    }
+    if (selectedCategory === 'DEVOPS') {
+      return isDevopsJob;
+    }
+    if (selectedCategory === 'DATA') {
+      return isDataJob;
+    }
+    if (selectedCategory === 'QA') {
+      return isQaJob;
+    }
+    if (selectedCategory === 'MOBILE') {
+      return isMobileJob;
     }
     return true;
   });
@@ -718,7 +748,7 @@ export default function JobFeed({ onNavigate }) {
           { key: 'ALL', label: 'All Openings', count: jobs.length },
           {
             key: 'FRONTEND',
-            label: '⚡ Frontend / React / UI',
+            label: '⚡ Frontend / UI',
             count: jobs.filter(j => {
               const t = (j.title || '').toLowerCase();
               return t.includes('front') || t.includes('react') || t.includes('ui ') || t.includes('ui/') || t.includes('web developer');
@@ -726,19 +756,64 @@ export default function JobFeed({ onNavigate }) {
             isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('front')
           },
           {
-            key: 'FULLSTACK',
-            label: '🔄 Full Stack',
-            count: jobs.filter(j => (j.title || '').toLowerCase().includes('full')).length,
-            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('full')
-          },
-          {
             key: 'BACKEND',
-            label: '☕ Backend / Java / Kafka',
+            label: '☕ Java / Backend',
             count: jobs.filter(j => {
               const t = (j.title || '').toLowerCase();
               return (t.includes('backend') || t.includes('java') || t.includes('microservice') || t.includes('spring')) && !t.includes('front');
             }).length,
             isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('backend')
+          },
+          {
+            key: 'AI_ML',
+            label: '🤖 AI / Machine Learning',
+            count: jobs.filter(j => {
+              const t = (j.title || '').toLowerCase();
+              return t.includes('ai') || t.includes('machine learning') || t.includes('ml') || t.includes('deep learning') || t.includes('llm');
+            }).length,
+            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('ai') || uploadSuccess?.targetDomain?.toLowerCase().includes('machine learning')
+          },
+          {
+            key: 'DEVOPS',
+            label: '☁️ DevOps & Cloud',
+            count: jobs.filter(j => {
+              const t = (j.title || '').toLowerCase();
+              return t.includes('devops') || t.includes('cloud') || t.includes('sre') || t.includes('infrastructure') || t.includes('kubernetes');
+            }).length,
+            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('devops') || uploadSuccess?.targetDomain?.toLowerCase().includes('cloud')
+          },
+          {
+            key: 'DATA',
+            label: '📊 Data Engineering',
+            count: jobs.filter(j => {
+              const t = (j.title || '').toLowerCase();
+              return t.includes('data') || t.includes('spark') || t.includes('snowflake') || t.includes('airflow');
+            }).length,
+            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('data')
+          },
+          {
+            key: 'QA',
+            label: '🧪 QA & SDET',
+            count: jobs.filter(j => {
+              const t = (j.title || '').toLowerCase();
+              return t.includes('qa') || t.includes('sdet') || t.includes('test');
+            }).length,
+            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('qa') || uploadSuccess?.targetDomain?.toLowerCase().includes('sdet')
+          },
+          {
+            key: 'MOBILE',
+            label: '📱 Mobile (Android/iOS)',
+            count: jobs.filter(j => {
+              const t = (j.title || '').toLowerCase();
+              return t.includes('mobile') || t.includes('android') || t.includes('ios') || t.includes('flutter');
+            }).length,
+            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('mobile') || uploadSuccess?.targetDomain?.toLowerCase().includes('android')
+          },
+          {
+            key: 'FULLSTACK',
+            label: '🔄 Full Stack',
+            count: jobs.filter(j => (j.title || '').toLowerCase().includes('full')).length,
+            isUserDomain: uploadSuccess?.targetDomain?.toLowerCase().includes('full')
           }
         ].map(cat => {
           const isSelected = selectedCategory === cat.key;
