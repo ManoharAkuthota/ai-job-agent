@@ -67,6 +67,36 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Justice D.Y. Chandrachud",
       explanation: "Justice Dhananjaya Yashwant Chandrachud served as the 50th CJI, spearheading widespread technological modernization of Indian courts, live-streaming of constitutional proceedings, and landmark verdicts.",
       funFact: "His father, Justice Y.V. Chandrachud, was the longest-serving Chief Justice in Indian history, serving for over seven years."
+    },
+    {
+      id: 'fb_ca_7',
+      topic: 'CURRENT_AFFAIRS',
+      difficulty: 'MEDIUM',
+      question: "What was the theme of India's historic G20 Presidency in 2023?",
+      options: ["Vasudhaiva Kutumbakam (One Earth, One Family, One Future)", "Recover Together, Recover Stronger", "Building a Resilient World", "Unity in Diversity"],
+      correctAnswer: "Vasudhaiva Kutumbakam (One Earth, One Family, One Future)",
+      explanation: "Drawn from the ancient Sanskrit text Maha Upanishad, the theme 'Vasudhaiva Kutumbakam' (One Earth, One Family, One Future) affirmed the value of all life and interconnected human progress.",
+      funFact: "During the New Delhi summit under India's presidency, the 55-nation African Union was officially admitted as a permanent member of the G20."
+    },
+    {
+      id: 'fb_ca_8',
+      topic: 'CURRENT_AFFAIRS',
+      difficulty: 'MEDIUM',
+      question: "What is the name of ISRO's prestigious human spaceflight mission aiming to send Indian astronauts into low Earth orbit?",
+      options: ["Gaganyaan", "Shukrayaan", "Mangalyaan-2", "Samudrayaan"],
+      correctAnswer: "Gaganyaan",
+      explanation: "ISRO's Gaganyaan mission envisages launching a crew of three members to an orbit of 400 km for a 3-day mission and bringing them safely back to Earth, landing in Indian sea waters.",
+      funFact: "Prime Minister Narendra Modi announced the names of the four Indian Air Force test pilots selected for the Gaganyaan mission in February 2024 at Vikram Sarabhai Space Centre."
+    },
+    {
+      id: 'fb_ca_9',
+      topic: 'CURRENT_AFFAIRS',
+      difficulty: 'EASY',
+      question: "The world's highest railway arch bridge, standing 359 metres above the riverbed, was constructed across which river in Jammu and Kashmir?",
+      options: ["Chenab", "Jhelum", "Ravi", "Indus"],
+      correctAnswer: "Chenab",
+      explanation: "The Chenab Rail Bridge stands at an astonishing height of 359 meters (1,178 ft) above the Chenab River bed—35 meters taller than the Eiffel Tower in Paris—as part of the Udhampur-Srinagar-Baramulla Rail Link (USBRL) project.",
+      funFact: "The bridge was engineered with special blast-proof steel and can withstand earthquake tremors of up to magnitude 8 on the Richter scale and wind speeds up to 266 km/h."
     }
   ],
   POLITICS: [
@@ -119,6 +149,46 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Speaker of Lok Sabha",
       explanation: "Under Article 118(4) of the Indian Constitution, the Speaker of the Lok Sabha presides over a joint sitting of Parliament. If the Speaker is absent, the Deputy Speaker presides.",
       funFact: "The Vice President of India (Chairman of Rajya Sabha) cannot preside over a joint sitting under any circumstances."
+    },
+    {
+      id: 'fb_pol_6',
+      topic: 'POLITICS',
+      difficulty: 'MEDIUM',
+      question: "What is the maximum sanctioned strength of members in the Lok Sabha according to the Indian Constitution?",
+      options: ["552", "545", "530", "560"],
+      correctAnswer: "552",
+      explanation: "The Constitution provides for a maximum strength of 552: up to 530 members representing the States, up to 20 representing the Union Territories, and previously up to 2 nominated Anglo-Indian members.",
+      funFact: "The new Parliament House in New Delhi features a Lok Sabha chamber designed to seat up to 888 members for joint sessions."
+    },
+    {
+      id: 'fb_pol_7',
+      topic: 'POLITICS',
+      difficulty: 'EASY',
+      question: "Which Indian state has the highest number of seats in the Lok Sabha?",
+      options: ["Uttar Pradesh (80)", "Maharashtra (48)", "West Bengal (42)", "Bihar (40)"],
+      correctAnswer: "Uttar Pradesh (80)",
+      explanation: "Uttar Pradesh has 80 parliamentary constituencies in the Lok Sabha, the highest of any Indian state, reflecting its large population proportion.",
+      funFact: "A popular political adage in Indian democracy states: 'The road to Delhi passes through Lucknow.'"
+    },
+    {
+      id: 'fb_pol_8',
+      topic: 'POLITICS',
+      difficulty: 'MEDIUM',
+      question: "Who is the custodian and final interpreter of the Constitution of India?",
+      options: ["The Supreme Court of India", "The President of India", "The Prime Minister", "The Parliament"],
+      correctAnswer: "The Supreme Court of India",
+      explanation: "The Supreme Court of India acts as the guardian and final interpreter of the Constitution, vested with the power of judicial review under Article 13 to strike down unconstitutional legislation.",
+      funFact: "The Supreme Court of India held its inaugural sitting on January 28, 1950, two days after the Constitution came into effect."
+    },
+    {
+      id: 'fb_pol_9',
+      topic: 'POLITICS',
+      difficulty: 'HARD',
+      question: "What is the minimum voting age for Indian citizens as lowered by the 61st Constitutional Amendment Act, 1988?",
+      options: ["18 years", "21 years", "20 years", "16 years"],
+      correctAnswer: "18 years",
+      explanation: "The 61st Constitutional Amendment Act of 1988 amended Article 326 to lower the minimum voting age for elections to the Lok Sabha and State Legislative Assemblies from 21 years to 18 years.",
+      funFact: "The amendment came into force on March 28, 1989, empowering millions of young citizens to participate in Indian elections."
     }
   ],
   MOVIES: [
@@ -171,6 +241,46 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Mughal-e-Azam",
       explanation: "Directed by K. Asif and starring Prithviraj Kapoor, Dilip Kumar, and Madhubala, 'Mughal-e-Azam' set unprecedented box office records and is universally regarded as a magnum opus of Indian cinema.",
       funFact: "The legendary song 'Pyar Kiya To Darna Kya' was shot in the Sheesh Mahal (Palace of Mirrors) set, which took two years to construct."
+    },
+    {
+      id: 'fb_mov_6',
+      topic: 'MOVIES',
+      difficulty: 'MEDIUM',
+      question: "Which was India's first sound/talkie film released in 1931?",
+      options: ["Alam Ara", "Raja Harishchandra", "Devdas", "Achhut Kanya"],
+      correctAnswer: "Alam Ara",
+      explanation: "Directed by Ardeshir Irani and released on March 14, 1931, at Majestic Cinema in Mumbai, 'Alam Ara' revolutionized Indian cinema with recorded dialogue and music, featuring the famous song 'De De Khuda Ke Naam Pe'.",
+      funFact: "The film was so popular that police had to be deployed to control the crowds queuing for tickets."
+    },
+    {
+      id: 'fb_mov_7',
+      topic: 'MOVIES',
+      difficulty: 'MEDIUM',
+      question: "Which Indian film was the first to be officially nominated for the Academy Award (Oscar) for Best Foreign Language Film in 1958?",
+      options: ["Mother India", "Salaam Bombay!", "Lagaan", "Pather Panchali"],
+      correctAnswer: "Mother India",
+      explanation: "Directed by Mehboob Khan and starring Nargis, 'Mother India' (1957) was India's first submission to receive an Oscar nomination in the Best Foreign Language Film category, losing by just one vote.",
+      funFact: "Only three Indian films have ever achieved an Oscar nomination in this category: Mother India (1957), Salaam Bombay! (1988), and Lagaan (2001)."
+    },
+    {
+      id: 'fb_mov_8',
+      topic: 'MOVIES',
+      difficulty: 'EASY',
+      question: "Who is the legendary music maestro who won two Oscars in 2009 for 'Slumdog Millionaire'?",
+      options: ["A.R. Rahman", "Ilaiyaraaja", "R.D. Burman", "M.M. Keeravani"],
+      correctAnswer: "A.R. Rahman",
+      explanation: "A.R. Rahman made history by winning two Academy Awards in 2009 for Best Original Score and Best Original Song ('Jai Ho') for 'Slumdog Millionaire'.",
+      funFact: "Rahman famously remarked during his acceptance speech: 'All my life I had a choice of hate and love. I chose love and I'm here.'"
+    },
+    {
+      id: 'fb_mov_9',
+      topic: 'MOVIES',
+      difficulty: 'MEDIUM',
+      question: "Which epic film directed by S.S. Rajamouli became the first Indian movie to gross over ₹1,000 crore worldwide?",
+      options: ["Baahubali 2: The Conclusion", "Dangal", "RRR", "K.G.F: Chapter 2"],
+      correctAnswer: "Baahubali 2: The Conclusion",
+      explanation: "Released in 2017, 'Baahubali 2: The Conclusion' shattered box office records by crossing ₹1,000 crore within just 10 days of its global theatrical release.",
+      funFact: "The riddle 'Why did Kattappa kill Baahubali?' was one of the most talked-about pop culture mysteries in Indian cinema between 2015 and 2017."
     }
   ],
   CITIES: [
@@ -223,6 +333,46 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Lothal",
       explanation: "Discovered in 1954, Lothal possessed a massive, sophisticated tidal dock basin connecting the city to an ancient channel of the Sabarmati River for maritime trade with Mesopotamia and Egypt.",
       funFact: "Lothal's engineers developed a highly accurate flood-control and water-drainage network over 4,400 years ago."
+    },
+    {
+      id: 'fb_cit_6',
+      topic: 'CITIES',
+      difficulty: 'MEDIUM',
+      question: "Which city is known as the 'City of Pearls' and was historically the world's only global diamond trading center?",
+      options: ["Hyderabad", "Surat", "Jaipur", "Mumbai"],
+      correctAnswer: "Hyderabad",
+      explanation: "Hyderabad earned the title 'City of Pearls' due to its flourishing pearl processing and trading industry patronized by the Nizams. Nearby Golconda was the source of legendary diamonds including the Koh-i-Noor.",
+      funFact: "Raw pearls are imported from Japan and the Persian Gulf into Hyderabad, where artisans use traditional drill and bleach techniques to refine them."
+    },
+    {
+      id: 'fb_cit_7',
+      topic: 'CITIES',
+      difficulty: 'EASY',
+      question: "Which Indian city is known as the 'City of Joy'?",
+      options: ["Kolkata", "Mumbai", "Varanasi", "Lucknow"],
+      correctAnswer: "Kolkata",
+      explanation: "Kolkata is affectionately known as the City of Joy, a title popularized by French author Dominique Lapierre's 1985 novel 'The City of Joy', celebrating its warm community spirit, art, and vibrant heritage.",
+      funFact: "Kolkata is home to the oldest operating electric tram network in Asia, running continuously since 1902."
+    },
+    {
+      id: 'fb_cit_8',
+      topic: 'CITIES',
+      difficulty: 'MEDIUM',
+      question: "Which is the oldest continuously inhabited city in India and one of the world's ancient cultural capitals on the Ganges?",
+      options: ["Varanasi (Kashi)", "Ujjain", "Madurai", "Ayodhya"],
+      correctAnswer: "Varanasi (Kashi)",
+      explanation: "Varanasi (also known as Kashi or Banaras) has been continuously inhabited for over 3,000 years, celebrated as the spiritual capital of India.",
+      funFact: "Mark Twain famously wrote: 'Banaras is older than history, older than tradition, older even than legend, and looks twice as old as all of them put together.'"
+    },
+    {
+      id: 'fb_cit_9',
+      topic: 'CITIES',
+      difficulty: 'MEDIUM',
+      question: "Which scenic hill station in Tamil Nadu's Nilgiris is crowned the 'Queen of Hill Stations'?",
+      options: ["Ooty (Udhagamandalam)", "Shimla", "Darjeeling", "Mussoorie"],
+      correctAnswer: "Ooty (Udhagamandalam)",
+      explanation: "Located in Tamil Nadu at an elevation of 2,240 meters, Ooty is renowned for tea estates, eucalyptus forests, and the UNESCO Nilgiri Mountain Railway.",
+      funFact: "The game of Snooker was invented in Ooty in 1875 by British army officer Sir Neville Chamberlain at the Ooty Club."
     }
   ],
   HISTORY: [
@@ -275,6 +425,36 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Rani Lakshmibai",
       explanation: "Rani Lakshmibai fought against the British after Lord Dalhousie annexed Jhansi under the Doctrine of Lapse, becoming an enduring symbol of resistance and courage in India's independence struggle.",
       funFact: "British General Sir Hugh Rose commended Rani Lakshmibai as 'the bravest of the rebel leaders' following the battle of Gwalior."
+    },
+    {
+      id: 'fb_his_6',
+      topic: 'HISTORY',
+      difficulty: 'EASY',
+      question: "Who gave the famous call 'Give me blood, and I shall give you freedom!' to the Indian National Army?",
+      options: ["Netaji Subhas Chandra Bose", "Bhagat Singh", "Bal Gangadhar Tilak", "Lala Lajpat Rai"],
+      correctAnswer: "Netaji Subhas Chandra Bose",
+      explanation: "Netaji Subhas Chandra Bose delivered this rousing speech in Burma (Myanmar) on July 4, 1944, inspiring soldiers of the Azad Hind Fauj to liberate India.",
+      funFact: "Netaji established the Provisional Government of Free India (Azad Hind) in Singapore on October 21, 1943."
+    },
+    {
+      id: 'fb_his_7',
+      topic: 'HISTORY',
+      difficulty: 'MEDIUM',
+      question: "The tragic Jallianwala Bagh massacre occurred on Baisakhi day in which year?",
+      options: ["1919", "1921", "1914", "1929"],
+      correctAnswer: "1919",
+      explanation: "On April 13, 1919, British troops under Reginald Dyer fired upon thousands of unarmed civilians gathered peacefully at Jallianwala Bagh in Amritsar.",
+      funFact: "In protest against the massacre, Rabindranath Tagore renounced his British Knighthood."
+    },
+    {
+      id: 'fb_his_8',
+      topic: 'HISTORY',
+      difficulty: 'HARD',
+      question: "Who was the first woman ruler of the Delhi Sultanate who reigned from 1236 to 1240?",
+      options: ["Razia Sultana", "Nur Jahan", "Chand Bibi", "Rani Durgavati"],
+      correctAnswer: "Razia Sultana",
+      explanation: "Razia Sultana, the daughter of Sultan Shams-ud-din Iltutmish, was the only female monarch to rule the Delhi Sultanate, defying conservative court nobility.",
+      funFact: "Razia shed traditional purdah, wore gender-neutral royal robes, and rode war elephants into battle."
     }
   ],
   SCIENCE: [
@@ -317,6 +497,36 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "Boson",
       explanation: "Paul Dirac coined the name 'Boson' to honor Satyendra Nath Bose for developing Bose-Einstein statistics with Albert Einstein, which characterizes particles with integer spin.",
       funFact: "Satyendra Nath Bose's 1924 research paper was initially rejected by journals until Albert Einstein personally translated it into German for publication."
+    },
+    {
+      id: 'fb_sci_5',
+      topic: 'SCIENCE',
+      difficulty: 'EASY',
+      question: "What was the name of India's first indigenous artificial satellite launched by ISRO in 1975?",
+      options: ["Aryabhata", "Bhaskara-I", "Rohini", "INSAT-1A"],
+      correctAnswer: "Aryabhata",
+      explanation: "Launched on April 19, 1975, aboard a Soviet Kosmos-3M launch vehicle from Kapustin Yar, Aryabhata was named after the classical 5th-century Indian mathematician-astronomer who calculated the value of Pi.",
+      funFact: "An image of the Aryabhata satellite was featured on the reverse side of the Indian 2-rupee currency note between 1976 and 1997."
+    },
+    {
+      id: 'fb_sci_6',
+      topic: 'SCIENCE',
+      difficulty: 'MEDIUM',
+      question: "Which ISRO mission made India the first nation in the world to reach Martian orbit on its maiden attempt in 2014?",
+      options: ["Mars Orbiter Mission (Mangalyaan)", "Chandrayaan-1", "Aditya-L1", "AstroSat"],
+      correctAnswer: "Mars Orbiter Mission (Mangalyaan)",
+      explanation: "ISRO's Mangalyaan entered Mars orbit on September 24, 2014, accomplished on a budget of just $74 million (cheaper than the budget of Hollywood movie 'Gravity').",
+      funFact: "Mangalyaan was designed for a 6-month mission lifespan but operated remarkably for nearly 8 years until April 2022."
+    },
+    {
+      id: 'fb_sci_7',
+      topic: 'SCIENCE',
+      difficulty: 'EASY',
+      question: "Which essential gas makes up approximately 78% of the Earth's atmosphere by volume?",
+      options: ["Nitrogen", "Oxygen", "Argon", "Carbon Dioxide"],
+      correctAnswer: "Nitrogen",
+      explanation: "Nitrogen (N2) comprises roughly 78.08% of Earth's atmosphere, followed by Oxygen (~20.95%), Argon (~0.93%), and Carbon Dioxide (~0.04%).",
+      funFact: "Despite its abundance, atmospheric nitrogen cannot be directly absorbed by plants or animals until fixed into nitrates by soil bacteria or lightning."
     }
   ],
   SPORTS: [
@@ -359,8 +569,67 @@ const FALLBACK_QUESTIONS = {
       correctAnswer: "P.V. Sindhu",
       explanation: "P.V. Sindhu won the Badminton Women's Singles Silver at Rio 2016 and Bronze at Tokyo 2020, becoming the first Indian woman and only the second Indian athlete after Sushil Kumar to achieve back-to-back Olympic podium finishes.",
       funFact: "Sindhu was also the first Indian to be crowned BWF World Champion in badminton in Basel, 2019."
+    },
+    {
+      id: 'fb_spo_5',
+      topic: 'SPORTS',
+      difficulty: 'EASY',
+      question: "Who holds the record for the highest individual score in One Day International (ODI) cricket history with 264 runs?",
+      options: ["Rohit Sharma", "Martin Guptill", "Virender Sehwag", "Chris Gayle"],
+      correctAnswer: "Rohit Sharma",
+      explanation: "Rohit Sharma smashed an astonishing 264 runs off 173 balls against Sri Lanka at Eden Gardens, Kolkata on November 13, 2014, including 33 fours and 9 sixes.",
+      funFact: "Rohit Sharma is the only batsman in cricket history to score three double-centuries in One Day Internationals."
+    },
+    {
+      id: 'fb_spo_6',
+      topic: 'SPORTS',
+      difficulty: 'MEDIUM',
+      question: "Which legendary Indian hockey player won three consecutive Olympic gold medals (1928, 1932, 1936), whose birthday on August 29 is celebrated as National Sports Day?",
+      options: ["Major Dhyan Chand", "Balbir Singh Sr.", "K.D. Singh Babu", "Roop Singh"],
+      correctAnswer: "Major Dhyan Chand",
+      explanation: "Known as 'The Wizard' or 'The Magician of Hockey', Major Dhyan Chand scored over 400 international goals during his illustrious career, captaining the Indian team to historic Olympic golds.",
+      funFact: "During the 1936 Berlin Olympics, Adolf Hitler was reportedly so impressed with Dhyan Chand's play that he offered him German citizenship and the rank of Colonel in the German Army, which Dhyan Chand politely declined."
+    },
+    {
+      id: 'fb_spo_7',
+      topic: 'SPORTS',
+      difficulty: 'HARD',
+      question: "Who became the youngest challenger in chess history to win the FIDE Candidates Tournament at age 17 in 2024?",
+      options: ["D. Gukesh", "R. Praggnanandhaa", "Arjun Erigaisi", "Nihal Sarin"],
+      correctAnswer: "D. Gukesh",
+      explanation: "Dommaraju Gukesh won the 2024 FIDE Candidates Tournament in Toronto at just 17 years old, breaking Garry Kasparov's 40-year-old record to become the youngest player ever to qualify for the World Chess Championship match.",
+      funFact: "Gukesh became the third youngest Grandmaster in world chess history at the age of 12 years, 7 months, and 17 days in 2019."
     }
   ]
+};
+
+// Permanent Anti-Repetition Storage Helpers
+const SEEN_STORAGE_KEY = 'jobagent_gk_seen_questions_v1';
+const MAX_STORED_SEEN = 1000;
+
+const getStoredSeenSet = () => {
+  try {
+    const raw = localStorage.getItem(SEEN_STORAGE_KEY);
+    if (raw) {
+      const arr = JSON.parse(raw);
+      if (Array.isArray(arr)) {
+        return new Set(arr.map(s => String(s).toLowerCase()));
+      }
+    }
+  } catch (e) {
+    console.warn('Could not read seen questions from localStorage:', e);
+  }
+  return new Set();
+};
+
+const saveStoredSeenSet = (seenSet) => {
+  try {
+    if (!seenSet) return;
+    const arr = Array.from(seenSet).slice(-MAX_STORED_SEEN);
+    localStorage.setItem(SEEN_STORAGE_KEY, JSON.stringify(arr));
+  } catch (e) {
+    console.warn('Could not persist seen questions to localStorage:', e);
+  }
 };
 
 const getFallbackQuestion = (topic = 'ALL', seenSet = null) => {
@@ -371,7 +640,7 @@ const getFallbackQuestion = (topic = 'ALL', seenSet = null) => {
     Object.values(FALLBACK_QUESTIONS).forEach(list => pool.push(...list));
   }
 
-  // Filter out any questions that have already been seen in this session
+  // Filter out any questions that have already been seen
   let candidates = pool;
   if (seenSet && seenSet.size > 0) {
     candidates = pool.filter(q => {
@@ -381,7 +650,18 @@ const getFallbackQuestion = (topic = 'ALL', seenSet = null) => {
     });
   }
 
-  // If all questions were seen, fallback to full pool
+  // If all questions in this topic were seen, search across ALL categories for any unseen question
+  if (candidates.length === 0 && seenSet && seenSet.size > 0) {
+    const allPool = [];
+    Object.values(FALLBACK_QUESTIONS).forEach(list => allPool.push(...list));
+    candidates = allPool.filter(q => {
+      const idMatch = q.id && seenSet.has(String(q.id).toLowerCase());
+      const textMatch = q.question && seenSet.has(q.question.trim().toLowerCase());
+      return !idMatch && !textMatch;
+    });
+  }
+
+  // If still empty (all offline questions seen across all topics), fallback to full pool
   const activePool = candidates.length > 0 ? candidates : pool;
   const randomIndex = Math.floor(Math.random() * activePool.length);
   const template = activePool[randomIndex];
@@ -403,17 +683,19 @@ export default function GkQuiz() {
 
   const [selectedTopic, setSelectedTopic] = useState('ALL');
   const [selectedDifficulty, setSelectedDifficulty] = useState('MEDIUM');
-  // Initialize with an instant verified question so user never sees a blank screen!
-  const [currentQuestion, setCurrentQuestion] = useState(() => getFallbackQuestion('ALL'));
-  const [loading, setLoading] = useState(false);
+  
+  // Permanent Anti-repetition tracking: backed by localStorage so questions NEVER repeat across visits
+  const seenQuestionIds = useRef(getStoredSeenSet());
 
-  // Anti-repetition tracking: keeps track of all question IDs and texts seen during the session
-  const seenQuestionIds = useRef(new Set());
+  // Initialize with an instant verified question guaranteed to be unseen
+  const [currentQuestion, setCurrentQuestion] = useState(() => getFallbackQuestion('ALL', seenQuestionIds.current));
+  const [loading, setLoading] = useState(false);
 
   const markSeen = (q) => {
     if (!q) return;
     if (q.id) seenQuestionIds.current.add(String(q.id).toLowerCase());
     if (q.question) seenQuestionIds.current.add(q.question.trim().toLowerCase());
+    saveStoredSeenSet(seenQuestionIds.current);
   };
 
   // User & DB persistence helpers
@@ -560,8 +842,8 @@ export default function GkQuiz() {
 
   const prefetchNextQuestion = async (topic = selectedTopic, difficulty = selectedDifficulty) => {
     try {
-      // Send up to 30 most recent seen IDs or questions to backend for server-side exclusion
-      const excludeList = Array.from(seenQuestionIds.current).slice(-30).join(',');
+      // Send up to 100 most recent seen IDs or questions to backend for server-side exclusion
+      const excludeList = Array.from(seenQuestionIds.current).slice(-100).join(',');
       const res = await getGkNextQuestion(topic, difficulty, excludeList);
       if (res.data && res.data.question && res.data.options && res.data.options.length === 4) {
         const id = res.data.id ? String(res.data.id).toLowerCase() : null;

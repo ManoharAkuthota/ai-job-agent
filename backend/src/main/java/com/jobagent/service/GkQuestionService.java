@@ -214,9 +214,38 @@ public class GkQuestionService {
                     candidates.add(q);
                 }
             }
+        } else {
+            candidates.addAll(pool);
         }
 
-        // If all questions in this topic were already seen, recycle from full pool
+        // If all questions in this specific topic were seen, search across ALL other topics for ANY unseen question
+        if (candidates.isEmpty() && excludeSet != null && !excludeSet.isEmpty()) {
+            List<GkQuestion> generalPool = questionBank.getOrDefault("GENERAL", Collections.emptyList());
+            for (GkQuestion q : generalPool) {
+                boolean isExcluded = (q.getId() != null && excludeSet.contains(q.getId().toLowerCase()))
+                        || (q.getQuestion() != null && excludeSet.contains(q.getQuestion().trim().toLowerCase()));
+                if (!isExcluded) {
+                    candidates.add(q);
+                }
+            }
+        }
+
+        // If the entire curated bank is exhausted, dynamically generate a fresh AI question on demand
+        if (candidates.isEmpty() && aiAgentService != null) {
+            AgentSettings settings = null;
+            if (settingsRepository != null) {
+                try {
+                    settings = settingsRepository.findById(1L).orElse(null);
+                } catch (Exception ignored) {}
+            }
+            if (settings == null) settings = new AgentSettings();
+            GkQuestion freshAi = generateAiQuestion(topic, difficulty, settings);
+            if (freshAi != null && freshAi.getQuestion() != null
+                    && !excludeSet.contains(freshAi.getQuestion().trim().toLowerCase())) {
+                return freshAi;
+            }
+        }
+
         List<GkQuestion> activePool = candidates.isEmpty() ? pool : candidates;
 
         int index = ThreadLocalRandom.current().nextInt(activePool.size());
@@ -296,6 +325,27 @@ public class GkQuestionService {
                 "Under Article 118(4) of the Indian Constitution, the Speaker of the Lok Sabha presides over a joint sitting of Parliament. If the Speaker is absent, the Deputy Speaker presides.",
                 "The Vice President of India (Chairman of Rajya Sabha) cannot preside over a joint sitting under any circumstances."));
 
+        politics.add(new GkQuestion("pol_7", "POLITICS", "EASY",
+                "Which Indian state has the highest number of seats in the Lok Sabha?",
+                List.of("Uttar Pradesh (80)", "Maharashtra (48)", "West Bengal (42)", "Bihar (40)"),
+                "Uttar Pradesh (80)",
+                "Uttar Pradesh has 80 parliamentary constituencies in the Lok Sabha, the highest of any Indian state, reflecting its large population proportion.",
+                "A popular political adage in Indian democracy states: 'The road to Delhi passes through Lucknow.'"));
+
+        politics.add(new GkQuestion("pol_8", "POLITICS", "MEDIUM",
+                "Who is the custodian and final interpreter of the Constitution of India?",
+                List.of("The Supreme Court of India", "The President of India", "The Prime Minister", "The Parliament"),
+                "The Supreme Court of India",
+                "The Supreme Court of India acts as the guardian and final interpreter of the Constitution, vested with the power of judicial review under Article 13 to strike down unconstitutional legislation.",
+                "The Supreme Court of India held its inaugural sitting on January 28, 1950, two days after the Constitution came into effect."));
+
+        politics.add(new GkQuestion("pol_9", "POLITICS", "HARD",
+                "What is the minimum voting age for Indian citizens as lowered by the 61st Constitutional Amendment Act, 1988?",
+                List.of("18 years", "21 years", "20 years", "16 years"),
+                "18 years",
+                "The 61st Constitutional Amendment Act of 1988 amended Article 326 to lower the minimum voting age for elections to the Lok Sabha and State Legislative Assemblies from 21 years to 18 years.",
+                "The amendment came into force on March 28, 1989, empowering millions of young citizens to participate in Indian elections."));
+
         questionBank.put("POLITICS", politics);
 
         // 2. MOVIES & CINEMA
@@ -341,6 +391,27 @@ public class GkQuestionService {
                 "Mughal-e-Azam",
                 "Directed by K. Asif and starring Prithviraj Kapoor, Dilip Kumar, and Madhubala, 'Mughal-e-Azam' set unprecedented box office records and is universally regarded as a magnum opus of Indian cinema.",
                 "The legendary song 'Pyar Kiya To Darna Kya' was shot in the Sheesh Mahal (Palace of Mirrors) set, which took two years to construct."));
+
+        movies.add(new GkQuestion("mov_7", "MOVIES", "MEDIUM",
+                "Which Indian film was the first to be officially nominated for the Academy Award (Oscar) for Best Foreign Language Film in 1958?",
+                List.of("Mother India", "Salaam Bombay!", "Lagaan", "Pather Panchali"),
+                "Mother India",
+                "Directed by Mehboob Khan and starring Nargis, 'Mother India' (1957) was India's first submission to receive an Oscar nomination in the Best Foreign Language Film category, losing by just one vote.",
+                "Only three Indian films have ever achieved an Oscar nomination in this category: Mother India (1957), Salaam Bombay! (1988), and Lagaan (2001)."));
+
+        movies.add(new GkQuestion("mov_8", "MOVIES", "EASY",
+                "Who is the legendary music maestro who won two Oscars in 2009 for 'Slumdog Millionaire'?",
+                List.of("A.R. Rahman", "Ilaiyaraaja", "R.D. Burman", "M.M. Keeravani"),
+                "A.R. Rahman",
+                "A.R. Rahman made history by winning two Academy Awards in 2009 for Best Original Score and Best Original Song ('Jai Ho') for 'Slumdog Millionaire'.",
+                "Rahman famously remarked during his acceptance speech: 'All my life I had a choice of hate and love. I chose love and I'm here.'"));
+
+        movies.add(new GkQuestion("mov_9", "MOVIES", "MEDIUM",
+                "Which epic film directed by S.S. Rajamouli became the first Indian movie to gross over ₹1,000 crore worldwide?",
+                List.of("Baahubali 2: The Conclusion", "Dangal", "RRR", "K.G.F: Chapter 2"),
+                "Baahubali 2: The Conclusion",
+                "Released in 2017, 'Baahubali 2: The Conclusion' shattered box office records by crossing ₹1,000 crore within just 10 days of its global theatrical release.",
+                "The riddle 'Why did Kattappa kill Baahubali?' was one of the most talked-about pop culture mysteries in Indian cinema between 2015 and 2017."));
 
         questionBank.put("MOVIES", movies);
 
@@ -388,6 +459,27 @@ public class GkQuestionService {
                 "Discovered in 1954, Lothal possessed a massive, sophisticated tidal dock basin connecting the city to an ancient channel of the Sabarmati River for maritime trade with Mesopotamia and Egypt.",
                 "Lothal's engineers developed a highly accurate flood-control and water-drainage network over 4,400 years ago."));
 
+        cities.add(new GkQuestion("cit_7", "CITIES", "EASY",
+                "Which Indian city is known as the 'City of Joy'?",
+                List.of("Kolkata", "Mumbai", "Varanasi", "Lucknow"),
+                "Kolkata",
+                "Kolkata is affectionately known as the City of Joy, a title popularized by French author Dominique Lapierre's 1985 novel 'The City of Joy', celebrating its warm community spirit, art, and vibrant heritage.",
+                "Kolkata is home to the oldest operating electric tram network in Asia, running continuously since 1902."));
+
+        cities.add(new GkQuestion("cit_8", "CITIES", "MEDIUM",
+                "Which is the oldest continuously inhabited city in India and one of the world's ancient cultural capitals on the Ganges?",
+                List.of("Varanasi (Kashi)", "Ujjain", "Madurai", "Ayodhya"),
+                "Varanasi (Kashi)",
+                "Varanasi (also known as Kashi or Banaras) has been continuously inhabited for over 3,000 years, celebrated as the spiritual capital of India.",
+                "Mark Twain famously wrote: 'Banaras is older than history, older than tradition, older even than legend, and looks twice as old as all of them put together.'"));
+
+        cities.add(new GkQuestion("cit_9", "CITIES", "MEDIUM",
+                "Which scenic hill station in Tamil Nadu's Nilgiris is crowned the 'Queen of Hill Stations'?",
+                List.of("Ooty (Udhagamandalam)", "Shimla", "Darjeeling", "Mussoorie"),
+                "Ooty (Udhagamandalam)",
+                "Located in Tamil Nadu at an elevation of 2,240 meters, Ooty is renowned for tea estates, eucalyptus forests, and the UNESCO Nilgiri Mountain Railway.",
+                "The game of Snooker was invented in Ooty in 1875 by British army officer Sir Neville Chamberlain at the Ooty Club."));
+
         questionBank.put("CITIES", cities);
 
         // 4. HISTORY
@@ -427,6 +519,27 @@ public class GkQuestionService {
                 "Rani Lakshmibai fought against the British after Lord Dalhousie annexed Jhansi under the Doctrine of Lapse, becoming an enduring symbol of resistance and courage in India's independence struggle.",
                 "British General Sir Hugh Rose commended Rani Lakshmibai as 'the bravest of the rebel leaders' following the battle of Gwalior."));
 
+        history.add(new GkQuestion("his_6", "HISTORY", "EASY",
+                "Who gave the famous call 'Give me blood, and I shall give you freedom!' to the Indian National Army?",
+                List.of("Netaji Subhas Chandra Bose", "Bhagat Singh", "Bal Gangadhar Tilak", "Lala Lajpat Rai"),
+                "Netaji Subhas Chandra Bose",
+                "Netaji Subhas Chandra Bose delivered this rousing speech in Burma (Myanmar) on July 4, 1944, inspiring soldiers of the Azad Hind Fauj to liberate India.",
+                "Netaji established the Provisional Government of Free India (Azad Hind) in Singapore on October 21, 1943."));
+
+        history.add(new GkQuestion("his_7", "HISTORY", "MEDIUM",
+                "The tragic Jallianwala Bagh massacre occurred on Baisakhi day in which year?",
+                List.of("1919", "1921", "1914", "1929"),
+                "1919",
+                "On April 13, 1919, British troops under Reginald Dyer fired upon thousands of unarmed civilians gathered peacefully at Jallianwala Bagh in Amritsar.",
+                "In protest against the massacre, Rabindranath Tagore renounced his British Knighthood."));
+
+        history.add(new GkQuestion("his_8", "HISTORY", "HARD",
+                "Who was the first woman ruler of the Delhi Sultanate who reigned from 1236 to 1240?",
+                List.of("Razia Sultana", "Nur Jahan", "Chand Bibi", "Rani Durgavati"),
+                "Razia Sultana",
+                "Razia Sultana, the daughter of Sultan Shams-ud-din Iltutmish, was the only female monarch to rule the Delhi Sultanate, defying conservative court nobility.",
+                "Razia shed traditional purdah, wore gender-neutral royal robes, and rode war elephants into battle."));
+
         questionBank.put("HISTORY", history);
 
         // 5. SCIENCE & SPACE
@@ -459,6 +572,27 @@ public class GkQuestionService {
                 "Paul Dirac coined the name 'Boson' to honor Satyendra Nath Bose for developing Bose-Einstein statistics with Albert Einstein, which characterizes particles with integer spin.",
                 "Satyendra Nath Bose's 1924 research paper was initially rejected by journals until Albert Einstein personally translated it into German for publication."));
 
+        science.add(new GkQuestion("sci_5", "SCIENCE", "EASY",
+                "What was the name of India's first indigenous artificial satellite launched by ISRO in 1975?",
+                List.of("Aryabhata", "Bhaskara-I", "Rohini", "INSAT-1A"),
+                "Aryabhata",
+                "Launched on April 19, 1975, aboard a Soviet Kosmos-3M launch vehicle from Kapustin Yar, Aryabhata was named after the classical 5th-century Indian mathematician-astronomer who calculated the value of Pi.",
+                "An image of the Aryabhata satellite was featured on the reverse side of the Indian 2-rupee currency note between 1976 and 1997."));
+
+        science.add(new GkQuestion("sci_6", "SCIENCE", "MEDIUM",
+                "Which ISRO mission made India the first nation in the world to reach Martian orbit on its maiden attempt in 2014?",
+                List.of("Mars Orbiter Mission (Mangalyaan)", "Chandrayaan-1", "Aditya-L1", "AstroSat"),
+                "Mars Orbiter Mission (Mangalyaan)",
+                "ISRO's Mangalyaan entered Mars orbit on September 24, 2014, accomplished on a budget of just $74 million (cheaper than the budget of Hollywood movie 'Gravity').",
+                "Mangalyaan was designed for a 6-month mission lifespan but operated remarkably for nearly 8 years until April 2022."));
+
+        science.add(new GkQuestion("sci_7", "SCIENCE", "EASY",
+                "Which essential gas makes up approximately 78% of the Earth's atmosphere by volume?",
+                List.of("Nitrogen", "Oxygen", "Argon", "Carbon Dioxide"),
+                "Nitrogen",
+                "Nitrogen (N2) comprises roughly 78.08% of Earth's atmosphere, followed by Oxygen (~20.95%), Argon (~0.93%), and Carbon Dioxide (~0.04%).",
+                "Despite its abundance, atmospheric nitrogen cannot be directly absorbed by plants or animals until fixed into nitrates by soil bacteria or lightning."));
+
         questionBank.put("SCIENCE", science);
 
         // 6. SPORTS & CRICKET
@@ -490,6 +624,27 @@ public class GkQuestionService {
                 "P.V. Sindhu",
                 "P.V. Sindhu won the Badminton Women's Singles Silver at Rio 2016 and Bronze at Tokyo 2020, becoming the first Indian woman and only the second Indian athlete after Sushil Kumar to achieve back-to-back Olympic podium finishes.",
                 "Sindhu was also the first Indian to be crowned BWF World Champion in badminton in Basel, 2019."));
+
+        sports.add(new GkQuestion("spo_5", "SPORTS", "EASY",
+                "Who holds the record for the highest individual score in One Day International (ODI) cricket history with 264 runs?",
+                List.of("Rohit Sharma", "Martin Guptill", "Virender Sehwag", "Chris Gayle"),
+                "Rohit Sharma",
+                "Rohit Sharma smashed an astonishing 264 runs off 173 balls against Sri Lanka at Eden Gardens, Kolkata on November 13, 2014, including 33 fours and 9 sixes.",
+                "Rohit Sharma is the only batsman in cricket history to score three double-centuries in One Day Internationals."));
+
+        sports.add(new GkQuestion("spo_6", "SPORTS", "MEDIUM",
+                "Which legendary Indian hockey player won three consecutive Olympic gold medals (1928, 1932, 1936), whose birthday on August 29 is celebrated as National Sports Day?",
+                List.of("Major Dhyan Chand", "Balbir Singh Sr.", "K.D. Singh Babu", "Roop Singh"),
+                "Major Dhyan Chand",
+                "Known as 'The Wizard' or 'The Magician of Hockey', Major Dhyan Chand scored over 400 international goals during his illustrious career, captaining the Indian team to historic Olympic golds.",
+                "During the 1936 Berlin Olympics, Adolf Hitler was reportedly so impressed with Dhyan Chand's play that he offered him German citizenship and the rank of Colonel in the German Army, which Dhyan Chand politely declined."));
+
+        sports.add(new GkQuestion("spo_7", "SPORTS", "HARD",
+                "Who became the youngest challenger in chess history to win the FIDE Candidates Tournament at age 17 in 2024?",
+                List.of("D. Gukesh", "R. Praggnanandhaa", "Arjun Erigaisi", "Nihal Sarin"),
+                "D. Gukesh",
+                "Dommaraju Gukesh won the 2024 FIDE Candidates Tournament in Toronto at just 17 years old, breaking Garry Kasparov's 40-year-old record to become the youngest player ever to qualify for the World Chess Championship match.",
+                "Gukesh became the third youngest Grandmaster in world chess history at the age of 12 years, 7 months, and 17 days in 2019."));
 
         questionBank.put("SPORTS", sports);
 
@@ -536,6 +691,27 @@ public class GkQuestionService {
                 "Justice D.Y. Chandrachud",
                 "Justice Dhananjaya Yashwant Chandrachud served as the 50th CJI, spearheading widespread technological modernization of Indian courts, live-streaming of constitutional proceedings, and landmark verdicts.",
                 "His father, Justice Y.V. Chandrachud, was the longest-serving Chief Justice in Indian history, serving for over seven years."));
+
+        currentAffairs.add(new GkQuestion("ca_7", "CURRENT_AFFAIRS", "MEDIUM",
+                "What was the theme of India's historic G20 Presidency in 2023?",
+                List.of("Vasudhaiva Kutumbakam (One Earth, One Family, One Future)", "Recover Together, Recover Stronger", "Building a Resilient World", "Unity in Diversity"),
+                "Vasudhaiva Kutumbakam (One Earth, One Family, One Future)",
+                "Drawn from the ancient Sanskrit text Maha Upanishad, the theme 'Vasudhaiva Kutumbakam' (One Earth, One Family, One Future) affirmed the value of all life and interconnected human progress.",
+                "During the New Delhi summit under India's presidency, the 55-nation African Union was officially admitted as a permanent member of the G20."));
+
+        currentAffairs.add(new GkQuestion("ca_8", "CURRENT_AFFAIRS", "MEDIUM",
+                "What is the name of ISRO's prestigious human spaceflight mission aiming to send Indian astronauts into low Earth orbit?",
+                List.of("Gaganyaan", "Shukrayaan", "Mangalyaan-2", "Samudrayaan"),
+                "Gaganyaan",
+                "ISRO's Gaganyaan mission envisages launching a crew of three members to an orbit of 400 km for a 3-day mission and bringing them safely back to Earth, landing in Indian sea waters.",
+                "Prime Minister Narendra Modi announced the names of the four Indian Air Force test pilots selected for the Gaganyaan mission in February 2024 at Vikram Sarabhai Space Centre."));
+
+        currentAffairs.add(new GkQuestion("ca_9", "CURRENT_AFFAIRS", "EASY",
+                "The world's highest railway arch bridge, standing 359 metres above the riverbed, was constructed across which river in Jammu and Kashmir?",
+                List.of("Chenab", "Jhelum", "Ravi", "Indus"),
+                "Chenab",
+                "The Chenab Rail Bridge stands at an astonishing height of 359 meters (1,178 ft) above the Chenab River bed—35 meters taller than the Eiffel Tower in Paris—as part of the Udhampur-Srinagar-Baramulla Rail Link (USBRL) project.",
+                "The bridge was engineered with special blast-proof steel and can withstand earthquake tremors of up to magnitude 8 on the Richter scale and wind speeds up to 266 km/h."));
 
         questionBank.put("CURRENT_AFFAIRS", currentAffairs);
 
