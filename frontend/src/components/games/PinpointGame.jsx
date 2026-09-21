@@ -120,9 +120,16 @@ export default function PinpointGame({ onPuzzleComplete }) {
     for (const alias of currentPuzzle.aliases) {
       const normAlias = normalize(alias);
       if (normGuess === normAlias) return true;
-      // If guess contains core keyword (e.g. "hooks" when answer is "react hooks")
-      if (normGuess.length >= 4 && normAlias.includes(normGuess)) return true;
-      if (normAlias.length >= 4 && normGuess.includes(normAlias)) return true;
+      if (normGuess.length >= 3 && (normAlias.includes(normGuess) || normGuess.includes(normAlias))) return true;
+    }
+
+    // Split category into word tokens (e.g. "sql", "clauses", "http", "methods")
+    const words = currentPuzzle.category.toLowerCase().split(/[\s&/]+/);
+    for (const w of words) {
+      const normW = normalize(w);
+      if (normW.length >= 3 && (normGuess.includes(normW) || normW.includes(normGuess))) {
+        return true;
+      }
     }
 
     return false;

@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Hash, RotateCcw, Undo2, Lightbulb, Trophy, AlertTriangle, Timer, Pencil, Eraser, CheckCircle2 } from 'lucide-react';
+import { Hash, RotateCcw, Undo2, Lightbulb, Trophy, Timer, Pencil, Eraser, ChevronRight } from 'lucide-react';
 import { soundFx } from '../../utils/audioEffects';
 
-// Verified Solvable Boards
-// 0 indicates an empty cell
+// 100% Mathematically Verified Solvable Sudoku Boards
 const SUDOKU_LEVELS = [
   {
     id: 'sudoku_mini_6x6',
@@ -67,48 +66,74 @@ const SUDOKU_LEVELS = [
     boxCols: 3,
     difficulty: 'Medium',
     puzzle: [
-      [0, 0, 0, 6, 0, 0, 4, 0, 0],
-      [7, 0, 0, 0, 0, 3, 6, 0, 0],
-      [0, 0, 0, 0, 9, 1, 0, 8, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 5, 0, 1, 8, 0, 0, 0, 3],
-      [0, 0, 0, 3, 0, 6, 0, 4, 5],
-      [0, 4, 0, 2, 0, 0, 0, 6, 0],
-      [9, 0, 3, 0, 0, 0, 0, 0, 0],
-      [0, 2, 0, 0, 0, 0, 1, 0, 0]
+      [0, 0, 0, 2, 6, 0, 7, 0, 1],
+      [6, 8, 0, 0, 7, 0, 0, 9, 0],
+      [1, 9, 0, 0, 0, 4, 5, 0, 0],
+      [8, 2, 0, 1, 0, 0, 0, 4, 0],
+      [0, 0, 4, 6, 0, 2, 9, 0, 0],
+      [0, 5, 0, 0, 0, 3, 0, 2, 8],
+      [0, 0, 9, 3, 0, 0, 0, 7, 4],
+      [0, 4, 0, 0, 5, 0, 0, 3, 6],
+      [7, 0, 3, 0, 1, 8, 0, 0, 0]
     ],
     solution: [
-      [5, 8, 9, 6, 7, 2, 4, 3, 1],
-      [7, 1, 2, 8, 4, 3, 6, 5, 9],
-      [4, 3, 6, 5, 9, 1, 7, 8, 2],
-      [3, 9, 4, 7, 2, 5, 8, 1, 6],
-      [6, 5, 7, 1, 8, 4, 9, 2, 3],
-      [2, 8, 1, 3, 9, 6, 5, 4, 7],
-      [1, 4, 8, 2, 5, 7, 3, 6, 9],
-      [9, 7, 3, 4, 1, 8, 2, 6, 5],
-      [8, 2, 5, 9, 6, 4, 1, 7, 3]
+      [4, 3, 5, 2, 6, 9, 7, 8, 1],
+      [6, 8, 2, 5, 7, 1, 4, 9, 3],
+      [1, 9, 7, 8, 3, 4, 5, 6, 2],
+      [8, 2, 6, 1, 9, 5, 3, 4, 7],
+      [3, 7, 4, 6, 8, 2, 9, 1, 5],
+      [9, 5, 1, 7, 4, 3, 6, 2, 8],
+      [5, 1, 9, 3, 2, 6, 8, 7, 4],
+      [2, 4, 8, 9, 5, 7, 1, 3, 6],
+      [7, 6, 3, 4, 1, 8, 2, 5, 9]
+    ]
+  },
+  {
+    id: 'sudoku_hard_9x9',
+    name: 'Classic Hard (9x9)',
+    size: 9,
+    boxRows: 3,
+    boxCols: 3,
+    difficulty: 'Hard',
+    puzzle: [
+      [0, 0, 2, 0, 0, 0, 0, 0, 0],
+      [7, 0, 0, 0, 5, 6, 0, 0, 1],
+      [0, 0, 8, 3, 0, 1, 0, 0, 0],
+      [0, 0, 0, 0, 0, 4, 6, 0, 0],
+      [0, 9, 1, 7, 6, 0, 0, 2, 8],
+      [0, 0, 6, 0, 0, 5, 7, 0, 0],
+      [0, 0, 4, 0, 0, 7, 0, 0, 2],
+      [6, 0, 0, 9, 0, 0, 0, 0, 7],
+      [0, 0, 0, 0, 1, 2, 0, 6, 0]
+    ],
+    solution: [
+      [1, 5, 2, 4, 8, 9, 3, 7, 6],
+      [7, 3, 9, 2, 5, 6, 8, 4, 1],
+      [4, 6, 8, 3, 7, 1, 2, 9, 5],
+      [3, 8, 7, 1, 2, 4, 6, 5, 9],
+      [5, 9, 1, 7, 6, 3, 4, 2, 8],
+      [2, 4, 6, 8, 9, 5, 7, 1, 3],
+      [9, 1, 4, 6, 3, 7, 5, 8, 2],
+      [6, 2, 5, 9, 4, 8, 1, 3, 7],
+      [8, 7, 3, 5, 1, 2, 9, 6, 4]
     ]
   }
 ];
 
 export default function SudokuGame({ onPuzzleComplete }) {
-  const [levelIndex, setLevelIndex] = useState(1); // Default to Classic Easy 9x9
+  const [levelIndex, setLevelIndex] = useState(1);
   const currentLevel = SUDOKU_LEVELS[levelIndex];
   const { size, boxRows, boxCols, puzzle, solution } = currentLevel;
 
-  // Track initial locked numbers
   const initialLocked = useRef(new Set());
 
-  // Grid states:
-  // grid: 2D array of numbers (0 for empty)
-  // notes: 2D array of Sets containing pencil numbers
   const [grid, setGrid] = useState(() => puzzle.map(row => [...row]));
   const [notes, setNotes] = useState(() => Array(size).fill(null).map(() => Array(size).fill(null).map(() => new Set())));
-  const [selectedCell, setSelectedCell] = useState([0, 0]); // [row, col]
+  const [selectedCell, setSelectedCell] = useState([0, 0]);
   const [notesMode, setNotesMode] = useState(false);
   const [history, setHistory] = useState([]);
   const [mistakes, setMistakes] = useState(0);
-  const [conflicts, setConflicts] = useState(new Set()); // "r,c"
+  const [conflicts, setConflicts] = useState(new Set());
   const [isWon, setIsWon] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [timerActive, setTimerActive] = useState(true);
@@ -250,7 +275,6 @@ export default function SudokuGame({ onPuzzleComplete }) {
     ]);
 
     if (notesMode) {
-      // Toggle pencil note
       const nextNotes = notes.map(row => row.map(s => new Set(s)));
       if (nextNotes[r][c].has(num)) {
         nextNotes[r][c].delete(num);
@@ -261,7 +285,6 @@ export default function SudokuGame({ onPuzzleComplete }) {
       }
       setNotes(nextNotes);
     } else {
-      // Place actual number
       const nextGrid = grid.map(row => [...row]);
       const currentVal = nextGrid[r][c];
 
@@ -272,13 +295,12 @@ export default function SudokuGame({ onPuzzleComplete }) {
         nextGrid[r][c] = num;
         soundFx.playPlace();
 
-        // Check against solution for immediate mistake feedback
         if (solution && solution[r][c] !== num) {
           setMistakes(m => m + 1);
           soundFx.playError();
         }
 
-        // Auto-clear notes of this number in same row, col, and box
+        // Auto-clear notes
         const nextNotes = notes.map(row => row.map(s => new Set(s)));
         for (let i = 0; i < size; i++) {
           nextNotes[r][i].delete(num);
@@ -299,7 +321,6 @@ export default function SudokuGame({ onPuzzleComplete }) {
     }
   }, [isWon, selectedCell, grid, notes, notesMode, solution, size, boxRows, boxCols, evaluateBoard]);
 
-  // Erase cell content
   const handleErase = useCallback(() => {
     if (isWon || !selectedCell) return;
     const [r, c] = selectedCell;
@@ -326,7 +347,6 @@ export default function SudokuGame({ onPuzzleComplete }) {
     }
   }, [isWon, selectedCell, grid, notes, evaluateBoard]);
 
-  // Undo action
   const handleUndo = () => {
     if (history.length === 0 || isWon) return;
     const prev = history[history.length - 1];
@@ -337,7 +357,6 @@ export default function SudokuGame({ onPuzzleComplete }) {
     soundFx.playTap();
   };
 
-  // Reset action
   const handleReset = () => {
     setGrid(puzzle.map(row => [...row]));
     setNotes(Array(size).fill(null).map(() => Array(size).fill(null).map(() => new Set())));
@@ -349,7 +368,6 @@ export default function SudokuGame({ onPuzzleComplete }) {
     soundFx.playTap();
   };
 
-  // Hint action: Fill current cell with correct answer
   const handleHint = () => {
     if (isWon || !selectedCell || !solution) return;
     const [r, c] = selectedCell;
@@ -363,12 +381,11 @@ export default function SudokuGame({ onPuzzleComplete }) {
     soundFx.playWin();
   };
 
-  // Hardware Keyboard listener for laptop/desktop users
+  // Keyboard controls
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (isWon) return;
 
-      // Digits 1-9
       const digit = parseInt(e.key, 10);
       if (!isNaN(digit) && digit >= 1 && digit <= size) {
         e.preventDefault();
@@ -381,7 +398,6 @@ export default function SudokuGame({ onPuzzleComplete }) {
         setNotesMode(prev => !prev);
         soundFx.playTap();
       } else if (selectedCell) {
-        // Arrow navigation
         const [r, c] = selectedCell;
         if (e.key === 'ArrowUp' && r > 0) {
           e.preventDefault();
@@ -403,10 +419,8 @@ export default function SudokuGame({ onPuzzleComplete }) {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isWon, selectedCell, size, handleDigitInput, handleErase]);
 
-  // Selected cell number
   const selectedNumber = selectedCell ? grid[selectedCell[0]][selectedCell[1]] : 0;
 
-  // Remaining count for each digit (1 to size)
   const remainingCounts = {};
   for (let d = 1; d <= size; d++) {
     const placed = grid.reduce((acc, row) => acc + row.filter(v => v === d).length, 0);
@@ -448,20 +462,20 @@ export default function SudokuGame({ onPuzzleComplete }) {
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.15)',
             borderRadius: '8px',
-            padding: '6px 10px',
+            padding: '6px 12px',
             fontSize: '13px',
             cursor: 'pointer'
           }}
         >
           {SUDOKU_LEVELS.map((lvl, idx) => (
             <option key={lvl.id} value={idx}>
-              {lvl.name}
+              {lvl.name} ({lvl.difficulty})
             </option>
           ))}
         </select>
       </div>
 
-      {/* Stats Bar (Timer, Mistakes, Controls) */}
+      {/* Stats Bar */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -519,7 +533,7 @@ export default function SudokuGame({ onPuzzleComplete }) {
             border: '2px solid rgba(255, 255, 255, 0.25)',
             borderRadius: '10px',
             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8)',
-            maxWidth: size === 6 ? '380px' : '460px',
+            maxWidth: size === 6 ? '380px' : '440px',
             width: '100%',
             aspectRatio: '1 / 1',
             overflow: 'hidden',
@@ -537,11 +551,9 @@ export default function SudokuGame({ onPuzzleComplete }) {
               const isSameNumber = val !== 0 && selectedNumber !== 0 && val === selectedNumber;
               const isConflict = conflicts.has(`${r},${c}`);
 
-              // Box border markers
               const isBoxRight = (c + 1) % boxCols === 0 && c < size - 1;
               const isBoxBottom = (r + 1) % boxRows === 0 && r < size - 1;
 
-              // Cell Background Tint
               let cellBg = '#0b0f19';
               if (isSelected) {
                 cellBg = 'rgba(56, 189, 248, 0.35)';
@@ -574,7 +586,7 @@ export default function SudokuGame({ onPuzzleComplete }) {
                   {val !== 0 ? (
                     <span
                       style={{
-                        fontSize: size === 6 ? '22px' : '18px',
+                        fontSize: size === 6 ? '22px' : '17px',
                         fontWeight: isLocked ? '800' : '700',
                         color: isConflict
                           ? '#ef4444'
@@ -587,7 +599,6 @@ export default function SudokuGame({ onPuzzleComplete }) {
                       {val}
                     </span>
                   ) : (
-                    /* Pencil Notes Grid */
                     <div style={{
                       display: 'grid',
                       gridTemplateColumns: 'repeat(3, 1fr)',
@@ -624,7 +635,7 @@ export default function SudokuGame({ onPuzzleComplete }) {
         </div>
       </div>
 
-      {/* Number Pad for Mobile Touch & Quick Laptop Clicking */}
+      {/* Number Pad */}
       <div style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${size}, 1fr)`,
@@ -665,7 +676,7 @@ export default function SudokuGame({ onPuzzleComplete }) {
         })}
       </div>
 
-      {/* Controls Bar (Undo, Erase, Hint, Reset) */}
+      {/* Controls Bar */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -748,9 +759,29 @@ export default function SudokuGame({ onPuzzleComplete }) {
         >
           <RotateCcw size={16} /> Reset
         </button>
+
+        {levelIndex < SUDOKU_LEVELS.length - 1 && (
+          <button
+            onClick={() => setLevelIndex(levelIndex + 1)}
+            style={{
+              background: 'rgba(99, 102, 241, 0.15)',
+              color: '#818cf8',
+              border: '1px solid rgba(99, 102, 241, 0.3)',
+              padding: '8px 14px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '13px',
+              cursor: 'pointer'
+            }}
+          >
+            Next Sudoku <ChevronRight size={15} />
+          </button>
+        )}
       </div>
 
-      {/* Rules & Shortcut Guide */}
+      {/* Rules */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         border: '1px solid rgba(255, 255, 255, 0.06)',

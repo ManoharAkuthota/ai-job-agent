@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Brain, Heart, Trophy, RotateCcw, Zap, Sparkles, Play, CheckCircle2, XCircle } from 'lucide-react';
+import { Brain, Heart, Trophy, RotateCcw, Zap, Sparkles, Play, ChevronRight } from 'lucide-react';
 import { soundFx } from '../../utils/audioEffects';
 
-// Difficulty progression config
 const LEVEL_CONFIGS = [
   { level: 1, size: 3, tilesCount: 3, flashMs: 1300 },
   { level: 2, size: 3, tilesCount: 4, flashMs: 1200 },
@@ -34,50 +33,84 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
   const [selectedTiles, setSelectedTiles] = useState(new Set());
   const [wrongTiles, setWrongTiles] = useState(new Set());
 
+  const timerRef = useRef(null);
+
   const currentConfig = LEVEL_CONFIGS[Math.min(level - 1, LEVEL_CONFIGS.length - 1)];
   const { size, tilesCount, flashMs } = currentConfig;
 
-  // Generate random target pattern for current level
-  const generatePattern = useCallback(() => {
+  // Clear timers on unmount
+  useEffect(() => {
+    return () => {
+      if (timerRef.current) clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  // Launch a round when level changes (if game is active)
+  useEffect(() => {
+    if (phase === 'IDLE' || phase === 'GAME_OVER') return;
+
+    // Generate random target pattern for current level
     const totalCells = size * size;
     const targets = new Set();
     while (targets.size < tilesCount) {
       const rand = Math.floor(Math.random() * totalCells);
       targets.add(rand);
     }
-    return targets;
-  }, [size, tilesCount]);
 
-  // Start new round
-  const startRound = useCallback(() => {
-    const newTargets = generatePattern();
-    setTargetTiles(newTargets);
+    setTargetTiles(targets);
     setSelectedTiles(new Set());
     setWrongTiles(new Set());
     setPhase('FLASHING');
-
     soundFx.playTap();
 
-    // After flash duration, transition to recall phase
-    setTimeout(() => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    timerRef.current = setTimeout(() => {
       setPhase('RECALL');
     }, flashMs);
-  }, [generatePattern, flashMs]);
+  }, [level]); // Reliably triggered on every level change!
 
-  // Handle tile tap during RECALL phase
+  const startNewGame = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setLevel(1);
+    setLives(3);
+    setScore(0);
+
+    const config = LEVEL_CONFIGS[0];
+    const totalCells = config.size * config.size;
+    const targets = new Set();
+    while (targets.size < config.tilesCount) {
+      const rand = Math.floor(Math.random() * totalCells);
+      targets.add(rand);
+    }
+
+    setTargetTiles(targets);
+    setSelectedTiles(new Set());
+    setWrongTiles(new Set());
+    setPhase('FLASHING');
+    soundFx.playTap();
+
+    timerRef.current = setTimeout(() => {
+      setPhase('RECALL');
+    }, config.flashMs);
+  };
+
+  const advanceToNextLevel = () => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    setLevel(l => l + 1);
+  };
+
   const handleTileClick = (index) => {
     if (phase !== 'RECALL') return;
     if (selectedTiles.has(index) || wrongTiles.has(index)) return;
 
     if (targetTiles.has(index)) {
-      // Correct tile!
       const nextSelected = new Set(selectedTiles);
       nextSelected.add(index);
       setSelectedTiles(nextSelected);
       soundFx.playPlace();
 
-      // Check if all target tiles found
       if (nextSelected.size === targetTiles.size) {
+        // Round won!
         const roundPts = level * 150 + tilesCount * 50;
         const newScore = score + roundPts;
         setScore(newScore);
@@ -89,16 +122,12 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
         setPhase('ROUND_SUCCESS');
         soundFx.playWin();
 
-        // Advance level after short celebration
-        setTimeout(() => {
-          setLevel(lvl => lvl + 1);
-          setTimeout(() => {
-            startRound();
-          }, 300);
-        }, 1200);
+        // Auto-advance safely
+        timerRef.current = setTimeout(() => {
+          advanceToNextLevel();
+        }, 1100);
       }
     } else {
-      // Incorrect tile
       const nextWrong = new Set(wrongTiles);
       nextWrong.add(index);
       setWrongTiles(nextWrong);
@@ -118,13 +147,6 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
         }
       }
     }
-  };
-
-  const handleRestartGame = () => {
-    setLevel(1);
-    setLives(3);
-    setScore(0);
-    startRound();
   };
 
   return (
@@ -155,7 +177,6 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
           </p>
         </div>
 
-        {/* Level & High Score Badge */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span style={{
             background: 'rgba(99, 102, 241, 0.2)',
@@ -182,7 +203,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
         </div>
       </div>
 
-      {/* Stats Bar (Lives, Score, Target Tiles Count) */}
+      {/* Stats Bar */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
@@ -206,7 +227,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
           ))}
         </div>
 
-        {/* Target Count Remaining */}
+        {/* Target Count */}
         <div style={{ color: '#94a3b8' }}>
           Tiles: <strong style={{ color: '#38bdf8' }}>{selectedTiles.size} / {tilesCount}</strong>
         </div>
@@ -228,7 +249,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
             borderRadius: '14px',
             padding: '12px',
             boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8)',
-            maxWidth: '400px',
+            maxWidth: '380px',
             width: '100%',
             aspectRatio: '1 / 1'
           }}
@@ -247,7 +268,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
                 Tiles will flash briefly. Tap to recall the exact pattern!
               </div>
               <button
-                onClick={startRound}
+                onClick={startNewGame}
                 style={{
                   background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
                   color: '#ffffff',
@@ -261,7 +282,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
                   fontSize: '15px'
                 }}
               >
-                <Play size={18} /> Start Game
+                <Play size={18} /> Start Training
               </button>
             </div>
           ) : (
@@ -320,14 +341,46 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
         </div>
       </div>
 
-      {/* Status instruction message */}
-      <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '18px' }}>
-        {phase === 'FLASHING' && 'Memorize the highlighted tiles...'}
-        {phase === 'RECALL' && 'Tap the tiles you remember!'}
-        {phase === 'ROUND_SUCCESS' && '⭐ Excellent pattern recall! Next level...'}
+      {/* Phase status indicator & manual advance */}
+      <div style={{ minHeight: '36px', marginBottom: '16px' }}>
+        {phase === 'FLASHING' && (
+          <div style={{ fontSize: '13px', color: '#38bdf8', fontWeight: '600' }}>
+            Memorizing pattern ({flashMs / 1000}s)...
+          </div>
+        )}
+        {phase === 'RECALL' && (
+          <div style={{ fontSize: '13px', color: '#f8fafc', fontWeight: '600' }}>
+            Tap the {tilesCount} tiles from memory!
+          </div>
+        )}
+        {phase === 'ROUND_SUCCESS' && (
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <span style={{ fontSize: '14px', color: '#10b981', fontWeight: '800' }}>
+              ⭐ Level {level} Cleared!
+            </span>
+            <button
+              onClick={advanceToNextLevel}
+              style={{
+                background: 'rgba(16, 185, 129, 0.2)',
+                border: '1px solid #10b981',
+                color: '#10b981',
+                padding: '4px 10px',
+                borderRadius: '6px',
+                fontSize: '12px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}
+            >
+              Continue <ChevronRight size={14} />
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Rules */}
+      {/* Rules Tip */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         border: '1px solid rgba(255, 255, 255, 0.06)',
@@ -342,7 +395,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
           💡 Cognitive Training Tip:
         </div>
         <p style={{ margin: 0 }}>
-          Chunk adjacent tiles into visual geometric shapes (triangles, L-shapes, diagonal lines) to dramatically expand your visual working memory span!
+          Group nearby tiles into geometric shapes (corners, diagonals, lines) to boost your working memory bandwidth!
         </p>
       </div>
 
@@ -388,7 +441,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
             </div>
 
             <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#f8fafc', marginBottom: '6px' }}>
-              Memory Session Ended
+              Memory Session Complete
             </h3>
             <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '18px' }}>
               Great cognitive workout! You reached <strong>Level {level}</strong>.
@@ -414,7 +467,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
             </div>
 
             <button
-              onClick={handleRestartGame}
+              onClick={startNewGame}
               style={{
                 width: '100%',
                 background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',

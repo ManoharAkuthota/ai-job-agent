@@ -1,86 +1,85 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { Crown, X as XIcon, RotateCcw, Undo2, Lightbulb, Trophy, CheckCircle2, AlertTriangle, Sparkles, Timer } from 'lucide-react';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Crown, X as XIcon, RotateCcw, Undo2, Lightbulb, Trophy, AlertTriangle, Sparkles, Timer, ChevronRight } from 'lucide-react';
 import { soundFx } from '../../utils/audioEffects';
 
-// Verified Solvable Levels with colored regions
-// Each region has an ID from 0 to N-1
+// 100% Mathematically Verified Solvable Levels with Contiguous Colored Territories
+// Exactly 1 queen per row, column, and color region with NO orthogonal or diagonal touching!
 const QUEENS_LEVELS = [
   {
-    id: 'queens_daily_1',
+    id: 'queens_casual_6x6',
+    name: 'Casual Mosaic (6x6)',
+    size: 6,
+    difficulty: 'Casual',
+    regions: [
+      [0, 0, 0, 0, 1, 1],
+      [2, 2, 0, 1, 1, 1],
+      [2, 2, 2, 3, 3, 1],
+      [4, 2, 3, 3, 3, 3],
+      [4, 4, 4, 5, 3, 3],
+      [4, 4, 5, 5, 5, 5]
+    ],
+    solution: [[0, 2], [1, 5], [2, 1], [3, 4], [4, 0], [5, 3]]
+  },
+  {
+    id: 'queens_standard_6x6',
+    name: 'Crown Lattice (6x6)',
+    size: 6,
+    difficulty: 'Standard',
+    regions: [
+      [1, 0, 0, 0, 0, 2],
+      [1, 1, 0, 0, 2, 2],
+      [1, 3, 3, 2, 2, 4],
+      [3, 3, 3, 5, 4, 4],
+      [3, 3, 5, 5, 4, 4],
+      [5, 5, 5, 5, 4, 4]
+    ],
+    solution: [[0, 3], [1, 0], [2, 4], [3, 1], [4, 5], [5, 2]]
+  },
+  {
+    id: 'queens_daily_7x7',
     name: 'Daily Challenge (7x7)',
     size: 7,
     difficulty: 'Medium',
     regions: [
-      [0, 0, 0, 1, 1, 1, 2],
-      [0, 0, 3, 3, 1, 2, 2],
-      [4, 0, 3, 3, 3, 2, 2],
-      [4, 4, 3, 5, 5, 2, 2],
-      [4, 4, 4, 5, 5, 6, 6],
-      [4, 5, 5, 5, 6, 6, 6],
-      [4, 4, 5, 6, 6, 6, 6]
+      [0, 0, 0, 0, 0, 1, 1],
+      [2, 2, 0, 0, 1, 1, 1],
+      [2, 2, 2, 3, 3, 1, 1],
+      [4, 2, 2, 3, 3, 3, 3],
+      [4, 4, 4, 5, 5, 5, 3],
+      [6, 4, 4, 5, 5, 5, 5],
+      [6, 6, 6, 6, 5, 5, 5]
     ],
-    // Known valid solution for hints: [row, col]
-    solution: [[0, 3], [1, 6], [2, 1], [3, 4], [4, 0], [5, 2], [6, 5]]
+    solution: [[0, 3], [1, 6], [2, 2], [3, 5], [4, 1], [5, 4], [6, 0]]
   },
   {
-    id: 'queens_casual_1',
-    name: 'Introductory Grid (6x6)',
-    size: 6,
-    difficulty: 'Casual',
-    regions: [
-      [0, 0, 1, 1, 1, 1],
-      [0, 0, 0, 2, 2, 1],
-      [3, 0, 2, 2, 2, 1],
-      [3, 3, 4, 4, 2, 5],
-      [3, 4, 4, 4, 5, 5],
-      [3, 3, 4, 5, 5, 5]
-    ],
-    solution: [[0, 2], [1, 5], [2, 0], [3, 3], [4, 1], [5, 4]]
-  },
-  {
-    id: 'queens_standard_2',
-    name: 'Mosaic Heights (6x6)',
-    size: 6,
-    difficulty: 'Easy',
-    regions: [
-      [0, 0, 0, 1, 1, 1],
-      [0, 2, 0, 1, 3, 1],
-      [2, 2, 2, 3, 3, 1],
-      [2, 4, 2, 3, 5, 5],
-      [4, 4, 4, 5, 5, 5],
-      [4, 4, 4, 5, 5, 5]
-    ],
-    solution: [[0, 1], [1, 4], [2, 0], [3, 3], [4, 5], [5, 2]]
-  },
-  {
-    id: 'queens_advanced_1',
+    id: 'queens_master_8x8',
     name: 'Grand Territory (8x8)',
     size: 8,
-    difficulty: 'Expert',
+    difficulty: 'Master',
     regions: [
-      [0, 0, 1, 1, 1, 2, 2, 2],
-      [0, 0, 0, 1, 2, 2, 2, 2],
-      [3, 0, 4, 4, 5, 5, 2, 6],
-      [3, 3, 4, 4, 5, 5, 6, 6],
-      [3, 3, 4, 7, 7, 5, 6, 6],
-      [3, 7, 7, 7, 7, 6, 6, 6],
-      [7, 7, 7, 7, 7, 6, 6, 6],
-      [7, 7, 7, 7, 6, 6, 6, 6]
+      [0, 0, 0, 0, 1, 1, 1, 2],
+      [3, 0, 0, 1, 1, 1, 2, 2],
+      [3, 3, 0, 4, 4, 1, 2, 2],
+      [3, 3, 3, 4, 4, 5, 2, 2],
+      [3, 3, 4, 4, 4, 5, 5, 5],
+      [7, 3, 4, 4, 6, 6, 5, 5],
+      [7, 7, 7, 6, 6, 6, 6, 5],
+      [7, 7, 7, 7, 6, 6, 5, 5]
     ],
-    solution: [[0, 2], [1, 5], [2, 0], [3, 4], [4, 7], [5, 1], [6, 3], [7, 6]]
+    solution: [[0, 2], [1, 5], [2, 7], [3, 0], [4, 3], [5, 6], [6, 4], [7, 1]]
   }
 ];
 
-// Rich, high-contrast dark palette for territories
+// High-contrast, color-blind friendly dark OLED palette
 const REGION_PALETTES = [
-  { bg: 'rgba(5, 150, 105, 0.28)', border: '#059669', name: 'Emerald' },
-  { bg: 'rgba(99, 102, 241, 0.28)', border: '#6366f1', name: 'Indigo' },
-  { bg: 'rgba(168, 85, 247, 0.28)', border: '#a855f7', name: 'Purple' },
-  { bg: 'rgba(245, 158, 11, 0.28)', border: '#f59e0b', name: 'Amber' },
-  { bg: 'rgba(236, 72, 153, 0.28)', border: '#ec4899', name: 'Pink' },
-  { bg: 'rgba(6, 182, 212, 0.28)', border: '#06b6d4', name: 'Cyan' },
-  { bg: 'rgba(239, 68, 68, 0.28)', border: '#ef4444', name: 'Rose' },
-  { bg: 'rgba(148, 163, 184, 0.24)', border: '#94a3b8', name: 'Slate' }
+  { bg: 'rgba(5, 150, 105, 0.32)', border: '#059669', name: 'Emerald' },
+  { bg: 'rgba(99, 102, 241, 0.32)', border: '#6366f1', name: 'Indigo' },
+  { bg: 'rgba(168, 85, 247, 0.32)', border: '#a855f7', name: 'Purple' },
+  { bg: 'rgba(245, 158, 11, 0.32)', border: '#f59e0b', name: 'Amber' },
+  { bg: 'rgba(236, 72, 153, 0.32)', border: '#ec4899', name: 'Pink' },
+  { bg: 'rgba(6, 182, 212, 0.32)', border: '#06b6d4', name: 'Cyan' },
+  { bg: 'rgba(239, 68, 68, 0.32)', border: '#ef4444', name: 'Rose' },
+  { bg: 'rgba(148, 163, 184, 0.28)', border: '#94a3b8', name: 'Slate' }
 ];
 
 export default function QueensGame({ onPuzzleComplete }) {
@@ -88,18 +87,17 @@ export default function QueensGame({ onPuzzleComplete }) {
   const currentLevel = QUEENS_LEVELS[levelIndex];
   const { size, regions, solution } = currentLevel;
 
-  // Board state: matrix of null | 'X' | 'Q'
   const [grid, setGrid] = useState(() => Array(size).fill(null).map(() => Array(size).fill(null)));
   const [history, setHistory] = useState([]);
   const [autoCross, setAutoCross] = useState(true);
-  const [conflicts, setConflicts] = useState(new Set()); // Set of "r,c" strings with conflicts
+  const [conflicts, setConflicts] = useState(new Set());
   const [isWon, setIsWon] = useState(false);
   const [timerSeconds, setTimerSeconds] = useState(0);
   const [timerActive, setTimerActive] = useState(true);
   const [moveCount, setMoveCount] = useState(0);
   const [hintMessage, setHintMessage] = useState('');
 
-  // Reset board when level changes
+  // Reset board when levelIndex changes
   useEffect(() => {
     setGrid(Array(currentLevel.size).fill(null).map(() => Array(currentLevel.size).fill(null)));
     setHistory([]);
@@ -122,7 +120,6 @@ export default function QueensGame({ onPuzzleComplete }) {
     return () => clearInterval(interval);
   }, [timerActive, isWon]);
 
-  // Format timer
   const formatTime = (secs) => {
     const m = Math.floor(secs / 60);
     const s = secs % 60;
@@ -184,13 +181,12 @@ export default function QueensGame({ onPuzzleComplete }) {
         }
       }
     }
-  }, [currentLevel, timerSeconds, moveCount, onPuzzleComplete]);
+  }, [currentLevel, onPuzzleComplete, timerSeconds, moveCount]);
 
   // Click cell handler: empty -> 'X' -> 'Q' -> empty
   const handleCellClick = (r, c) => {
     if (isWon) return;
 
-    // Snapshot for undo
     setHistory(prev => [...prev.slice(-30), grid.map(row => [...row])]);
     setMoveCount(m => m + 1);
 
@@ -204,7 +200,6 @@ export default function QueensGame({ onPuzzleComplete }) {
       nextGrid[r][c] = 'Q';
       soundFx.playPlace();
 
-      // If autoCross enabled, auto-fill surrounding 8 cells with 'X' if empty
       if (autoCross) {
         const deltas = [-1, 0, 1];
         deltas.forEach(dr => {
@@ -229,7 +224,7 @@ export default function QueensGame({ onPuzzleComplete }) {
     evaluateBoard(nextGrid);
   };
 
-  // Direct Queen placement on double-click or right-click
+  // Right-click or long-press for direct Queen
   const handleCellRightClick = (e, r, c) => {
     e.preventDefault();
     if (isWon) return;
@@ -266,7 +261,6 @@ export default function QueensGame({ onPuzzleComplete }) {
     evaluateBoard(nextGrid);
   };
 
-  // Undo action
   const handleUndo = () => {
     if (history.length === 0 || isWon) return;
     const previousState = history[history.length - 1];
@@ -276,7 +270,6 @@ export default function QueensGame({ onPuzzleComplete }) {
     soundFx.playTap();
   };
 
-  // Reset action
   const handleReset = () => {
     setGrid(Array(size).fill(null).map(() => Array(size).fill(null)));
     setHistory([]);
@@ -287,12 +280,10 @@ export default function QueensGame({ onPuzzleComplete }) {
     soundFx.playTap();
   };
 
-  // Smart Hint: Place or reveal a correct queen
   const handleHint = () => {
     if (isWon || !solution) return;
     soundFx.playTap();
 
-    // Find first queen in solution not yet placed
     const missing = solution.find(([sr, sc]) => grid[sr][sc] !== 'Q');
     if (missing) {
       const [hr, hc] = missing;
@@ -313,7 +304,7 @@ export default function QueensGame({ onPuzzleComplete }) {
       }
       setGrid(nextGrid);
       evaluateBoard(nextGrid);
-      setHintMessage(`Hint applied: Placed Crown at Row ${hr + 1}, Col ${hc + 1}!`);
+      setHintMessage(`Crown placed at Row ${hr + 1}, Col ${hc + 1}!`);
       setTimeout(() => setHintMessage(''), 4000);
     } else {
       setHintMessage('All solution crowns are already placed!');
@@ -321,7 +312,6 @@ export default function QueensGame({ onPuzzleComplete }) {
     }
   };
 
-  // Count placed queens
   const placedQueensCount = grid.reduce(
     (acc, row) => acc + row.filter(cell => cell === 'Q').length,
     0
@@ -350,7 +340,7 @@ export default function QueensGame({ onPuzzleComplete }) {
             </h2>
           </div>
           <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
-            1 Crown per row, column & color region. No crowns touching.
+            1 Crown per row, col & region. No touching (even diagonally).
           </p>
         </div>
 
@@ -363,9 +353,8 @@ export default function QueensGame({ onPuzzleComplete }) {
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.15)',
             borderRadius: '8px',
-            padding: '6px 10px',
+            padding: '6px 12px',
             fontSize: '13px',
-            width: 'auto',
             cursor: 'pointer'
           }}
         >
@@ -473,14 +462,14 @@ export default function QueensGame({ onPuzzleComplete }) {
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: `repeat(${size}, minmax(36px, 1fr))`,
+            gridTemplateColumns: `repeat(${size}, 1fr)`,
             gap: '2px',
             background: '#030712',
-            padding: '4px',
+            padding: '6px',
             borderRadius: '12px',
-            border: '2px solid rgba(255, 255, 255, 0.15)',
+            border: '2px solid rgba(255, 255, 255, 0.18)',
             boxShadow: '0 8px 30px rgba(0, 0, 0, 0.8)',
-            maxWidth: '460px',
+            maxWidth: size <= 6 ? '380px' : '440px',
             width: '100%',
             aspectRatio: '1 / 1'
           }}
@@ -522,7 +511,7 @@ export default function QueensGame({ onPuzzleComplete }) {
                 >
                   {cell === 'Q' && (
                     <Crown
-                      size={size <= 6 ? 26 : 22}
+                      size={size <= 6 ? 26 : 20}
                       color={isConflict ? '#ef4444' : '#fbbf24'}
                       style={{
                         filter: isConflict
@@ -534,9 +523,9 @@ export default function QueensGame({ onPuzzleComplete }) {
                   )}
                   {cell === 'X' && (
                     <XIcon
-                      size={size <= 6 ? 16 : 13}
+                      size={size <= 6 ? 16 : 12}
                       color="#64748b"
-                      style={{ opacity: 0.7 }}
+                      style={{ opacity: 0.75 }}
                     />
                   )}
                 </button>
@@ -613,9 +602,29 @@ export default function QueensGame({ onPuzzleComplete }) {
           <Lightbulb size={16} />
           Get Hint
         </button>
+
+        {levelIndex < QUEENS_LEVELS.length - 1 && (
+          <button
+            onClick={() => setLevelIndex(levelIndex + 1)}
+            style={{
+              background: 'rgba(99, 102, 241, 0.15)',
+              color: '#818cf8',
+              border: '1px solid rgba(99, 102, 241, 0.3)',
+              padding: '8px 14px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontSize: '13px',
+              cursor: 'pointer'
+            }}
+          >
+            Next Level <ChevronRight size={15} />
+          </button>
+        )}
       </div>
 
-      {/* How to Play Guide Pill */}
+      {/* Rules */}
       <div style={{
         background: 'rgba(255, 255, 255, 0.02)',
         border: '1px solid rgba(255, 255, 255, 0.06)',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, Target, Sun, Layers, Flame, Trophy, Volume2, VolumeX, Share2, Sparkles, CheckCircle2, Hash, Brain, Terminal } from 'lucide-react';
+import { Crown, Target, Sun, Layers, Flame, Trophy, Volume2, VolumeX, Share2, Sparkles, CheckCircle2, Hash, Brain, Terminal, RefreshCw } from 'lucide-react';
 import QueensGame from '../components/games/QueensGame';
 import PinpointGame from '../components/games/PinpointGame';
 import TangoGame from '../components/games/TangoGame';
@@ -10,8 +10,8 @@ import WordleGame from '../components/games/WordleGame';
 import { soundFx } from '../utils/audioEffects';
 
 export default function GamesHub({ onNavigate }) {
-  const [activeGame, setActiveGame] = useState('sudoku'); // Default to newly added Sudoku
-  const [categoryFilter, setCategoryFilter] = useState('ALL'); // 'ALL' | 'LOGIC' | 'MEMORY' | 'WORDS'
+  const [activeGame, setActiveGame] = useState('sudoku');
+  const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [muted, setMuted] = useState(() => soundFx.isMuted());
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -47,7 +47,6 @@ export default function GamesHub({ onNavigate }) {
       const diffDays = Math.round((today - lastDate) / (1000 * 60 * 60 * 24));
 
       if (diffDays > 1) {
-        // Streak broken
         setStats(prev => {
           const updated = {
             ...prev,
@@ -66,7 +65,6 @@ export default function GamesHub({ onNavigate }) {
           return updated;
         });
       } else if (diffDays === 1) {
-        // New day started!
         setStats(prev => {
           const updated = {
             ...prev,
@@ -211,6 +209,21 @@ export default function GamesHub({ onNavigate }) {
       badge: 'Trivia'
     }
   ];
+
+  const handleSelectCategory = (catId) => {
+    setCategoryFilter(catId);
+    soundFx.playTap();
+
+    if (catId !== 'ALL') {
+      const firstInCat = allGameItems.find(g => g.category === catId);
+      if (firstInCat && activeGame) {
+        const currentInCat = allGameItems.find(g => g.id === activeGame && g.category === catId);
+        if (!currentInCat) {
+          setActiveGame(firstInCat.id);
+        }
+      }
+    }
+  };
 
   const filteredGames = categoryFilter === 'ALL'
     ? allGameItems
@@ -361,10 +374,7 @@ export default function GamesHub({ onNavigate }) {
         ].map(cat => (
           <button
             key={cat.id}
-            onClick={() => {
-              setCategoryFilter(cat.id);
-              soundFx.playTap();
-            }}
+            onClick={() => handleSelectCategory(cat.id)}
             style={{
               background: categoryFilter === cat.id ? '#6366f1' : '#0c1220',
               color: categoryFilter === cat.id ? '#ffffff' : '#94a3b8',
