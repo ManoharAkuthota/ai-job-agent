@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, Target, Sun, Layers, Flame, Trophy, Volume2, VolumeX, HelpCircle, Share2, Sparkles, CheckCircle2, ChevronRight, ArrowLeft } from 'lucide-react';
+import { Crown, Target, Sun, Layers, Flame, Trophy, Volume2, VolumeX, Share2, Sparkles, CheckCircle2, Hash, Brain, Terminal } from 'lucide-react';
 import QueensGame from '../components/games/QueensGame';
 import PinpointGame from '../components/games/PinpointGame';
 import TangoGame from '../components/games/TangoGame';
 import CrossclimbGame from '../components/games/CrossclimbGame';
+import SudokuGame from '../components/games/SudokuGame';
+import MemoryMatrixGame from '../components/games/MemoryMatrixGame';
+import WordleGame from '../components/games/WordleGame';
 import { soundFx } from '../utils/audioEffects';
 
 export default function GamesHub({ onNavigate }) {
-  const [activeGame, setActiveGame] = useState('queens'); // 'queens' | 'pinpoint' | 'tango' | 'crossclimb'
+  const [activeGame, setActiveGame] = useState('sudoku'); // Default to newly added Sudoku
+  const [categoryFilter, setCategoryFilter] = useState('ALL'); // 'ALL' | 'LOGIC' | 'MEMORY' | 'WORDS'
   const [muted, setMuted] = useState(() => soundFx.isMuted());
-  const [rulesOpen, setRulesOpen] = useState(false);
   const [shareModalOpen, setShareModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -24,7 +27,10 @@ export default function GamesHub({ onNavigate }) {
       totalSolved: 0,
       lastSolvedDate: null,
       completedToday: {
+        sudoku: false,
         queens: false,
+        memory: false,
+        wordle: false,
         pinpoint: false,
         tango: false,
         crossclimb: false
@@ -46,7 +52,15 @@ export default function GamesHub({ onNavigate }) {
           const updated = {
             ...prev,
             streak: 1,
-            completedToday: { queens: false, pinpoint: false, tango: false, crossclimb: false }
+            completedToday: {
+              sudoku: false,
+              queens: false,
+              memory: false,
+              wordle: false,
+              pinpoint: false,
+              tango: false,
+              crossclimb: false
+            }
           };
           localStorage.setItem('jobagent_games_stats', JSON.stringify(updated));
           return updated;
@@ -56,7 +70,15 @@ export default function GamesHub({ onNavigate }) {
         setStats(prev => {
           const updated = {
             ...prev,
-            completedToday: { queens: false, pinpoint: false, tango: false, crossclimb: false }
+            completedToday: {
+              sudoku: false,
+              queens: false,
+              memory: false,
+              wordle: false,
+              pinpoint: false,
+              tango: false,
+              crossclimb: false
+            }
           };
           localStorage.setItem('jobagent_games_stats', JSON.stringify(updated));
           return updated;
@@ -76,8 +98,8 @@ export default function GamesHub({ onNavigate }) {
   const handlePuzzleComplete = (result) => {
     const todayStr = new Date().toISOString().slice(0, 10);
     setStats(prev => {
-      const isAlreadyCompletedToday = prev.completedToday[result.game];
-      const newCompleted = { ...prev.completedToday, [result.game]: true };
+      const isAlreadyCompletedToday = prev.completedToday?.[result.game];
+      const newCompleted = { ...(prev.completedToday || {}), [result.game]: true };
       const newTotal = prev.totalSolved + (isAlreadyCompletedToday ? 0 : 1);
       const newStreak = prev.lastSolvedDate === todayStr ? prev.streak : prev.streak + 1;
 
@@ -95,14 +117,17 @@ export default function GamesHub({ onNavigate }) {
 
   const generateShareText = () => {
     const todayFormatted = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-    let text = `JobAgent.ai Daily Puzzles 🧠 (${todayFormatted})\n`;
+    let text = `JobAgent.ai Daily Brain Studio 🧠 (${todayFormatted})\n`;
     text += `🔥 Streak: ${stats.streak} day${stats.streak > 1 ? 's' : ''}\n`;
     text += `🏆 Total Puzzles Solved: ${stats.totalSolved}\n\n`;
-    text += `👑 Queens: ${stats.completedToday.queens ? '✅ Cleared' : '⏳ In Progress'}\n`;
-    text += `🎯 Pinpoint: ${stats.completedToday.pinpoint ? '✅ Solved' : '⏳ In Progress'}\n`;
-    text += `☀️🌙 Tango: ${stats.completedToday.tango ? '✅ Balanced' : '⏳ In Progress'}\n`;
-    text += `🪜 Crossclimb: ${stats.completedToday.crossclimb ? '✅ Conquered' : '⏳ In Progress'}\n\n`;
-    text += `Play daily tech & logic puzzles: https://jobagent.ai`;
+    text += `🔢 Sudoku: ${stats.completedToday?.sudoku ? '✅ Solved' : '⏳ In Progress'}\n`;
+    text += `👑 Crowns: ${stats.completedToday?.queens ? '✅ Cleared' : '⏳ In Progress'}\n`;
+    text += `🧠 Memory Matrix: ${stats.completedToday?.memory ? '✅ Trained' : '⏳ In Progress'}\n`;
+    text += `🔠 Tech Wordle: ${stats.completedToday?.wordle ? '✅ Cracked' : '⏳ In Progress'}\n`;
+    text += `🎯 Pinpoint: ${stats.completedToday?.pinpoint ? '✅ Solved' : '⏳ In Progress'}\n`;
+    text += `☀️🌙 Tango: ${stats.completedToday?.tango ? '✅ Balanced' : '⏳ In Progress'}\n`;
+    text += `🪜 Crossclimb: ${stats.completedToday?.crossclimb ? '✅ Conquered' : '⏳ In Progress'}\n\n`;
+    text += `Play daily tech & brain logic games: https://jobagent.ai`;
     return text;
   };
 
@@ -114,44 +139,82 @@ export default function GamesHub({ onNavigate }) {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const gameNavItems = [
+  const allGameItems = [
+    {
+      id: 'sudoku',
+      title: 'Sudoku',
+      subtitle: 'Classic & Mini Grid',
+      category: 'LOGIC',
+      icon: Hash,
+      color: '#38bdf8',
+      glow: 'rgba(56, 189, 248, 0.4)',
+      badge: '9x9 & 6x6'
+    },
     {
       id: 'queens',
       title: 'Crowns',
       subtitle: 'Territory Logic',
+      category: 'LOGIC',
       icon: Crown,
       color: '#f59e0b',
       glow: 'rgba(245, 158, 11, 0.4)',
-      tag: 'Queens'
+      badge: 'Queens'
+    },
+    {
+      id: 'memory',
+      title: 'Memory Matrix',
+      subtitle: 'Neuro Pattern Recall',
+      category: 'MEMORY',
+      icon: Brain,
+      color: '#818cf8',
+      glow: 'rgba(129, 140, 248, 0.4)',
+      badge: 'Brain Gym'
+    },
+    {
+      id: 'wordle',
+      title: 'Tech Wordle',
+      subtitle: '5-Letter Code Term',
+      category: 'WORDS',
+      icon: Terminal,
+      color: '#10b981',
+      glow: 'rgba(16, 185, 129, 0.4)',
+      badge: 'Daily Word'
     },
     {
       id: 'pinpoint',
       title: 'Pinpoint',
       subtitle: 'Tech Association',
+      category: 'MEMORY',
       icon: Target,
-      color: '#38bdf8',
-      glow: 'rgba(56, 189, 248, 0.4)',
-      tag: '5 Clues'
+      color: '#06b6d4',
+      glow: 'rgba(6, 182, 212, 0.4)',
+      badge: '5 Clues'
     },
     {
       id: 'tango',
       title: 'Tango',
       subtitle: 'Sun & Moon Grid',
+      category: 'LOGIC',
       icon: Sun,
       color: '#fbbf24',
       glow: 'rgba(251, 191, 36, 0.4)',
-      tag: 'Balance'
+      badge: 'Balance'
     },
     {
       id: 'crossclimb',
       title: 'Crossclimb',
       subtitle: 'Word Ladder',
+      category: 'WORDS',
       icon: Layers,
       color: '#a855f7',
       glow: 'rgba(168, 85, 247, 0.4)',
-      tag: 'Trivia'
+      badge: 'Trivia'
     }
   ];
+
+  const filteredGames = categoryFilter === 'ALL'
+    ? allGameItems
+    : allGameItems.filter(g => g.category === categoryFilter);
 
   return (
     <div style={{ maxWidth: '960px', margin: '0 auto', paddingBottom: '60px' }}>
@@ -166,7 +229,7 @@ export default function GamesHub({ onNavigate }) {
         border: '1px solid rgba(255, 255, 255, 0.08)',
         borderRadius: '16px',
         padding: '20px 24px',
-        marginBottom: '24px',
+        marginBottom: '20px',
         boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)'
       }}>
         <div>
@@ -181,18 +244,18 @@ export default function GamesHub({ onNavigate }) {
               letterSpacing: '0.06em',
               textTransform: 'uppercase'
             }}>
-              Daily Mind Gym
+              Cognitive Studio
             </span>
             <span style={{ fontSize: '12px', color: '#94a3b8' }}>
-              LinkedIn-Inspired Tech Puzzles
+              Sudoku, LinkedIn Games & Neuro Puzzles
             </span>
           </div>
 
           <h1 style={{ fontSize: '24px', fontWeight: '900', color: '#f8fafc', margin: 0, letterSpacing: '-0.02em' }}>
-            Puzzles & Games Studio
+            Brain Puzzles & Games
           </h1>
           <p style={{ fontSize: '13px', color: '#94a3b8', margin: '4px 0 0 0' }}>
-            Sharpen cognitive stamina, flex algorithmic reasoning, and master daily brain teasers.
+            Optimized for mobile touch & laptop keyboard. Train working memory, logic, and tech deduction.
           </p>
         </div>
 
@@ -282,17 +345,55 @@ export default function GamesHub({ onNavigate }) {
         </div>
       </div>
 
+      {/* Category Filter Chips */}
+      <div style={{
+        display: 'flex',
+        gap: '8px',
+        overflowX: 'auto',
+        paddingBottom: '8px',
+        marginBottom: '16px'
+      }}>
+        {[
+          { id: 'ALL', label: 'All Puzzles (7)' },
+          { id: 'LOGIC', label: '🔢 Logic Grids' },
+          { id: 'MEMORY', label: '🧠 Brain & Memory' },
+          { id: 'WORDS', label: '🔠 Word & Code' }
+        ].map(cat => (
+          <button
+            key={cat.id}
+            onClick={() => {
+              setCategoryFilter(cat.id);
+              soundFx.playTap();
+            }}
+            style={{
+              background: categoryFilter === cat.id ? '#6366f1' : '#0c1220',
+              color: categoryFilter === cat.id ? '#ffffff' : '#94a3b8',
+              border: `1px solid ${categoryFilter === cat.id ? '#818cf8' : 'rgba(255, 255, 255, 0.08)'}`,
+              padding: '6px 14px',
+              borderRadius: '999px',
+              fontSize: '12px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              whiteSpace: 'nowrap',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            {cat.label}
+          </button>
+        ))}
+      </div>
+
       {/* Game Selector Cards Grid */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-        gap: '12px',
-        marginBottom: '24px'
+        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
+        gap: '10px',
+        marginBottom: '20px'
       }}>
-        {gameNavItems.map(item => {
+        {filteredGames.map(item => {
           const IconComponent = item.icon;
           const isActive = activeGame === item.id;
-          const isDoneToday = stats.completedToday[item.id];
+          const isDoneToday = stats.completedToday?.[item.id];
 
           return (
             <button
@@ -307,10 +408,10 @@ export default function GamesHub({ onNavigate }) {
                   : '#070b14',
                 border: `1.5px solid ${isActive ? item.color : 'rgba(255, 255, 255, 0.08)'}`,
                 borderRadius: '12px',
-                padding: '16px',
+                padding: '14px',
                 display: 'flex',
                 alignItems: 'flex-start',
-                gap: '12px',
+                gap: '10px',
                 textAlign: 'left',
                 cursor: 'pointer',
                 transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
@@ -320,8 +421,8 @@ export default function GamesHub({ onNavigate }) {
               }}
             >
               <div style={{
-                width: '40px',
-                height: '40px',
+                width: '38px',
+                height: '38px',
                 borderRadius: '10px',
                 background: isActive ? `${item.color}22` : 'rgba(255, 255, 255, 0.04)',
                 display: 'flex',
@@ -334,16 +435,16 @@ export default function GamesHub({ onNavigate }) {
 
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '15px', fontWeight: '800', color: '#f8fafc' }}>
+                  <span style={{ fontSize: '14px', fontWeight: '800', color: '#f8fafc' }}>
                     {item.title}
                   </span>
                   {isDoneToday && (
                     <span title="Completed Today" style={{ display: 'inline-flex' }}>
-                      <CheckCircle2 size={14} color="#10b981" />
+                      <CheckCircle2 size={13} color="#10b981" />
                     </span>
                   )}
                 </div>
-                <div style={{ fontSize: '12px', color: '#94a3b8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                <div style={{ fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {item.subtitle}
                 </div>
               </div>
@@ -353,7 +454,7 @@ export default function GamesHub({ onNavigate }) {
                   position: 'absolute',
                   top: 0,
                   right: 0,
-                  width: '6px',
+                  width: '5px',
                   height: '100%',
                   background: item.color
                 }} />
@@ -368,10 +469,13 @@ export default function GamesHub({ onNavigate }) {
         background: '#070b14',
         border: '1px solid rgba(255, 255, 255, 0.08)',
         borderRadius: '16px',
-        padding: '24px 20px',
+        padding: '20px 16px',
         boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6)'
       }}>
+        {activeGame === 'sudoku' && <SudokuGame onPuzzleComplete={handlePuzzleComplete} />}
         {activeGame === 'queens' && <QueensGame onPuzzleComplete={handlePuzzleComplete} />}
+        {activeGame === 'memory' && <MemoryMatrixGame onPuzzleComplete={handlePuzzleComplete} />}
+        {activeGame === 'wordle' && <WordleGame onPuzzleComplete={handlePuzzleComplete} />}
         {activeGame === 'pinpoint' && <PinpointGame onPuzzleComplete={handlePuzzleComplete} />}
         {activeGame === 'tango' && <TangoGame onPuzzleComplete={handlePuzzleComplete} />}
         {activeGame === 'crossclimb' && <CrossclimbGame onPuzzleComplete={handlePuzzleComplete} />}
@@ -420,7 +524,7 @@ export default function GamesHub({ onNavigate }) {
             <textarea
               readOnly
               value={generateShareText()}
-              rows={9}
+              rows={12}
               style={{
                 background: '#070b14',
                 color: '#cbd5e1',

@@ -1,0 +1,439 @@
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { Brain, Heart, Trophy, RotateCcw, Zap, Sparkles, Play, CheckCircle2, XCircle } from 'lucide-react';
+import { soundFx } from '../../utils/audioEffects';
+
+// Difficulty progression config
+const LEVEL_CONFIGS = [
+  { level: 1, size: 3, tilesCount: 3, flashMs: 1300 },
+  { level: 2, size: 3, tilesCount: 4, flashMs: 1200 },
+  { level: 3, size: 4, tilesCount: 4, flashMs: 1200 },
+  { level: 4, size: 4, tilesCount: 5, flashMs: 1100 },
+  { level: 5, size: 4, tilesCount: 6, flashMs: 1100 },
+  { level: 6, size: 5, tilesCount: 6, flashMs: 1000 },
+  { level: 7, size: 5, tilesCount: 7, flashMs: 1000 },
+  { level: 8, size: 5, tilesCount: 8, flashMs: 950 },
+  { level: 9, size: 6, tilesCount: 8, flashMs: 900 },
+  { level: 10, size: 6, tilesCount: 9, flashMs: 850 }
+];
+
+export default function MemoryMatrixGame({ onPuzzleComplete }) {
+  const [level, setLevel] = useState(1);
+  const [lives, setLives] = useState(3);
+  const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(() => {
+    try {
+      return Number(localStorage.getItem('jobagent_memory_high_score') || 0);
+    } catch (e) {
+      return 0;
+    }
+  });
+
+  // Game phases: 'IDLE' | 'FLASHING' | 'RECALL' | 'ROUND_SUCCESS' | 'GAME_OVER'
+  const [phase, setPhase] = useState('IDLE');
+  const [targetTiles, setTargetTiles] = useState(new Set());
+  const [selectedTiles, setSelectedTiles] = useState(new Set());
+  const [wrongTiles, setWrongTiles] = useState(new Set());
+
+  const currentConfig = LEVEL_CONFIGS[Math.min(level - 1, LEVEL_CONFIGS.length - 1)];
+  const { size, tilesCount, flashMs } = currentConfig;
+
+  // Generate random target pattern for current level
+  const generatePattern = useCallback(() => {
+    const totalCells = size * size;
+    const targets = new Set();
+    while (targets.size < tilesCount) {
+      const rand = Math.floor(Math.random() * totalCells);
+      targets.add(rand);
+    }
+    return targets;
+  }, [size, tilesCount]);
+
+  // Start new round
+  const startRound = useCallback(() => {
+    const newTargets = generatePattern();
+    setTargetTiles(newTargets);
+    setSelectedTiles(new Set());
+    setWrongTiles(new Set());
+    setPhase('FLASHING');
+
+    soundFx.playTap();
+
+    // After flash duration, transition to recall phase
+    setTimeout(() => {
+      setPhase('RECALL');
+    }, flashMs);
+  }, [generatePattern, flashMs]);
+
+  // Handle tile tap during RECALL phase
+  const handleTileClick = (index) => {
+    if (phase !== 'RECALL') return;
+    if (selectedTiles.has(index) || wrongTiles.has(index)) return;
+
+    if (targetTiles.has(index)) {
+      // Correct tile!
+      const nextSelected = new Set(selectedTiles);
+      nextSelected.add(index);
+      setSelectedTiles(nextSelected);
+      soundFx.playPlace();
+
+      // Check if all target tiles found
+      if (nextSelected.size === targetTiles.size) {
+        const roundPts = level * 150 + tilesCount * 50;
+        const newScore = score + roundPts;
+        setScore(newScore);
+        if (newScore > highScore) {
+          setHighScore(newScore);
+          localStorage.setItem('jobagent_memory_high_score', newScore.toString());
+        }
+
+        setPhase('ROUND_SUCCESS');
+        soundFx.playWin();
+
+        // Advance level after short celebration
+        setTimeout(() => {
+          setLevel(lvl => lvl + 1);
+          setTimeout(() => {
+            startRound();
+          }, 300);
+        }, 1200);
+      }
+    } else {
+      // Incorrect tile
+      const nextWrong = new Set(wrongTiles);
+      nextWrong.add(index);
+      setWrongTiles(nextWrong);
+      soundFx.playError();
+
+      const nextLives = lives - 1;
+      setLives(nextLives);
+
+      if (nextLives <= 0) {
+        setPhase('GAME_OVER');
+        if (onPuzzleComplete) {
+          onPuzzleComplete({
+            game: 'memory',
+            level,
+            score
+          });
+        }
+      }
+    }
+  };
+
+  const handleRestartGame = () => {
+    setLevel(1);
+    setLives(3);
+    setScore(0);
+    startRound();
+  };
+
+  return (
+    <div style={{ maxWidth: '580px', margin: '0 auto', textAlign: 'center' }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '10px',
+        marginBottom: '16px',
+        padding: '12px 16px',
+        background: '#0c1220',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        borderRadius: '12px',
+        textAlign: 'left'
+      }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Brain size={20} color="#818cf8" style={{ filter: 'drop-shadow(0 0 6px rgba(129, 140, 248, 0.7))' }} />
+            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
+              Memory Matrix
+            </h2>
+          </div>
+          <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
+            Remember the illuminated tiles and reproduce the pattern.
+          </p>
+        </div>
+
+        {/* Level & High Score Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{
+            background: 'rgba(99, 102, 241, 0.2)',
+            border: '1px solid #6366f1',
+            color: '#818cf8',
+            fontSize: '12px',
+            fontWeight: '700',
+            padding: '4px 10px',
+            borderRadius: '6px'
+          }}>
+            Level {level}
+          </span>
+          <span style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            color: '#fbbf24',
+            fontSize: '12px',
+            fontWeight: '700',
+            padding: '4px 10px',
+            borderRadius: '6px'
+          }}>
+            Best: {highScore}
+          </span>
+        </div>
+      </div>
+
+      {/* Stats Bar (Lives, Score, Target Tiles Count) */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '10px 14px',
+        background: 'rgba(255, 255, 255, 0.03)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        marginBottom: '16px',
+        fontSize: '13px'
+      }}>
+        {/* Lives */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <Heart
+              key={i}
+              size={18}
+              color={i < lives ? '#ef4444' : '#475569'}
+              fill={i < lives ? '#ef4444' : 'transparent'}
+            />
+          ))}
+        </div>
+
+        {/* Target Count Remaining */}
+        <div style={{ color: '#94a3b8' }}>
+          Tiles: <strong style={{ color: '#38bdf8' }}>{selectedTiles.size} / {tilesCount}</strong>
+        </div>
+
+        {/* Current Score */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981', fontWeight: '800' }}>
+          <Zap size={16} />
+          <span>{score} pts</span>
+        </div>
+      </div>
+
+      {/* Matrix Grid Container */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+        <div
+          style={{
+            position: 'relative',
+            background: '#070b14',
+            border: '2px solid rgba(255, 255, 255, 0.12)',
+            borderRadius: '14px',
+            padding: '12px',
+            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8)',
+            maxWidth: '400px',
+            width: '100%',
+            aspectRatio: '1 / 1'
+          }}
+        >
+          {phase === 'IDLE' ? (
+            <div style={{
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '14px'
+            }}>
+              <Brain size={48} color="#818cf8" style={{ filter: 'drop-shadow(0 0 12px rgba(129, 140, 248, 0.8))' }} />
+              <div style={{ fontSize: '15px', color: '#cbd5e1', maxWidth: '280px' }}>
+                Tiles will flash briefly. Tap to recall the exact pattern!
+              </div>
+              <button
+                onClick={startRound}
+                style={{
+                  background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                  color: '#ffffff',
+                  fontWeight: '700',
+                  padding: '12px 24px',
+                  borderRadius: '10px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px',
+                  fontSize: '15px'
+                }}
+              >
+                <Play size={18} /> Start Game
+              </button>
+            </div>
+          ) : (
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${size}, 1fr)`,
+                gap: '8px',
+                width: '100%',
+                height: '100%'
+              }}
+            >
+              {Array.from({ length: size * size }).map((_, idx) => {
+                const isTarget = targetTiles.has(idx);
+                const isSelected = selectedTiles.has(idx);
+                const isWrong = wrongTiles.has(idx);
+                const isFlashing = phase === 'FLASHING' && isTarget;
+
+                let tileBg = '#0f172a';
+                let tileBorder = '1px solid rgba(255, 255, 255, 0.08)';
+                let tileShadow = 'none';
+
+                if (isFlashing) {
+                  tileBg = 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)';
+                  tileBorder = '1px solid #38bdf8';
+                  tileShadow = '0 0 16px rgba(56, 189, 248, 0.9)';
+                } else if (isSelected) {
+                  tileBg = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                  tileBorder = '1px solid #10b981';
+                  tileShadow = '0 0 16px rgba(16, 185, 129, 0.9)';
+                } else if (isWrong) {
+                  tileBg = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+                  tileBorder = '1px solid #ef4444';
+                  tileShadow = '0 0 16px rgba(239, 68, 68, 0.9)';
+                }
+
+                return (
+                  <button
+                    key={idx}
+                    onClick={() => handleTileClick(idx)}
+                    disabled={phase !== 'RECALL' || isSelected || isWrong}
+                    style={{
+                      background: tileBg,
+                      border: tileBorder,
+                      borderRadius: '8px',
+                      boxShadow: tileShadow,
+                      cursor: phase === 'RECALL' ? 'pointer' : 'default',
+                      transition: 'all 0.15s cubic-bezier(0.4, 0, 0.2, 1)',
+                      transform: isFlashing || isSelected ? 'scale(0.96)' : 'scale(1)'
+                    }}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Status instruction message */}
+      <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '18px' }}>
+        {phase === 'FLASHING' && 'Memorize the highlighted tiles...'}
+        {phase === 'RECALL' && 'Tap the tiles you remember!'}
+        {phase === 'ROUND_SUCCESS' && '⭐ Excellent pattern recall! Next level...'}
+      </div>
+
+      {/* Rules */}
+      <div style={{
+        background: 'rgba(255, 255, 255, 0.02)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '12px 14px',
+        fontSize: '12px',
+        color: '#94a3b8',
+        lineHeight: '1.6',
+        textAlign: 'left'
+      }}>
+        <div style={{ fontWeight: '700', color: '#f8fafc', marginBottom: '4px' }}>
+          💡 Cognitive Training Tip:
+        </div>
+        <p style={{ margin: 0 }}>
+          Chunk adjacent tiles into visual geometric shapes (triangles, L-shapes, diagonal lines) to dramatically expand your visual working memory span!
+        </p>
+      </div>
+
+      {/* Game Over Modal */}
+      {phase === 'GAME_OVER' && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(3, 7, 18, 0.85)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1000,
+          padding: '16px'
+        }}>
+          <div style={{
+            background: '#0c1220',
+            border: '1px solid rgba(99, 102, 241, 0.4)',
+            boxShadow: '0 0 40px rgba(99, 102, 241, 0.3)',
+            borderRadius: '16px',
+            padding: '24px',
+            maxWidth: '380px',
+            width: '100%',
+            textAlign: 'center'
+          }}>
+            <div style={{
+              width: '60px',
+              height: '60px',
+              borderRadius: '50%',
+              background: 'rgba(99, 102, 241, 0.15)',
+              border: '2px solid #6366f1',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              margin: '0 auto 16px auto',
+              color: '#818cf8'
+            }}>
+              <Brain size={32} />
+            </div>
+
+            <h3 style={{ fontSize: '20px', fontWeight: '800', color: '#f8fafc', marginBottom: '6px' }}>
+              Memory Session Ended
+            </h3>
+            <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '18px' }}>
+              Great cognitive workout! You reached <strong>Level {level}</strong>.
+            </p>
+
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '10px',
+              background: 'rgba(255, 255, 255, 0.03)',
+              padding: '12px',
+              borderRadius: '10px',
+              marginBottom: '20px'
+            }}>
+              <div>
+                <div style={{ fontSize: '11px', color: '#94a3b8' }}>Final Score</div>
+                <div style={{ fontSize: '18px', fontWeight: '800', color: '#10b981' }}>{score}</div>
+              </div>
+              <div>
+                <div style={{ fontSize: '11px', color: '#94a3b8' }}>High Score</div>
+                <div style={{ fontSize: '18px', fontWeight: '800', color: '#fbbf24' }}>{highScore}</div>
+              </div>
+            </div>
+
+            <button
+              onClick={handleRestartGame}
+              style={{
+                width: '100%',
+                background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                color: '#ffffff',
+                fontWeight: '700',
+                padding: '12px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+            >
+              <RotateCcw size={16} /> Play Again
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
