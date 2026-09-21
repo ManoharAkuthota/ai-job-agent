@@ -161,32 +161,31 @@ export default function CrossclimbGame({ onPuzzleComplete }) {
   };
 
   return (
-    <div style={{ maxWidth: '640px', margin: '0 auto' }}>
-      {/* Header */}
+    <div style={{
+      width: '100%',
+      maxWidth: '460px',
+      margin: '0 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      maxHeight: '100%'
+    }}>
+      {/* Compact Header & Progress Bar */}
       <div style={{
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '10px',
-        marginBottom: '16px',
-        padding: '12px 16px',
-        background: '#0c1220',
+        padding: '6px 12px',
+        background: 'rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px'
+        borderRadius: '10px',
+        marginBottom: '6px',
+        fontSize: '12px'
       }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Layers size={20} color="#a855f7" style={{ filter: 'drop-shadow(0 0 6px rgba(168, 85, 247, 0.7))' }} />
-            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
-              Crossclimb
-            </h2>
-          </div>
-          <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
-            Word ladder trivia. Shift 1 letter per rung to reach the summit.
-          </p>
-        </div>
-
+        {/* Puzzle Selector */}
         <select
           value={puzzleIndex}
           onChange={(e) => setPuzzleIndex(Number(e.target.value))}
@@ -194,9 +193,9 @@ export default function CrossclimbGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: '8px',
-            padding: '6px 12px',
-            fontSize: '13px',
+            borderRadius: '6px',
+            padding: '4px 8px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
@@ -206,10 +205,34 @@ export default function CrossclimbGame({ onPuzzleComplete }) {
             </option>
           ))}
         </select>
+
+        {/* Active Rung Indicator */}
+        <div style={{ fontSize: '11px', color: '#c084fc', fontWeight: '700' }}>
+          Rung #{activeRungIndex + 1} of {rungs.length}
+        </div>
+
+        {/* Reset Button */}
+        <button
+          onClick={handleReset}
+          style={{
+            background: '#111827',
+            color: '#f8fafc',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '4px 8px',
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            fontSize: '11px',
+            cursor: 'pointer'
+          }}
+        >
+          <RotateCcw size={12} /> Reset
+        </button>
       </div>
 
-      {/* Ladder Rungs */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+      {/* Ladder Rungs - Compact */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '6px', width: '100%' }}>
         {rungs.map((rung, idx) => {
           const isCorrect = answers[idx] === rung.word;
           const isCurrentActive = activeRungIndex === idx;
@@ -231,41 +254,41 @@ export default function CrossclimbGame({ onPuzzleComplete }) {
                       ? '#a855f7'
                       : 'rgba(255, 255, 255, 0.08)'
                 }`,
-                borderRadius: '12px',
-                padding: '12px 16px',
+                borderRadius: '8px',
+                padding: '5px 10px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                gap: '14px',
-                transition: 'all 0.2s ease',
+                gap: '8px',
+                transition: 'all 0.15s ease',
                 cursor: rung.given ? 'default' : 'pointer',
-                boxShadow: isCurrentActive ? '0 0 16px rgba(168, 85, 247, 0.25)' : 'none'
+                boxShadow: isCurrentActive ? '0 0 12px rgba(168, 85, 247, 0.25)' : 'none'
               }}
             >
-              <div style={{ flex: 1 }}>
-                <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '2px' }}>
-                  Rung #{idx + 1} {rung.given && '• Given Word'}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                  Rung #{idx + 1} {rung.given && '• Given'}
                 </div>
-                <div style={{ fontSize: '13px', color: '#cbd5e1' }}>
+                <div style={{ fontSize: '12px', color: '#cbd5e1', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                   {rung.clue}
                 </div>
               </div>
 
               {/* Word Letters Box */}
-              <div style={{ display: 'flex', gap: '4px' }}>
+              <div style={{ display: 'flex', gap: '3px' }}>
                 {Array.from({ length: wordLength }).map((_, charIdx) => {
                   const letter = (answers[idx] || '')[charIdx] || '';
                   return (
                     <span
                       key={charIdx}
                       style={{
-                        width: '32px',
-                        height: '36px',
-                        borderRadius: '6px',
+                        width: '26px',
+                        height: '28px',
+                        borderRadius: '5px',
                         background: rung.given ? '#1e293b' : isCorrect ? 'rgba(16, 185, 129, 0.2)' : '#070b14',
                         border: `1px solid ${isCorrect ? '#10b981' : isCurrentActive ? '#a855f7' : 'rgba(255, 255, 255, 0.15)'}`,
                         color: isCorrect ? '#10b981' : '#f8fafc',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         fontWeight: '800',
                         display: 'flex',
                         alignItems: 'center',
@@ -282,22 +305,20 @@ export default function CrossclimbGame({ onPuzzleComplete }) {
         })}
       </div>
 
-      {/* On-screen touch keypad for mobile & click support on laptop */}
+      {/* On-screen touch keypad - Compact */}
       {!isWon && (
         <div style={{
           background: '#0c1220',
-          border: '1px solid rgba(255, 255, 255, 0.1)',
-          borderRadius: '12px',
-          padding: '12px 8px',
-          marginBottom: '20px'
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          borderRadius: '10px',
+          padding: '6px 4px',
+          marginBottom: '6px',
+          width: '100%',
+          boxSizing: 'border-box'
         }}>
-          <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '8px', textAlign: 'center' }}>
-            Typing for Rung #{activeRungIndex + 1} (or use physical keyboard on laptop):
-          </div>
-
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '3px', alignItems: 'center' }}>
             {ON_SCREEN_KEYS.map((row, rIdx) => (
-              <div key={rIdx} style={{ display: 'flex', gap: '4px' }}>
+              <div key={rIdx} style={{ display: 'flex', gap: '3px', justifyContent: 'center', width: '100%' }}>
                 {row.map((key) => {
                   const isBack = key === 'BACKSPACE';
                   return (
@@ -308,19 +329,21 @@ export default function CrossclimbGame({ onPuzzleComplete }) {
                         background: '#111827',
                         color: '#f8fafc',
                         border: '1px solid rgba(255, 255, 255, 0.1)',
-                        borderRadius: '6px',
-                        padding: isBack ? '10px 14px' : '10px 11px',
-                        fontSize: isBack ? '11px' : '14px',
+                        borderRadius: '5px',
+                        padding: isBack ? '7px 8px' : '7px 9px',
+                        fontSize: isBack ? '10px' : '13px',
                         fontWeight: '700',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        minWidth: isBack ? '56px' : '30px',
+                        minWidth: isBack ? '46px' : '26px',
+                        flex: isBack ? '1.4' : '1',
+                        maxWidth: isBack ? '56px' : '36px',
                         transition: 'all 0.1s ease'
                       }}
                     >
-                      {isBack ? <Delete size={16} /> : key}
+                      {isBack ? <Delete size={14} /> : key}
                     </button>
                   );
                 })}
@@ -331,25 +354,7 @@ export default function CrossclimbGame({ onPuzzleComplete }) {
       )}
 
       {/* Controls */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: '10px', marginBottom: '20px' }}>
-        <button
-          onClick={handleReset}
-          style={{
-            background: '#111827',
-            color: '#f8fafc',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            padding: '8px 16px',
-            borderRadius: '8px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
-            cursor: 'pointer'
-          }}
-        >
-          <RotateCcw size={15} /> Reset Ladder
-        </button>
-
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
         {puzzleIndex < CROSSCLIMB_PUZZLES.length - 1 && (
           <button
             onClick={() => setPuzzleIndex(puzzleIndex + 1)}
@@ -357,38 +362,18 @@ export default function CrossclimbGame({ onPuzzleComplete }) {
               background: 'rgba(168, 85, 247, 0.15)',
               color: '#c084fc',
               border: '1px solid rgba(168, 85, 247, 0.3)',
-              padding: '8px 16px',
-              borderRadius: '8px',
+              padding: '6px 14px',
+              borderRadius: '7px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              fontSize: '13px',
+              gap: '5px',
+              fontSize: '12px',
               cursor: 'pointer'
             }}
           >
-            Next Climb <ChevronRight size={15} />
+            Next Climb <ChevronRight size={14} />
           </button>
         )}
-      </div>
-
-      {/* Rules */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        padding: '12px 14px',
-        fontSize: '12px',
-        color: '#94a3b8',
-        lineHeight: '1.6'
-      }}>
-        <div style={{ fontWeight: '700', color: '#f8fafc', marginBottom: '4px' }}>
-          💡 How to Play Crossclimb:
-        </div>
-        <ul style={{ paddingLeft: '18px', margin: 0 }}>
-          <li>Climb the ladder by guessing each tech trivia word.</li>
-          <li>Each word differs from the previous word by <strong>exactly one letter</strong>.</li>
-          <li>Fill all rungs to conquer the puzzle!</li>
-        </ul>
       </div>
 
       {/* Victory Modal */}

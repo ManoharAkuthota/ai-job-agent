@@ -193,32 +193,30 @@ export default function PinpointGame({ onPuzzleComplete }) {
   const starsCount = gameStatus === 'WON' ? 6 - revealedCount : 0;
 
   return (
-    <div style={{ maxWidth: '640px', margin: '0 auto' }}>
-      {/* Header */}
+    <div style={{
+      width: '100%',
+      maxWidth: '460px',
+      margin: '0 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      maxHeight: '100%'
+    }}>
+      {/* Compact Top Header & Clues Progress */}
       <div style={{
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '10px',
-        marginBottom: '16px',
-        padding: '12px 16px',
-        background: '#0c1220',
+        padding: '6px 12px',
+        background: 'rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px'
+        borderRadius: '10px',
+        marginBottom: '8px',
+        fontSize: '12px'
       }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Target size={20} color="#38bdf8" style={{ filter: 'drop-shadow(0 0 6px rgba(56, 189, 248, 0.7))' }} />
-            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
-              Pinpoint
-            </h2>
-          </div>
-          <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
-            Guess the secret tech theme in as few clues as possible.
-          </p>
-        </div>
-
         {/* Puzzle Selector */}
         <select
           value={puzzleIndex}
@@ -227,9 +225,9 @@ export default function PinpointGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: '8px',
-            padding: '6px 10px',
-            fontSize: '13px',
+            borderRadius: '6px',
+            padding: '4px 8px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
@@ -239,45 +237,33 @@ export default function PinpointGame({ onPuzzleComplete }) {
             </option>
           ))}
         </select>
-      </div>
 
-      {/* Clues Progress Bar */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px 14px',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        marginBottom: '16px',
-        fontSize: '13px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-          <span style={{ color: '#94a3b8' }}>Clues Revealed:</span>
-          <span style={{ fontWeight: '800', color: '#38bdf8' }}>{revealedCount} / 5</span>
-        </div>
-
-        <div style={{ display: 'flex', gap: '6px' }}>
-          {[1, 2, 3, 4, 5].map(step => (
-            <div
-              key={step}
-              style={{
-                width: '28px',
-                height: '8px',
-                borderRadius: '4px',
-                background: step <= revealedCount
-                  ? (gameStatus === 'WON' ? '#10b981' : '#38bdf8')
-                  : 'rgba(255, 255, 255, 0.1)',
-                transition: 'all 0.3s ease'
-              }}
-            />
-          ))}
+        {/* Clues Count & Progress Dots */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ color: '#94a3b8', fontSize: '11px' }}>
+            Clues: <strong style={{ color: '#38bdf8' }}>{revealedCount}/5</strong>
+          </span>
+          <div style={{ display: 'flex', gap: '4px' }}>
+            {[1, 2, 3, 4, 5].map(step => (
+              <div
+                key={step}
+                style={{
+                  width: '14px',
+                  height: '6px',
+                  borderRadius: '3px',
+                  background: step <= revealedCount
+                    ? (gameStatus === 'WON' ? '#10b981' : '#38bdf8')
+                    : 'rgba(255, 255, 255, 0.1)',
+                  transition: 'all 0.3s ease'
+                }}
+              />
+            ))}
+          </div>
         </div>
       </div>
 
-      {/* Clues List Cards */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+      {/* Clues List Cards - Compact */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginBottom: '8px', width: '100%' }}>
         {currentPuzzle.clues.map((clue, idx) => {
           const isRevealed = idx < revealedCount;
 
@@ -287,23 +273,23 @@ export default function PinpointGame({ onPuzzleComplete }) {
               style={{
                 background: isRevealed ? '#0e1628' : 'rgba(255, 255, 255, 0.02)',
                 border: `1px solid ${isRevealed ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
-                borderRadius: '10px',
-                padding: '14px 16px',
+                borderRadius: '8px',
+                padding: '7px 12px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                transition: 'all 0.25s ease',
-                boxShadow: isRevealed ? '0 4px 15px rgba(0, 0, 0, 0.3)' : 'none'
+                transition: 'all 0.2s ease',
+                boxShadow: isRevealed ? '0 2px 10px rgba(0, 0, 0, 0.3)' : 'none'
               }}
             >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                 <span style={{
-                  width: '24px',
-                  height: '24px',
+                  width: '20px',
+                  height: '20px',
                   borderRadius: '50%',
                   background: isRevealed ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.05)',
                   color: isRevealed ? '#38bdf8' : '#64748b',
-                  fontSize: '12px',
+                  fontSize: '11px',
                   fontWeight: '700',
                   display: 'flex',
                   alignItems: 'center',
@@ -314,24 +300,24 @@ export default function PinpointGame({ onPuzzleComplete }) {
 
                 {isRevealed ? (
                   <div>
-                    <div style={{ fontSize: '16px', fontWeight: '700', color: '#f8fafc' }}>
+                    <div style={{ fontSize: '13px', fontWeight: '700', color: '#f8fafc' }}>
                       {clue.text}
                     </div>
-                    <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                    <div style={{ fontSize: '10px', color: '#94a3b8' }}>
                       {clue.hint}
                     </div>
                   </div>
                 ) : (
-                  <div style={{ color: '#475569', fontSize: '14px', fontStyle: 'italic', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Lock size={14} /> Locked Clue
+                  <div style={{ color: '#475569', fontSize: '12px', fontStyle: 'italic', display: 'flex', alignItems: 'center', gap: '5px' }}>
+                    <Lock size={12} /> Locked Clue
                   </div>
                 )}
               </div>
 
               {isRevealed ? (
-                <Sparkles size={16} color="#38bdf8" />
+                <Sparkles size={14} color="#38bdf8" />
               ) : (
-                <span style={{ fontSize: '11px', color: '#475569' }}>Clue #{idx + 1}</span>
+                <span style={{ fontSize: '10px', color: '#475569' }}>Clue #{idx + 1}</span>
               )}
             </div>
           );
@@ -545,25 +531,6 @@ export default function PinpointGame({ onPuzzleComplete }) {
         </div>
       )}
 
-      {/* Rules */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        padding: '12px 14px',
-        fontSize: '12px',
-        color: '#94a3b8',
-        lineHeight: '1.6'
-      }}>
-        <div style={{ fontWeight: '700', color: '#f8fafc', marginBottom: '4px' }}>
-          💡 How to Play Pinpoint:
-        </div>
-        <ul style={{ paddingLeft: '18px', margin: 0 }}>
-          <li>Discover the single umbrella theme or category connecting all 5 clues.</li>
-          <li>Each incorrect guess unlocks the next clue (or click "Reveal Clue").</li>
-          <li>Solve with fewer clues to earn a higher score (up to 500 pts).</li>
-        </ul>
-      </div>
     </div>
   );
 }

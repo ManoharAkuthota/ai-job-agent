@@ -428,32 +428,31 @@ export default function SudokuGame({ onPuzzleComplete }) {
   }
 
   return (
-    <div style={{ maxWidth: '640px', margin: '0 auto' }}>
-      {/* Top Header & Level Bar */}
+    <div style={{
+      width: '100%',
+      maxWidth: '440px',
+      margin: '0 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      maxHeight: '100%'
+    }}>
+      {/* Compact Top Header & Level Bar */}
       <div style={{
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '10px',
-        marginBottom: '16px',
-        padding: '12px 16px',
-        background: '#0c1220',
+        padding: '6px 12px',
+        background: 'rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px'
+        borderRadius: '10px',
+        marginBottom: '8px',
+        fontSize: '12px'
       }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Hash size={20} color="#38bdf8" style={{ filter: 'drop-shadow(0 0 6px rgba(56, 189, 248, 0.7))' }} />
-            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
-              Sudoku Studio
-            </h2>
-          </div>
-          <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
-            Touch keypad for mobile • Keyboard (1-9, Arrows, N) for laptop.
-          </p>
-        </div>
-
+        {/* Level Selector */}
         <select
           value={levelIndex}
           onChange={(e) => setLevelIndex(Number(e.target.value))}
@@ -461,9 +460,9 @@ export default function SudokuGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: '8px',
-            padding: '6px 12px',
-            fontSize: '13px',
+            borderRadius: '6px',
+            padding: '4px 8px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
@@ -473,28 +472,15 @@ export default function SudokuGame({ onPuzzleComplete }) {
             </option>
           ))}
         </select>
-      </div>
 
-      {/* Stats Bar */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px 14px',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        marginBottom: '16px',
-        fontSize: '13px'
-      }}>
         {/* Timer */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#38bdf8' }}>
-          <Timer size={16} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#38bdf8' }}>
+          <Timer size={14} />
           <span style={{ fontWeight: '700', fontVariantNumeric: 'tabular-nums' }}>{formatTime(timerSeconds)}</span>
         </div>
 
         {/* Mistakes */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: mistakes > 0 ? '#f87171' : '#94a3b8' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: mistakes > 0 ? '#f87171' : '#94a3b8' }}>
           <span>Mistakes:</span>
           <span style={{ fontWeight: '800', color: mistakes > 0 ? '#ef4444' : '#10b981' }}>{mistakes}</span>
         </div>
@@ -509,22 +495,22 @@ export default function SudokuGame({ onPuzzleComplete }) {
             background: notesMode ? 'rgba(56, 189, 248, 0.2)' : '#111827',
             border: `1px solid ${notesMode ? '#38bdf8' : 'rgba(255, 255, 255, 0.1)'}`,
             color: notesMode ? '#38bdf8' : '#94a3b8',
-            padding: '5px 10px',
+            padding: '4px 8px',
             borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '12px',
+            gap: '4px',
+            fontSize: '11px',
             cursor: 'pointer'
           }}
         >
-          <Pencil size={14} />
+          <Pencil size={12} />
           <span>Notes {notesMode ? 'ON' : 'OFF'}</span>
         </button>
       </div>
 
-      {/* Sudoku Grid Container */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '18px' }}>
+      {/* Sudoku Grid Container - Responsively Clamped */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px', width: '100%' }}>
         <div
           style={{
             display: 'grid',
@@ -532,9 +518,9 @@ export default function SudokuGame({ onPuzzleComplete }) {
             background: '#030712',
             border: '2px solid rgba(255, 255, 255, 0.25)',
             borderRadius: '10px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8)',
-            maxWidth: size === 6 ? '380px' : '440px',
-            width: '100%',
+            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.8)',
+            width: 'min(88vw, 340px, calc(100dvh - 240px))',
+            height: 'min(88vw, 340px, calc(100dvh - 240px))',
             aspectRatio: '1 / 1',
             overflow: 'hidden',
             userSelect: 'none'
@@ -639,8 +625,9 @@ export default function SudokuGame({ onPuzzleComplete }) {
       <div style={{
         display: 'grid',
         gridTemplateColumns: `repeat(${size}, 1fr)`,
-        gap: '6px',
-        marginBottom: '16px'
+        gap: '4px',
+        marginBottom: '8px',
+        width: '100%'
       }}>
         {Array.from({ length: size }).map((_, idx) => {
           const num = idx + 1;
@@ -656,8 +643,8 @@ export default function SudokuGame({ onPuzzleComplete }) {
                 background: isDone ? '#070b14' : '#111827',
                 border: `1px solid ${isDone ? 'rgba(255, 255, 255, 0.04)' : 'rgba(255, 255, 255, 0.12)'}`,
                 color: isDone ? '#475569' : '#f8fafc',
-                borderRadius: '8px',
-                padding: '10px 0',
+                borderRadius: '6px',
+                padding: '6px 0',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
@@ -667,8 +654,8 @@ export default function SudokuGame({ onPuzzleComplete }) {
                 position: 'relative'
               }}
             >
-              <span style={{ fontSize: '18px', fontWeight: '800', lineHeight: 1 }}>{num}</span>
-              <span style={{ fontSize: '9px', color: isDone ? '#475569' : '#94a3b8', marginTop: '2px' }}>
+              <span style={{ fontSize: '15px', fontWeight: '800', lineHeight: 1 }}>{num}</span>
+              <span style={{ fontSize: '8px', color: isDone ? '#475569' : '#94a3b8', marginTop: '1px' }}>
                 {remaining > 0 ? remaining : '✓'}
               </span>
             </button>
@@ -681,9 +668,8 @@ export default function SudokuGame({ onPuzzleComplete }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '10px',
-        flexWrap: 'wrap',
-        marginBottom: '20px'
+        gap: '6px',
+        flexWrap: 'wrap'
       }}>
         <button
           onClick={handleUndo}
@@ -692,16 +678,16 @@ export default function SudokuGame({ onPuzzleComplete }) {
             background: '#111827',
             color: history.length > 0 ? '#f8fafc' : '#475569',
             border: '1px solid rgba(255, 255, 255, 0.1)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '5px 10px',
+            borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '4px',
+            fontSize: '12px',
             cursor: history.length > 0 ? 'pointer' : 'not-allowed'
           }}
         >
-          <Undo2 size={16} /> Undo
+          <Undo2 size={13} /> Undo
         </button>
 
         <button
@@ -711,16 +697,16 @@ export default function SudokuGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.1)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '5px 10px',
+            borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '4px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
-          <Eraser size={16} /> Erase
+          <Eraser size={13} /> Erase
         </button>
 
         <button
@@ -730,16 +716,16 @@ export default function SudokuGame({ onPuzzleComplete }) {
             background: 'rgba(56, 189, 248, 0.15)',
             color: '#38bdf8',
             border: '1px solid rgba(56, 189, 248, 0.3)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '5px 10px',
+            borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '4px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
-          <Lightbulb size={16} /> Hint
+          <Lightbulb size={13} /> Hint
         </button>
 
         <button
@@ -748,16 +734,16 @@ export default function SudokuGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.1)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '5px 10px',
+            borderRadius: '6px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '4px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
-          <RotateCcw size={16} /> Reset
+          <RotateCcw size={13} /> Reset
         </button>
 
         {levelIndex < SUDOKU_LEVELS.length - 1 && (
@@ -767,38 +753,18 @@ export default function SudokuGame({ onPuzzleComplete }) {
               background: 'rgba(99, 102, 241, 0.15)',
               color: '#818cf8',
               border: '1px solid rgba(99, 102, 241, 0.3)',
-              padding: '8px 14px',
-              borderRadius: '8px',
+              padding: '5px 10px',
+              borderRadius: '6px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              fontSize: '13px',
+              gap: '4px',
+              fontSize: '12px',
               cursor: 'pointer'
             }}
           >
-            Next Sudoku <ChevronRight size={15} />
+            Next Sudoku <ChevronRight size={13} />
           </button>
         )}
-      </div>
-
-      {/* Rules */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        padding: '12px 14px',
-        fontSize: '12px',
-        color: '#94a3b8',
-        lineHeight: '1.6'
-      }}>
-        <div style={{ fontWeight: '700', color: '#f8fafc', marginBottom: '4px' }}>
-          💡 Sudoku Rules & Controls:
-        </div>
-        <ul style={{ paddingLeft: '18px', margin: 0 }}>
-          <li>Every row, column, and sub-box must contain numbers 1 to {size} without duplicates.</li>
-          <li><strong>Laptop</strong>: Use number keys <code>1-{size}</code>, <code>Backspace</code> to erase, arrow keys to move, and <code>N</code> to toggle pencil notes.</li>
-          <li><strong>Mobile</strong>: Tap cell to select, then tap the number keypad below.</li>
-        </ul>
       </div>
 
       {/* Victory Celebration Modal */}

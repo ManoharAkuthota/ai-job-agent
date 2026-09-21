@@ -19,6 +19,7 @@ export default function GamesHub({ onNavigate }) {
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [muted, setMuted] = useState(() => soundFx.isMuted());
   const [shareModalOpen, setShareModalOpen] = useState(false);
+  const [rulesModalOpen, setRulesModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
   // Daily Streak & Solved stats persisted in localStorage
@@ -228,6 +229,181 @@ export default function GamesHub({ onNavigate }) {
 
   const currentGameConfig = allGameItems.find(g => g.id === activeGame);
 
+  const GAME_RULES = {
+    sudoku: {
+      title: 'Sudoku Studio',
+      tag: 'Classic & Mini Logic Grid',
+      rules: [
+        'Fill every cell with digits 1 to 9 (or 1 to 6 in Mini mode).',
+        'Every row, column, and sub-box must contain each digit without duplicates.',
+        'Tap a cell to highlight related lines and matching numbers.',
+        'Toggle pencil "Notes" mode to track candidate numbers.'
+      ],
+      tips: 'Laptop: Keys 1-9, Backspace, Arrows, and N for notes. Mobile: Tap cell, then tap number pad.'
+    },
+    queens: {
+      title: 'Crowns (Queens)',
+      tag: 'Territory Logic',
+      rules: [
+        'Place exactly ONE Crown in each row, column, and colored territory region.',
+        'No two Crowns can touch each other — not even diagonally!',
+        'Tap a cell to cycle: Blank → X (Blocked) → 👑 Crown → Blank.',
+        'Auto-X automatically marks non-touching cells when a crown is placed.'
+      ],
+      tips: 'Right-click or double-tap to place or remove a Crown immediately.'
+    },
+    memory: {
+      title: 'Memory Matrix',
+      tag: 'Neuro Spatial Recall',
+      rules: [
+        'Memorize illuminated tiles when they flash brightly.',
+        'Tap the tiles from memory to reproduce the exact pattern.',
+        'You have 3 lives. Advance through 10 progressive difficulty stages.'
+      ],
+      tips: 'Group tiles into geometric shapes (corners, clusters) to boost recall.'
+    },
+    wordle: {
+      title: 'Tech Wordle',
+      tag: '5-Letter Code Term',
+      rules: [
+        'Guess the secret 5-letter technical programming word in 6 tries.',
+        '🟩 Green: Correct letter in the exact correct position.',
+        '🟨 Yellow: Letter is in the word, but in a different position.',
+        '⬜ Gray: Letter does not appear in the secret word.'
+      ],
+      tips: 'Start with vowel-heavy words like ASYNC or STACK to eliminate letters quickly.'
+    },
+    pinpoint: {
+      title: 'Pinpoint',
+      tag: 'Tech Association',
+      rules: [
+        'Uncover the secret tech umbrella category connecting 5 progressive clues.',
+        'Type your guess in the box. Fewer clues revealed = higher score!',
+        'Each wrong guess unlocks the next clue.'
+      ],
+      tips: 'Think about broad architectures, frameworks, protocols, and developer toolchains.'
+    },
+    tango: {
+      title: 'Tango Grid',
+      tag: 'Sun & Moon Balance',
+      rules: [
+        'Balance Suns ☀️ and Moons 🌙 across the 6x6 grid.',
+        'Each row and column must contain exactly equal Suns and Moons (3 each).',
+        'No three consecutive identical symbols (no ☀️☀️☀️ or 🌙🌙🌙).',
+        'Satisfy edge constraints: "=" means identical; "x" means opposite!'
+      ],
+      tips: 'Look for two identical adjacent symbols — the cells on either side must be opposite!'
+    },
+    crossclimb: {
+      title: 'Crossclimb',
+      tag: 'Word Ladder Trivia',
+      rules: [
+        'Climb from the bottom base word to the summit word.',
+        'Each rung clue describes a word that differs from adjacent rungs by exactly one letter.',
+        'Solve all rungs to conquer the climb!'
+      ],
+      tips: 'Compare given top/bottom letters to deduce intermediate transitions.'
+    }
+  };
+
+  const renderRulesModal = () => {
+    if (!rulesModalOpen || !activeGame || !GAME_RULES[activeGame]) return null;
+    const ruleInfo = GAME_RULES[activeGame];
+    const IconComp = currentGameConfig?.icon || HelpCircle;
+
+    return (
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(3, 7, 18, 0.88)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 2000,
+          padding: '16px'
+        }}
+        onClick={() => setRulesModalOpen(false)}
+      >
+        <div
+          style={{
+            background: '#0c1220',
+            border: `1px solid ${currentGameConfig?.color || '#6366f1'}`,
+            boxShadow: `0 0 40px ${currentGameConfig?.glow || 'rgba(99, 102, 241, 0.3)'}`,
+            borderRadius: '16px',
+            padding: '24px',
+            maxWidth: '440px',
+            width: '100%'
+          }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{
+                width: '36px',
+                height: '36px',
+                borderRadius: '10px',
+                background: `${currentGameConfig?.color}22`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <IconComp size={20} color={currentGameConfig?.color} />
+              </div>
+              <div>
+                <h3 style={{ fontSize: '17px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
+                  How to Play: {ruleInfo.title}
+                </h3>
+                <span style={{ fontSize: '11px', color: currentGameConfig?.color, fontWeight: '700' }}>
+                  {ruleInfo.tag}
+                </span>
+              </div>
+            </div>
+            <button
+              onClick={() => setRulesModalOpen(false)}
+              style={{ background: 'none', color: '#94a3b8', fontSize: '20px', padding: '4px', cursor: 'pointer', border: 'none' }}
+            >
+              ✕
+            </button>
+          </div>
+
+          <div style={{ background: 'rgba(255, 255, 255, 0.03)', borderRadius: '10px', padding: '14px', marginBottom: '16px' }}>
+            <ul style={{ margin: 0, paddingLeft: '18px', color: '#cbd5e1', fontSize: '13px', lineHeight: '1.7' }}>
+              {ruleInfo.rules.map((r, i) => (
+                <li key={i} style={{ marginBottom: '6px' }}>{r}</li>
+              ))}
+            </ul>
+          </div>
+
+          <div style={{ background: 'rgba(99, 102, 241, 0.1)', border: '1px solid rgba(99, 102, 241, 0.25)', borderRadius: '8px', padding: '10px 12px', fontSize: '12px', color: '#a5b4fc', marginBottom: '18px' }}>
+            <strong>💡 Pro Tip: </strong>{ruleInfo.tips}
+          </div>
+
+          <button
+            onClick={() => setRulesModalOpen(false)}
+            style={{
+              width: '100%',
+              background: `linear-gradient(135deg, ${currentGameConfig?.color || '#6366f1'} 0%, #0369a1 100%)`,
+              color: '#ffffff',
+              fontWeight: '700',
+              padding: '11px',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              border: 'none',
+              boxShadow: `0 4px 14px ${currentGameConfig?.glow}`
+            }}
+          >
+            Got it, Let's Play!
+          </button>
+        </div>
+      </div>
+    );
+  };
+
   const renderShareModal = () => {
     if (!shareModalOpen) return null;
     return (
@@ -242,7 +418,7 @@ export default function GamesHub({ onNavigate }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        zIndex: 1000,
+        zIndex: 2000,
         padding: '16px'
       }}>
         <div style={{
@@ -263,7 +439,7 @@ export default function GamesHub({ onNavigate }) {
             </div>
             <button
               onClick={() => setShareModalOpen(false)}
-              style={{ background: 'none', color: '#94a3b8', fontSize: '20px', padding: '4px', cursor: 'pointer' }}
+              style={{ background: 'none', color: '#94a3b8', fontSize: '20px', padding: '4px', cursor: 'pointer', border: 'none' }}
             >
               ✕
             </button>
@@ -303,7 +479,8 @@ export default function GamesHub({ onNavigate }) {
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: '8px'
+                gap: '8px',
+                border: 'none'
               }}
             >
               {copied ? <CheckCircle2 size={16} /> : <Share2 size={16} />}
@@ -316,26 +493,37 @@ export default function GamesHub({ onNavigate }) {
   };
 
   // --------------------------------------------------------------------------
-  // SCREEN 2: DEDICATED FULL-SCREEN GAME ARENA
+  // SCREEN 2: DEDICATED FULL-SCREEN NON-SCROLLABLE GAME ARENA
   // --------------------------------------------------------------------------
   if (activeGame && currentGameConfig) {
     const IconComponent = currentGameConfig.icon;
 
     return (
-      <div style={{ width: '100%', minHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
-        {/* Persistent Top Navigation Bar */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1000,
+        background: '#070b14',
+        display: 'flex',
+        flexDirection: 'column',
+        height: '100dvh',
+        width: '100vw',
+        overflow: 'hidden'
+      }}>
+        {/* Persistent Compact Top Navigation Bar */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          gap: '12px',
-          background: '#090e1a',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          borderRadius: '14px',
-          padding: '12px 18px',
-          marginBottom: '20px',
-          boxShadow: '0 8px 25px rgba(0, 0, 0, 0.5)'
+          background: '#0a0f1d',
+          borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
+          padding: '8px 16px',
+          flexShrink: 0,
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
+          gap: '10px'
         }}>
           {/* Back to Lobby Button */}
           <button
@@ -347,53 +535,74 @@ export default function GamesHub({ onNavigate }) {
               background: '#111827',
               border: '1px solid rgba(255, 255, 255, 0.12)',
               color: '#f8fafc',
-              padding: '8px 14px',
+              padding: '6px 12px',
               borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
+              gap: '6px',
               fontSize: '13px',
               fontWeight: '700',
               cursor: 'pointer',
-              transition: 'all 0.15s ease'
+              whiteSpace: 'nowrap'
             }}
           >
-            <ArrowLeft size={16} /> Back to All Games
+            <ArrowLeft size={16} /> <span>All Games</span>
           </button>
 
           {/* Center Title Pill */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <div style={{
-              width: '32px',
-              height: '32px',
-              borderRadius: '8px',
+              width: '28px',
+              height: '28px',
+              borderRadius: '7px',
               background: `${currentGameConfig.color}22`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center'
             }}>
-              <IconComponent size={18} color={currentGameConfig.color} />
+              <IconComponent size={16} color={currentGameConfig.color} />
             </div>
-            <div>
-              <span style={{ fontSize: '16px', fontWeight: '800', color: '#f8fafc' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '15px', fontWeight: '800', color: '#f8fafc', whiteSpace: 'nowrap' }}>
                 {currentGameConfig.title}
               </span>
               <span style={{
-                fontSize: '11px',
+                fontSize: '10px',
                 color: currentGameConfig.color,
                 background: `${currentGameConfig.color}18`,
-                padding: '2px 8px',
-                borderRadius: '6px',
-                marginLeft: '8px',
-                fontWeight: '700'
+                border: `1px solid ${currentGameConfig.color}33`,
+                padding: '2px 6px',
+                borderRadius: '5px',
+                fontWeight: '700',
+                whiteSpace: 'nowrap'
               }}>
                 {currentGameConfig.badge}
               </span>
             </div>
           </div>
 
-          {/* Right Action Controls (Sound, Share) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          {/* Right Action Controls (Rules, Sound, Share) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <button
+              onClick={() => setRulesModalOpen(true)}
+              title="How to Play / Rules"
+              style={{
+                background: 'rgba(56, 189, 248, 0.1)',
+                border: '1px solid rgba(56, 189, 248, 0.3)',
+                color: '#38bdf8',
+                padding: '5px 10px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '5px',
+                fontSize: '12px',
+                fontWeight: '700',
+                cursor: 'pointer'
+              }}
+            >
+              <HelpCircle size={15} /> <span>Rules</span>
+            </button>
+
             <button
               onClick={handleSoundToggle}
               title={muted ? 'Unmute' : 'Mute'}
@@ -401,8 +610,8 @@ export default function GamesHub({ onNavigate }) {
                 background: '#111827',
                 border: '1px solid rgba(255, 255, 255, 0.12)',
                 color: muted ? '#64748b' : '#38bdf8',
-                width: '36px',
-                height: '36px',
+                width: '32px',
+                height: '32px',
                 borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
@@ -410,7 +619,7 @@ export default function GamesHub({ onNavigate }) {
                 cursor: 'pointer'
               }}
             >
-              {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+              {muted ? <VolumeX size={15} /> : <Volume2 size={15} />}
             </button>
 
             <button
@@ -420,8 +629,8 @@ export default function GamesHub({ onNavigate }) {
                 background: '#111827',
                 border: '1px solid rgba(255, 255, 255, 0.12)',
                 color: '#f8fafc',
-                width: '36px',
-                height: '36px',
+                width: '32px',
+                height: '32px',
                 borderRadius: '8px',
                 display: 'flex',
                 alignItems: 'center',
@@ -429,22 +638,24 @@ export default function GamesHub({ onNavigate }) {
                 cursor: 'pointer'
               }}
             >
-              <Share2 size={16} />
+              <Share2 size={15} />
             </button>
           </div>
         </div>
 
-        {/* Full-Screen Game Canvas Container */}
+        {/* Dedicated Game Canvas Arena - STRICTLY NON-SCROLLABLE */}
         <div style={{
           flex: 1,
-          background: '#070b14',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          borderRadius: '16px',
-          padding: '24px 18px',
-          boxShadow: '0 12px 35px rgba(0, 0, 0, 0.7)',
+          width: '100%',
+          maxWidth: '800px',
+          margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'center'
+          alignItems: 'center',
+          justifyContent: 'center',
+          overflow: 'hidden',
+          padding: '6px 12px',
+          boxSizing: 'border-box'
         }}>
           {activeGame === 'sudoku' && <SudokuGame onPuzzleComplete={handlePuzzleComplete} />}
           {activeGame === 'queens' && <QueensGame onPuzzleComplete={handlePuzzleComplete} />}
@@ -457,6 +668,9 @@ export default function GamesHub({ onNavigate }) {
 
         {/* Share Results Modal */}
         {renderShareModal()}
+
+        {/* How to Play Rules Modal */}
+        {renderRulesModal()}
       </div>
     );
   }

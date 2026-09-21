@@ -167,33 +167,32 @@ export default function WordleGame({ onPuzzleComplete }) {
   };
 
   return (
-    <div style={{ maxWidth: '540px', margin: '0 auto', textAlign: 'center' }}>
-      {/* Header */}
+    <div style={{
+      width: '100%',
+      maxWidth: '440px',
+      margin: '0 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      maxHeight: '100%',
+      textAlign: 'center'
+    }}>
+      {/* Compact Word Selector & Stats Bar */}
       <div style={{
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '10px',
-        marginBottom: '16px',
-        padding: '12px 16px',
-        background: '#0c1220',
+        padding: '6px 12px',
+        background: 'rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        textAlign: 'left'
+        borderRadius: '10px',
+        marginBottom: '8px',
+        fontSize: '12px'
       }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Terminal size={20} color="#10b981" style={{ filter: 'drop-shadow(0 0 6px rgba(16, 185, 129, 0.7))' }} />
-            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
-              Tech Wordle
-            </h2>
-          </div>
-          <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
-            Guess the 5-letter technical code keyword in 6 tries.
-          </p>
-        </div>
-
+        {/* Word Selector */}
         <select
           value={wordIndex}
           onChange={(e) => setWordIndex(Number(e.target.value))}
@@ -201,9 +200,9 @@ export default function WordleGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: '8px',
-            padding: '6px 10px',
-            fontSize: '13px',
+            borderRadius: '6px',
+            padding: '4px 8px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
@@ -213,10 +212,34 @@ export default function WordleGame({ onPuzzleComplete }) {
             </option>
           ))}
         </select>
+
+        {/* Attempt Counter */}
+        <div style={{ color: '#94a3b8', fontSize: '12px' }}>
+          Attempts: <strong style={{ color: '#10b981' }}>{guesses.length} / 6</strong>
+        </div>
+
+        {/* Reset Button */}
+        <button
+          onClick={handleReset}
+          style={{
+            background: '#111827',
+            color: '#f8fafc',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            padding: '4px 10px',
+            borderRadius: '6px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '4px',
+            fontSize: '11px',
+            cursor: 'pointer'
+          }}
+        >
+          <RotateCcw size={12} /> Reset
+        </button>
       </div>
 
-      {/* Wordle Grid (6 rows of 5 letters) */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center', marginBottom: '20px' }}>
+      {/* Wordle Grid (6 rows of 5 letters) - Responsively Clamped */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center', marginBottom: '8px' }}>
         {Array.from({ length: 6 }).map((_, rowIdx) => {
           const isSubmitted = rowIdx < guesses.length;
           const isCurrent = rowIdx === guesses.length;
@@ -224,7 +247,7 @@ export default function WordleGame({ onPuzzleComplete }) {
           const statuses = isSubmitted ? evaluateGuess(guesses[rowIdx]) : [];
 
           return (
-            <div key={rowIdx} style={{ display: 'flex', gap: '6px' }}>
+            <div key={rowIdx} style={{ display: 'flex', gap: '4px' }}>
               {Array.from({ length: 5 }).map((_, colIdx) => {
                 const letter = word[colIdx] || '';
                 const status = statuses[colIdx];
@@ -253,20 +276,20 @@ export default function WordleGame({ onPuzzleComplete }) {
                   <div
                     key={colIdx}
                     style={{
-                      width: '46px',
-                      height: '46px',
+                      width: 'min(44px, calc((100dvh - 280px) / 7))',
+                      height: 'min(44px, calc((100dvh - 280px) / 7))',
                       background: tileBg,
                       border: tileBorder,
-                      borderRadius: '8px',
+                      borderRadius: '6px',
                       color: tileColor,
-                      fontSize: '20px',
+                      fontSize: '18px',
                       fontWeight: '800',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       userSelect: 'none',
-                      transition: 'all 0.2s ease',
-                      boxShadow: status === 'green' ? '0 0 10px rgba(16, 185, 129, 0.4)' : 'none'
+                      transition: 'all 0.15s ease',
+                      boxShadow: status === 'green' ? '0 0 8px rgba(16, 185, 129, 0.4)' : 'none'
                     }}
                   >
                     {letter}
@@ -278,10 +301,10 @@ export default function WordleGame({ onPuzzleComplete }) {
         })}
       </div>
 
-      {/* On-screen Virtual Keyboard */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center', marginBottom: '20px' }}>
+      {/* On-screen Virtual Keyboard - Compact */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', alignItems: 'center', marginBottom: '8px', width: '100%' }}>
         {KEYBOARD_ROWS.map((row, rIdx) => (
-          <div key={rIdx} style={{ display: 'flex', gap: '4px' }}>
+          <div key={rIdx} style={{ display: 'flex', gap: '3px', justifyContent: 'center', width: '100%' }}>
             {row.map((key) => {
               const status = keyStatuses[key];
               const isSpecial = key === 'ENTER' || key === 'BACKSPACE';
@@ -308,19 +331,21 @@ export default function WordleGame({ onPuzzleComplete }) {
                     background: keyBg,
                     color: keyColor,
                     border: '1px solid rgba(255, 255, 255, 0.08)',
-                    borderRadius: '6px',
-                    padding: isSpecial ? '12px 10px' : '12px 13px',
-                    fontSize: isSpecial ? '11px' : '14px',
+                    borderRadius: '5px',
+                    padding: isSpecial ? '8px 7px' : '8px 9px',
+                    fontSize: isSpecial ? '10px' : '13px',
                     fontWeight: '700',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minWidth: isSpecial ? '56px' : '32px',
-                    transition: 'all 0.15s ease'
+                    minWidth: isSpecial ? '46px' : '26px',
+                    flex: isSpecial ? '1.4' : '1',
+                    maxWidth: isSpecial ? '58px' : '38px',
+                    transition: 'all 0.1s ease'
                   }}
                 >
-                  {key === 'BACKSPACE' ? <Delete size={16} /> : key}
+                  {key === 'BACKSPACE' ? <Delete size={14} /> : key}
                 </button>
               );
             })}
@@ -331,56 +356,56 @@ export default function WordleGame({ onPuzzleComplete }) {
       {/* Game Over / Won Result */}
       {gameStatus !== 'PLAYING' && (
         <div style={{
-          background: gameStatus === 'WON' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+          background: gameStatus === 'WON' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
           border: `1px solid ${gameStatus === 'WON' ? '#10b981' : '#ef4444'}`,
-          borderRadius: '12px',
-          padding: '18px',
-          marginBottom: '20px'
+          borderRadius: '10px',
+          padding: '8px 12px',
+          marginTop: '6px',
+          width: '100%',
+          boxSizing: 'border-box'
         }}>
-          <div style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', marginBottom: '4px' }}>
-            {gameStatus === 'WON' ? '🎉 Term Cracked!' : 'Code Term Unlocked'}
-          </div>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '6px' }}>
+            <div style={{ textAlign: 'left' }}>
+              <span style={{ fontSize: '13px', fontWeight: '800', color: '#f8fafc' }}>
+                {gameStatus === 'WON' ? '🎉 Cracked! ' : 'Word: '}
+              </span>
+              <strong style={{ color: '#38bdf8', fontSize: '14px' }}>{targetWord}</strong>
+              <div style={{ fontSize: '11px', color: '#94a3b8' }}>{currentEntry.clue}</div>
+            </div>
 
-          <div style={{ fontSize: '14px', color: '#94a3b8', marginBottom: '8px' }}>
-            Target Word: <strong style={{ color: '#38bdf8', fontSize: '18px' }}>{targetWord}</strong>
-          </div>
-
-          <p style={{ fontSize: '12px', color: '#cbd5e1', maxWidth: '400px', margin: '0 auto 14px auto' }}>
-            {currentEntry.clue}
-          </p>
-
-          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-            {wordIndex < TECH_WORDS.length - 1 ? (
-              <button
-                onClick={() => setWordIndex(wordIndex + 1)}
-                style={{
-                  background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-                  color: '#ffffff',
-                  fontWeight: '700',
-                  padding: '10px 18px',
-                  borderRadius: '8px',
-                  cursor: 'pointer'
-                }}
-              >
-                Next Word →
-              </button>
-            ) : (
+            <div style={{ display: 'flex', gap: '6px' }}>
+              {wordIndex < TECH_WORDS.length - 1 && (
+                <button
+                  onClick={() => setWordIndex(wordIndex + 1)}
+                  style={{
+                    background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    color: '#ffffff',
+                    fontWeight: '700',
+                    padding: '5px 10px',
+                    borderRadius: '6px',
+                    fontSize: '11px',
+                    cursor: 'pointer',
+                    border: 'none'
+                  }}
+                >
+                  Next Word →
+                </button>
+              )}
               <button
                 onClick={handleReset}
                 style={{
-                  background: '#1e293b',
+                  background: '#111827',
                   color: '#f8fafc',
-                  padding: '10px 18px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px'
+                  border: '1px solid rgba(255, 255, 255, 0.15)',
+                  padding: '5px 10px',
+                  borderRadius: '6px',
+                  fontSize: '11px',
+                  cursor: 'pointer'
                 }}
               >
-                <RotateCcw size={15} /> Play Again
+                Retry
               </button>
-            )}
+            </div>
           </div>
         </div>
       )}

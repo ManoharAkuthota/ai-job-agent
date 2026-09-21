@@ -307,32 +307,30 @@ export default function TangoGame({ onPuzzleComplete }) {
   };
 
   return (
-    <div style={{ maxWidth: '640px', margin: '0 auto' }}>
-      {/* Header */}
+    <div style={{
+      width: '100%',
+      maxWidth: '440px',
+      margin: '0 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      maxHeight: '100%'
+    }}>
+      {/* Compact Header & Stats Bar */}
       <div style={{
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '10px',
-        marginBottom: '16px',
-        padding: '12px 16px',
-        background: '#0c1220',
+        padding: '6px 12px',
+        background: 'rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px'
+        borderRadius: '10px',
+        marginBottom: '8px',
+        fontSize: '12px'
       }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Sun size={20} color="#fbbf24" style={{ filter: 'drop-shadow(0 0 6px rgba(251, 191, 36, 0.8))' }} />
-            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
-              Tango (Sun & Moon)
-            </h2>
-          </div>
-          <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
-            Balance Suns & Moons. Equal counts, no 3-in-a-row.
-          </p>
-        </div>
-
         {/* Level Selector */}
         <select
           value={levelIndex}
@@ -341,9 +339,9 @@ export default function TangoGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: '8px',
-            padding: '6px 12px',
-            fontSize: '13px',
+            borderRadius: '6px',
+            padding: '4px 8px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
@@ -353,33 +351,21 @@ export default function TangoGame({ onPuzzleComplete }) {
             </option>
           ))}
         </select>
-      </div>
 
-      {/* Stats Bar */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px 14px',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        marginBottom: '14px',
-        fontSize: '13px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#38bdf8' }}>
-          <Timer size={16} />
+        {/* Timer */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#38bdf8' }}>
+          <Timer size={14} />
           <span style={{ fontWeight: '700', fontVariantNumeric: 'tabular-nums' }}>{formatTime(timerSeconds)}</span>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Sun size={15} color="#fbbf24" />
-            <span style={{ color: '#fbbf24', fontWeight: '700' }}>3 per line</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Sun size={14} color="#fbbf24" />
+            <span style={{ color: '#fbbf24', fontWeight: '700', fontSize: '11px' }}>3/line</span>
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-            <Moon size={15} color="#a855f7" />
-            <span style={{ color: '#a855f7', fontWeight: '700' }}>3 per line</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+            <Moon size={14} color="#a855f7" />
+            <span style={{ color: '#a855f7', fontWeight: '700', fontSize: '11px' }}>3/line</span>
           </div>
         </div>
       </div>
@@ -387,34 +373,35 @@ export default function TangoGame({ onPuzzleComplete }) {
       {/* Warnings */}
       {violations.size > 0 && !isWon && (
         <div style={{
-          padding: '6px 12px',
+          padding: '4px 10px',
           background: 'rgba(239, 68, 68, 0.15)',
           border: '1px solid #ef4444',
-          borderRadius: '8px',
+          borderRadius: '6px',
           color: '#f87171',
-          fontSize: '12px',
-          marginBottom: '12px',
+          fontSize: '11px',
+          marginBottom: '6px',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px'
+          gap: '5px'
         }}>
-          <AlertTriangle size={15} />
-          Rule violation detected: Check for 3 identical symbols in a row or unsatisfied = / x markers.
+          <AlertTriangle size={14} />
+          Check for 3-in-a-row or unsatisfied = / x markers!
         </div>
       )}
 
-      {/* Board Container with Grid and Constraints */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+      {/* Board Container - Responsively Clamped */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '10px', width: '100%' }}>
         <div
           style={{
             position: 'relative',
             background: '#070b14',
             border: '2px solid rgba(255, 255, 255, 0.14)',
-            borderRadius: '14px',
-            padding: '12px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8)',
-            maxWidth: '420px',
-            width: '100%'
+            borderRadius: '12px',
+            padding: '8px',
+            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.8)',
+            width: 'min(88vw, 340px, calc(100dvh - 200px))',
+            height: 'min(88vw, 340px, calc(100dvh - 200px))',
+            aspectRatio: '1 / 1'
           }}
         >
           <div
@@ -543,9 +530,8 @@ export default function TangoGame({ onPuzzleComplete }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '10px',
-        flexWrap: 'wrap',
-        marginBottom: '20px'
+        gap: '8px',
+        flexWrap: 'wrap'
       }}>
         <button
           onClick={handleUndo}
@@ -554,16 +540,16 @@ export default function TangoGame({ onPuzzleComplete }) {
             background: '#111827',
             color: history.length > 0 ? '#f8fafc' : '#475569',
             border: '1px solid rgba(255, 255, 255, 0.1)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '6px 12px',
+            borderRadius: '7px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '5px',
+            fontSize: '12px',
             cursor: history.length > 0 ? 'pointer' : 'not-allowed'
           }}
         >
-          <Undo2 size={16} /> Undo
+          <Undo2 size={14} /> Undo
         </button>
 
         <button
@@ -572,16 +558,16 @@ export default function TangoGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.1)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '6px 12px',
+            borderRadius: '7px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '5px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
-          <RotateCcw size={16} /> Reset
+          <RotateCcw size={14} /> Reset
         </button>
 
         <button
@@ -591,16 +577,16 @@ export default function TangoGame({ onPuzzleComplete }) {
             background: 'rgba(251, 191, 36, 0.15)',
             color: '#fbbf24',
             border: '1px solid rgba(251, 191, 36, 0.3)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '6px 12px',
+            borderRadius: '7px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '5px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
-          <Lightbulb size={16} /> Hint
+          <Lightbulb size={14} /> Hint
         </button>
 
         {levelIndex < TANGO_LEVELS.length - 1 && (
@@ -610,39 +596,18 @@ export default function TangoGame({ onPuzzleComplete }) {
               background: 'rgba(99, 102, 241, 0.15)',
               color: '#818cf8',
               border: '1px solid rgba(99, 102, 241, 0.3)',
-              padding: '8px 14px',
-              borderRadius: '8px',
+              padding: '6px 12px',
+              borderRadius: '7px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              fontSize: '13px',
+              gap: '5px',
+              fontSize: '12px',
               cursor: 'pointer'
             }}
           >
-            Next Tango <ChevronRight size={15} />
+            Next Tango <ChevronRight size={14} />
           </button>
         )}
-      </div>
-
-      {/* Rules */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        padding: '12px 14px',
-        fontSize: '12px',
-        color: '#94a3b8',
-        lineHeight: '1.6'
-      }}>
-        <div style={{ fontWeight: '700', color: '#f8fafc', marginBottom: '4px' }}>
-          💡 How to Play Tango:
-        </div>
-        <ul style={{ paddingLeft: '18px', margin: 0 }}>
-          <li>Tap a square to cycle: <strong>Blank → ☀️ Sun → 🌙 Moon → Blank</strong>.</li>
-          <li>Each row and column must contain <strong>equal Suns and Moons</strong> (3 of each).</li>
-          <li><strong>No 3-in-a-row</strong>: You cannot place 3 Suns or 3 Moons adjacent in any line.</li>
-          <li><strong>Constraints</strong>: <code>=</code> means both cells are identical; <code>x</code> means they are opposite!</li>
-        </ul>
       </div>
 
       {/* Win Modal */}

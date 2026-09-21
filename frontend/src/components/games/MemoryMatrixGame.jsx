@@ -150,77 +150,55 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
   };
 
   return (
-    <div style={{ maxWidth: '580px', margin: '0 auto', textAlign: 'center' }}>
-      {/* Header */}
+    <div style={{
+      width: '100%',
+      maxWidth: '440px',
+      margin: '0 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      maxHeight: '100%',
+      textAlign: 'center'
+    }}>
+      {/* Compact Level & Stats Bar */}
       <div style={{
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '10px',
-        marginBottom: '16px',
-        padding: '12px 16px',
-        background: '#0c1220',
+        padding: '6px 12px',
+        background: 'rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px',
-        textAlign: 'left'
+        borderRadius: '10px',
+        marginBottom: '8px',
+        fontSize: '12px'
       }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Brain size={20} color="#818cf8" style={{ filter: 'drop-shadow(0 0 6px rgba(129, 140, 248, 0.7))' }} />
-            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
-              Memory Matrix
-            </h2>
-          </div>
-          <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
-            Remember the illuminated tiles and reproduce the pattern.
-          </p>
-        </div>
-
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        {/* Level & Highscore */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
           <span style={{
             background: 'rgba(99, 102, 241, 0.2)',
             border: '1px solid #6366f1',
             color: '#818cf8',
-            fontSize: '12px',
+            fontSize: '11px',
             fontWeight: '700',
-            padding: '4px 10px',
-            borderRadius: '6px'
+            padding: '2px 6px',
+            borderRadius: '5px'
           }}>
-            Level {level}
+            Lvl {level}
           </span>
-          <span style={{
-            background: 'rgba(255, 255, 255, 0.05)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            color: '#fbbf24',
-            fontSize: '12px',
-            fontWeight: '700',
-            padding: '4px 10px',
-            borderRadius: '6px'
-          }}>
+          <span style={{ color: '#fbbf24', fontSize: '11px', fontWeight: '700' }}>
             Best: {highScore}
           </span>
         </div>
-      </div>
 
-      {/* Stats Bar */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px 14px',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        marginBottom: '16px',
-        fontSize: '13px'
-      }}>
         {/* Lives */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '3px' }}>
           {Array.from({ length: 3 }).map((_, i) => (
             <Heart
               key={i}
-              size={18}
+              size={15}
               color={i < lives ? '#ef4444' : '#475569'}
               fill={i < lives ? '#ef4444' : 'transparent'}
             />
@@ -228,29 +206,29 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
         </div>
 
         {/* Target Count */}
-        <div style={{ color: '#94a3b8' }}>
-          Tiles: <strong style={{ color: '#38bdf8' }}>{selectedTiles.size} / {tilesCount}</strong>
+        <div style={{ color: '#94a3b8', fontSize: '11px' }}>
+          Tiles: <strong style={{ color: '#38bdf8' }}>{selectedTiles.size}/{tilesCount}</strong>
         </div>
 
         {/* Current Score */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#10b981', fontWeight: '800' }}>
-          <Zap size={16} />
-          <span>{score} pts</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', color: '#10b981', fontWeight: '800', fontSize: '12px' }}>
+          <Zap size={14} />
+          <span>{score}</span>
         </div>
       </div>
 
-      {/* Matrix Grid Container */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+      {/* Matrix Grid Container - Responsively Clamped */}
+      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px', width: '100%' }}>
         <div
           style={{
             position: 'relative',
             background: '#070b14',
             border: '2px solid rgba(255, 255, 255, 0.12)',
-            borderRadius: '14px',
-            padding: '12px',
-            boxShadow: '0 10px 30px rgba(0, 0, 0, 0.8)',
-            maxWidth: '380px',
-            width: '100%',
+            borderRadius: '12px',
+            padding: '8px',
+            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.8)',
+            width: 'min(88vw, 340px, calc(100dvh - 190px))',
+            height: 'min(88vw, 340px, calc(100dvh - 190px))',
             aspectRatio: '1 / 1'
           }}
         >
@@ -380,24 +358,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
         )}
       </div>
 
-      {/* Rules Tip */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        padding: '12px 14px',
-        fontSize: '12px',
-        color: '#94a3b8',
-        lineHeight: '1.6',
-        textAlign: 'left'
-      }}>
-        <div style={{ fontWeight: '700', color: '#f8fafc', marginBottom: '4px' }}>
-          💡 Cognitive Training Tip:
-        </div>
-        <p style={{ margin: 0 }}>
-          Group nearby tiles into geometric shapes (corners, diagonals, lines) to boost your working memory bandwidth!
-        </p>
-      </div>
+
 
       {/* Game Over Modal */}
       {phase === 'GAME_OVER' && (

@@ -318,32 +318,30 @@ export default function QueensGame({ onPuzzleComplete }) {
   );
 
   return (
-    <div style={{ maxWidth: '640px', margin: '0 auto' }}>
-      {/* Level bar & Header */}
+    <div style={{
+      width: '100%',
+      maxWidth: '440px',
+      margin: '0 auto',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      height: '100%',
+      maxHeight: '100%'
+    }}>
+      {/* Compact Level & Stats Bar */}
       <div style={{
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '10px',
-        marginBottom: '16px',
-        padding: '12px 16px',
-        background: '#0c1220',
+        padding: '6px 12px',
+        background: 'rgba(255, 255, 255, 0.03)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '12px'
+        borderRadius: '10px',
+        marginBottom: '8px',
+        fontSize: '12px'
       }}>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <Crown size={20} color="#f59e0b" style={{ filter: 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.7))' }} />
-            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
-              Crowns (Queens)
-            </h2>
-          </div>
-          <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
-            1 Crown per row, col & region. No touching (even diagonally).
-          </p>
-        </div>
-
         {/* Level Selector */}
         <select
           value={levelIndex}
@@ -352,9 +350,9 @@ export default function QueensGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.15)',
-            borderRadius: '8px',
-            padding: '6px 12px',
-            fontSize: '13px',
+            borderRadius: '6px',
+            padding: '4px 8px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
@@ -364,23 +362,10 @@ export default function QueensGame({ onPuzzleComplete }) {
             </option>
           ))}
         </select>
-      </div>
 
-      {/* Status & Stats Bar */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '10px 14px',
-        background: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        marginBottom: '14px',
-        fontSize: '13px'
-      }}>
         {/* Timer */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: '#38bdf8' }}>
-          <Timer size={16} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#38bdf8' }}>
+          <Timer size={14} />
           <span style={{ fontWeight: '700', fontVariantNumeric: 'tabular-nums' }}>{formatTime(timerSeconds)}</span>
         </div>
 
@@ -388,15 +373,15 @@ export default function QueensGame({ onPuzzleComplete }) {
         <div style={{
           display: 'flex',
           alignItems: 'center',
-          gap: '6px',
+          gap: '5px',
           color: placedQueensCount === size ? '#10b981' : '#f8fafc'
         }}>
           <span>Crowns:</span>
           <span style={{
             fontWeight: '800',
             background: placedQueensCount === size ? 'rgba(16, 185, 129, 0.2)' : 'rgba(99, 102, 241, 0.2)',
-            padding: '2px 8px',
-            borderRadius: '6px',
+            padding: '1px 6px',
+            borderRadius: '5px',
             border: `1px solid ${placedQueensCount === size ? '#10b981' : '#6366f1'}`
           }}>
             {placedQueensCount} / {size}
@@ -404,32 +389,32 @@ export default function QueensGame({ onPuzzleComplete }) {
         </div>
 
         {/* Auto-cross toggle */}
-        <label style={{ display: 'flex', alignItems: 'center', gap: '6px', cursor: 'pointer', userSelect: 'none', color: '#94a3b8' }}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: '5px', cursor: 'pointer', userSelect: 'none', color: '#94a3b8' }}>
           <input
             type="checkbox"
             checked={autoCross}
             onChange={(e) => setAutoCross(e.target.checked)}
-            style={{ width: '15px', height: '15px', accentColor: '#6366f1', cursor: 'pointer' }}
+            style={{ width: '14px', height: '14px', accentColor: '#6366f1', cursor: 'pointer' }}
           />
-          <span style={{ fontSize: '12px' }}>Auto-X</span>
+          <span style={{ fontSize: '11px' }}>Auto-X</span>
         </label>
       </div>
 
       {/* Hint Alert Notification */}
       {hintMessage && (
         <div style={{
-          padding: '8px 12px',
+          padding: '4px 10px',
           background: 'rgba(245, 158, 11, 0.15)',
           border: '1px solid #f59e0b',
-          borderRadius: '8px',
+          borderRadius: '6px',
           color: '#fbbf24',
-          fontSize: '12px',
-          marginBottom: '12px',
+          fontSize: '11px',
+          marginBottom: '6px',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px'
+          gap: '6px'
         }}>
-          <Sparkles size={16} />
+          <Sparkles size={14} />
           {hintMessage}
         </div>
       )}
@@ -437,27 +422,28 @@ export default function QueensGame({ onPuzzleComplete }) {
       {/* Active Conflict Warning */}
       {conflicts.size > 0 && !isWon && (
         <div style={{
-          padding: '6px 12px',
+          padding: '4px 10px',
           background: 'rgba(239, 68, 68, 0.15)',
           border: '1px solid #ef4444',
-          borderRadius: '8px',
+          borderRadius: '6px',
           color: '#f87171',
-          fontSize: '12px',
-          marginBottom: '12px',
+          fontSize: '11px',
+          marginBottom: '6px',
           display: 'flex',
           alignItems: 'center',
-          gap: '6px'
+          gap: '5px'
         }}>
-          <AlertTriangle size={15} />
-          Conflict detected: Crowns cannot share rows, columns, territories, or touch diagonally!
+          <AlertTriangle size={14} />
+          Conflict: Crowns cannot share rows, columns, territories, or touch!
         </div>
       )}
 
-      {/* The Puzzle Grid */}
+      {/* The Puzzle Grid - Responsively Clamped */}
       <div style={{
         display: 'flex',
         justifyContent: 'center',
-        marginBottom: '18px'
+        marginBottom: '10px',
+        width: '100%'
       }}>
         <div
           style={{
@@ -465,12 +451,12 @@ export default function QueensGame({ onPuzzleComplete }) {
             gridTemplateColumns: `repeat(${size}, 1fr)`,
             gap: '2px',
             background: '#030712',
-            padding: '6px',
-            borderRadius: '12px',
+            padding: '4px',
+            borderRadius: '10px',
             border: '2px solid rgba(255, 255, 255, 0.18)',
-            boxShadow: '0 8px 30px rgba(0, 0, 0, 0.8)',
-            maxWidth: size <= 6 ? '380px' : '440px',
-            width: '100%',
+            boxShadow: '0 8px 25px rgba(0, 0, 0, 0.8)',
+            width: 'min(88vw, 360px, calc(100dvh - 200px))',
+            height: 'min(88vw, 360px, calc(100dvh - 200px))',
             aspectRatio: '1 / 1'
           }}
         >
@@ -511,7 +497,7 @@ export default function QueensGame({ onPuzzleComplete }) {
                 >
                   {cell === 'Q' && (
                     <Crown
-                      size={size <= 6 ? 26 : 20}
+                      size={size <= 6 ? 24 : 18}
                       color={isConflict ? '#ef4444' : '#fbbf24'}
                       style={{
                         filter: isConflict
@@ -523,7 +509,7 @@ export default function QueensGame({ onPuzzleComplete }) {
                   )}
                   {cell === 'X' && (
                     <XIcon
-                      size={size <= 6 ? 16 : 12}
+                      size={size <= 6 ? 14 : 10}
                       color="#64748b"
                       style={{ opacity: 0.75 }}
                     />
@@ -540,9 +526,8 @@ export default function QueensGame({ onPuzzleComplete }) {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        gap: '10px',
-        flexWrap: 'wrap',
-        marginBottom: '20px'
+        gap: '8px',
+        flexWrap: 'wrap'
       }}>
         <button
           onClick={handleUndo}
@@ -551,16 +536,16 @@ export default function QueensGame({ onPuzzleComplete }) {
             background: '#111827',
             color: history.length > 0 ? '#f8fafc' : '#475569',
             border: '1px solid rgba(255, 255, 255, 0.1)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '6px 12px',
+            borderRadius: '7px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '5px',
+            fontSize: '12px',
             cursor: history.length > 0 ? 'pointer' : 'not-allowed'
           }}
         >
-          <Undo2 size={16} />
+          <Undo2 size={14} />
           Undo
         </button>
 
@@ -570,16 +555,16 @@ export default function QueensGame({ onPuzzleComplete }) {
             background: '#111827',
             color: '#f8fafc',
             border: '1px solid rgba(255, 255, 255, 0.1)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '6px 12px',
+            borderRadius: '7px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '5px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
-          <RotateCcw size={16} />
+          <RotateCcw size={14} />
           Reset
         </button>
 
@@ -590,17 +575,17 @@ export default function QueensGame({ onPuzzleComplete }) {
             background: 'rgba(245, 158, 11, 0.15)',
             color: '#fbbf24',
             border: '1px solid rgba(245, 158, 11, 0.3)',
-            padding: '8px 14px',
-            borderRadius: '8px',
+            padding: '6px 12px',
+            borderRadius: '7px',
             display: 'flex',
             alignItems: 'center',
-            gap: '6px',
-            fontSize: '13px',
+            gap: '5px',
+            fontSize: '12px',
             cursor: 'pointer'
           }}
         >
-          <Lightbulb size={16} />
-          Get Hint
+          <Lightbulb size={14} />
+          Hint
         </button>
 
         {levelIndex < QUEENS_LEVELS.length - 1 && (
@@ -610,39 +595,18 @@ export default function QueensGame({ onPuzzleComplete }) {
               background: 'rgba(99, 102, 241, 0.15)',
               color: '#818cf8',
               border: '1px solid rgba(99, 102, 241, 0.3)',
-              padding: '8px 14px',
-              borderRadius: '8px',
+              padding: '6px 12px',
+              borderRadius: '7px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              fontSize: '13px',
+              gap: '5px',
+              fontSize: '12px',
               cursor: 'pointer'
             }}
           >
-            Next Level <ChevronRight size={15} />
+            Next Level <ChevronRight size={14} />
           </button>
         )}
-      </div>
-
-      {/* Rules */}
-      <div style={{
-        background: 'rgba(255, 255, 255, 0.02)',
-        border: '1px solid rgba(255, 255, 255, 0.06)',
-        borderRadius: '10px',
-        padding: '12px 14px',
-        fontSize: '12px',
-        color: '#94a3b8',
-        lineHeight: '1.6'
-      }}>
-        <div style={{ fontWeight: '700', color: '#f8fafc', marginBottom: '4px' }}>
-          💡 How to Play Crowns (Queens):
-        </div>
-        <ul style={{ paddingLeft: '18px', margin: 0 }}>
-          <li>Tap a cell to cycle: <strong>Blank → X (Cross) → 👑 (Crown) → Blank</strong>.</li>
-          <li>Right-click or double-click to place or clear a Crown immediately.</li>
-          <li>Every row, column, and colored region must contain <strong>exactly one Crown</strong>.</li>
-          <li>No two Crowns can touch each other — <strong>not even diagonally</strong>!</li>
-        </ul>
       </div>
 
       {/* Victory Celebration Modal */}
