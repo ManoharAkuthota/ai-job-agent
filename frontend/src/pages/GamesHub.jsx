@@ -1,5 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Crown, Target, Sun, Layers, Flame, Trophy, Volume2, VolumeX, Share2, Sparkles, CheckCircle2, Hash, Brain, Terminal, RefreshCw } from 'lucide-react';
+import {
+  Crown, Target, Sun, Layers, Flame, Trophy, Volume2, VolumeX,
+  Share2, Sparkles, CheckCircle2, Hash, Brain, Terminal, ArrowLeft,
+  Play, Clock, HelpCircle, Star
+} from 'lucide-react';
 import QueensGame from '../components/games/QueensGame';
 import PinpointGame from '../components/games/PinpointGame';
 import TangoGame from '../components/games/TangoGame';
@@ -10,7 +14,8 @@ import WordleGame from '../components/games/WordleGame';
 import { soundFx } from '../utils/audioEffects';
 
 export default function GamesHub({ onNavigate }) {
-  const [activeGame, setActiveGame] = useState('sudoku');
+  // activeGame: null (Lobby Screen) | 'sudoku' | 'queens' | 'memory' | 'wordle' | 'pinpoint' | 'tango' | 'crossclimb'
+  const [activeGame, setActiveGame] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('ALL');
   const [muted, setMuted] = useState(() => soundFx.isMuted());
   const [shareModalOpen, setShareModalOpen] = useState(false);
@@ -140,23 +145,25 @@ export default function GamesHub({ onNavigate }) {
   const allGameItems = [
     {
       id: 'sudoku',
-      title: 'Sudoku',
+      title: 'Sudoku Studio',
       subtitle: 'Classic & Mini Grid',
       category: 'LOGIC',
       icon: Hash,
       color: '#38bdf8',
       glow: 'rgba(56, 189, 248, 0.4)',
-      badge: '9x9 & 6x6'
+      badge: '9x9 & 6x6',
+      description: 'Fill the grid with numbers 1 to 9 so every row, column, and 3x3 block contains each digit uniquely. Features candidate notes & live conflict highlights.'
     },
     {
       id: 'queens',
-      title: 'Crowns',
+      title: 'Crowns (Queens)',
       subtitle: 'Territory Logic',
       category: 'LOGIC',
       icon: Crown,
       color: '#f59e0b',
       glow: 'rgba(245, 158, 11, 0.4)',
-      badge: 'Queens'
+      badge: 'LinkedIn Hit',
+      description: 'Place exactly one crown in each row, column, and colored territory. Crowns cannot touch each other—not even diagonally!'
     },
     {
       id: 'memory',
@@ -166,7 +173,8 @@ export default function GamesHub({ onNavigate }) {
       icon: Brain,
       color: '#818cf8',
       glow: 'rgba(129, 140, 248, 0.4)',
-      badge: 'Brain Gym'
+      badge: 'Neuro Gym',
+      description: 'Test your visuo-spatial memory span! Tiles flash briefly in a glowing pattern. Tap from memory to reproduce the exact matrix layout across 10 levels.'
     },
     {
       id: 'wordle',
@@ -176,7 +184,8 @@ export default function GamesHub({ onNavigate }) {
       icon: Terminal,
       color: '#10b981',
       glow: 'rgba(16, 185, 129, 0.4)',
-      badge: 'Daily Word'
+      badge: 'Code Word',
+      description: 'Guess the secret 5-letter technical keyword (ASYNC, QUERY, STACK, REACT, REDIS) in 6 attempts with color-coded clue tiles.'
     },
     {
       id: 'pinpoint',
@@ -186,70 +195,296 @@ export default function GamesHub({ onNavigate }) {
       icon: Target,
       color: '#06b6d4',
       glow: 'rgba(6, 182, 212, 0.4)',
-      badge: '5 Clues'
+      badge: '5 Clues',
+      description: 'Identify the common umbrella tech category connecting 5 progressive clues. Solve in fewer clues to maximize your score!'
     },
     {
       id: 'tango',
-      title: 'Tango',
-      subtitle: 'Sun & Moon Grid',
+      title: 'Tango Grid',
+      subtitle: 'Sun & Moon Balance',
       category: 'LOGIC',
       icon: Sun,
       color: '#fbbf24',
       glow: 'rgba(251, 191, 36, 0.4)',
-      badge: 'Balance'
+      badge: 'Balance',
+      description: 'Balance Suns and Moons across a 6x6 grid. Exactly 3 of each per row and column, strictly no 3-in-a-row, and satisfy equality/difference constraints.'
     },
     {
       id: 'crossclimb',
       title: 'Crossclimb',
-      subtitle: 'Word Ladder',
+      subtitle: 'Word Ladder Trivia',
       category: 'WORDS',
       icon: Layers,
       color: '#a855f7',
       glow: 'rgba(168, 85, 247, 0.4)',
-      badge: 'Trivia'
+      badge: 'Word Climb',
+      description: 'Climb from base to summit by guessing words from tech clues. Each successive word differs from the previous by exactly one letter.'
     }
   ];
-
-  const handleSelectCategory = (catId) => {
-    setCategoryFilter(catId);
-    soundFx.playTap();
-
-    if (catId !== 'ALL') {
-      const firstInCat = allGameItems.find(g => g.category === catId);
-      if (firstInCat && activeGame) {
-        const currentInCat = allGameItems.find(g => g.id === activeGame && g.category === catId);
-        if (!currentInCat) {
-          setActiveGame(firstInCat.id);
-        }
-      }
-    }
-  };
 
   const filteredGames = categoryFilter === 'ALL'
     ? allGameItems
     : allGameItems.filter(g => g.category === categoryFilter);
 
+  const currentGameConfig = allGameItems.find(g => g.id === activeGame);
+
+  const renderShareModal = () => {
+    if (!shareModalOpen) return null;
+    return (
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        background: 'rgba(3, 7, 18, 0.85)',
+        backdropFilter: 'blur(8px)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        zIndex: 1000,
+        padding: '16px'
+      }}>
+        <div style={{
+          background: '#0c1220',
+          border: '1px solid rgba(99, 102, 241, 0.4)',
+          boxShadow: '0 0 40px rgba(99, 102, 241, 0.25)',
+          borderRadius: '16px',
+          padding: '24px',
+          maxWidth: '420px',
+          width: '100%'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <Sparkles size={20} color="#818cf8" />
+              <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
+                Share Your Daily Score
+              </h3>
+            </div>
+            <button
+              onClick={() => setShareModalOpen(false)}
+              style={{ background: 'none', color: '#94a3b8', fontSize: '20px', padding: '4px', cursor: 'pointer' }}
+            >
+              ✕
+            </button>
+          </div>
+
+          <textarea
+            readOnly
+            value={generateShareText()}
+            rows={12}
+            style={{
+              background: '#070b14',
+              color: '#cbd5e1',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              borderRadius: '10px',
+              padding: '12px',
+              fontSize: '13px',
+              fontFamily: 'monospace',
+              resize: 'none',
+              width: '100%',
+              marginBottom: '16px'
+            }}
+          />
+
+          <div style={{ display: 'flex', gap: '10px' }}>
+            <button
+              onClick={handleCopyShare}
+              style={{
+                flex: 1,
+                background: copied
+                  ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
+                  : 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
+                color: '#ffffff',
+                fontWeight: '700',
+                padding: '12px',
+                borderRadius: '10px',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+            >
+              {copied ? <CheckCircle2 size={16} /> : <Share2 size={16} />}
+              {copied ? 'Copied to Clipboard!' : 'Copy Results Text'}
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // --------------------------------------------------------------------------
+  // SCREEN 2: DEDICATED FULL-SCREEN GAME ARENA
+  // --------------------------------------------------------------------------
+  if (activeGame && currentGameConfig) {
+    const IconComponent = currentGameConfig.icon;
+
+    return (
+      <div style={{ width: '100%', minHeight: '85vh', display: 'flex', flexDirection: 'column' }}>
+        {/* Persistent Top Navigation Bar */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          flexWrap: 'wrap',
+          gap: '12px',
+          background: '#090e1a',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          borderRadius: '14px',
+          padding: '12px 18px',
+          marginBottom: '20px',
+          boxShadow: '0 8px 25px rgba(0, 0, 0, 0.5)'
+        }}>
+          {/* Back to Lobby Button */}
+          <button
+            onClick={() => {
+              setActiveGame(null);
+              soundFx.playTap();
+            }}
+            style={{
+              background: '#111827',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              color: '#f8fafc',
+              padding: '8px 14px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
+              fontSize: '13px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              transition: 'all 0.15s ease'
+            }}
+          >
+            <ArrowLeft size={16} /> Back to All Games
+          </button>
+
+          {/* Center Title Pill */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '8px',
+              background: `${currentGameConfig.color}22`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}>
+              <IconComponent size={18} color={currentGameConfig.color} />
+            </div>
+            <div>
+              <span style={{ fontSize: '16px', fontWeight: '800', color: '#f8fafc' }}>
+                {currentGameConfig.title}
+              </span>
+              <span style={{
+                fontSize: '11px',
+                color: currentGameConfig.color,
+                background: `${currentGameConfig.color}18`,
+                padding: '2px 8px',
+                borderRadius: '6px',
+                marginLeft: '8px',
+                fontWeight: '700'
+              }}>
+                {currentGameConfig.badge}
+              </span>
+            </div>
+          </div>
+
+          {/* Right Action Controls (Sound, Share) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <button
+              onClick={handleSoundToggle}
+              title={muted ? 'Unmute' : 'Mute'}
+              style={{
+                background: '#111827',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                color: muted ? '#64748b' : '#38bdf8',
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              {muted ? <VolumeX size={16} /> : <Volume2 size={16} />}
+            </button>
+
+            <button
+              onClick={() => setShareModalOpen(true)}
+              title="Share Score"
+              style={{
+                background: '#111827',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
+                color: '#f8fafc',
+                width: '36px',
+                height: '36px',
+                borderRadius: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer'
+              }}
+            >
+              <Share2 size={16} />
+            </button>
+          </div>
+        </div>
+
+        {/* Full-Screen Game Canvas Container */}
+        <div style={{
+          flex: 1,
+          background: '#070b14',
+          border: '1px solid rgba(255, 255, 255, 0.08)',
+          borderRadius: '16px',
+          padding: '24px 18px',
+          boxShadow: '0 12px 35px rgba(0, 0, 0, 0.7)',
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center'
+        }}>
+          {activeGame === 'sudoku' && <SudokuGame onPuzzleComplete={handlePuzzleComplete} />}
+          {activeGame === 'queens' && <QueensGame onPuzzleComplete={handlePuzzleComplete} />}
+          {activeGame === 'memory' && <MemoryMatrixGame onPuzzleComplete={handlePuzzleComplete} />}
+          {activeGame === 'wordle' && <WordleGame onPuzzleComplete={handlePuzzleComplete} />}
+          {activeGame === 'pinpoint' && <PinpointGame onPuzzleComplete={handlePuzzleComplete} />}
+          {activeGame === 'tango' && <TangoGame onPuzzleComplete={handlePuzzleComplete} />}
+          {activeGame === 'crossclimb' && <CrossclimbGame onPuzzleComplete={handlePuzzleComplete} />}
+        </div>
+
+        {/* Share Results Modal */}
+        {renderShareModal()}
+      </div>
+    );
+  }
+
+  // --------------------------------------------------------------------------
+  // SCREEN 1: ALL GAMES LOBBY & CATALOG SCREEN
+  // --------------------------------------------------------------------------
   return (
-    <div style={{ maxWidth: '960px', margin: '0 auto', paddingBottom: '60px' }}>
-      {/* Top Banner & Profile Stats */}
+    <div style={{ maxWidth: '1080px', margin: '0 auto', paddingBottom: '60px' }}>
+      {/* Lobby Hero Banner & Stats */}
       <div style={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         flexWrap: 'wrap',
-        gap: '14px',
+        gap: '16px',
         background: 'linear-gradient(135deg, #090e1a 0%, #111827 100%)',
         border: '1px solid rgba(255, 255, 255, 0.08)',
         borderRadius: '16px',
-        padding: '20px 24px',
-        marginBottom: '20px',
-        boxShadow: '0 8px 30px rgba(0, 0, 0, 0.5)'
+        padding: '22px 26px',
+        marginBottom: '24px',
+        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)'
       }}>
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
             <span style={{
               background: 'linear-gradient(135deg, #6366f1, #38bdf8)',
-              padding: '4px 10px',
+              padding: '4px 12px',
               borderRadius: '999px',
               fontSize: '11px',
               fontWeight: '800',
@@ -257,22 +492,22 @@ export default function GamesHub({ onNavigate }) {
               letterSpacing: '0.06em',
               textTransform: 'uppercase'
             }}>
-              Cognitive Studio
+              Brain & Mind Arcade
             </span>
             <span style={{ fontSize: '12px', color: '#94a3b8' }}>
-              Sudoku, LinkedIn Games & Neuro Puzzles
+              Select a game to open full screen
             </span>
           </div>
 
-          <h1 style={{ fontSize: '24px', fontWeight: '900', color: '#f8fafc', margin: 0, letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#f8fafc', margin: 0, letterSpacing: '-0.02em' }}>
             Brain Puzzles & Games
           </h1>
-          <p style={{ fontSize: '13px', color: '#94a3b8', margin: '4px 0 0 0' }}>
-            Optimized for mobile touch & laptop keyboard. Train working memory, logic, and tech deduction.
+          <p style={{ fontSize: '13px', color: '#94a3b8', margin: '4px 0 0 0', maxWidth: '600px' }}>
+            Sharpen cognitive stamina, test working memory, and conquer daily algorithmic logic challenges.
           </p>
         </div>
 
-        {/* Global Stats & Sound Action Controls */}
+        {/* Global Stats & Controls */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           {/* Daily Streak */}
           <div style={{
@@ -284,7 +519,7 @@ export default function GamesHub({ onNavigate }) {
             borderRadius: '10px',
             padding: '8px 14px'
           }} title="Daily Puzzle Streak">
-            <Flame size={18} color="#f59e0b" style={{ filter: 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.8))' }} />
+            <Flame size={20} color="#f59e0b" style={{ filter: 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.8))' }} />
             <div>
               <div style={{ fontSize: '16px', fontWeight: '800', color: '#fbbf24', lineHeight: 1 }}>
                 {stats.streak}
@@ -305,7 +540,7 @@ export default function GamesHub({ onNavigate }) {
             borderRadius: '10px',
             padding: '8px 14px'
           }} title="Total Completed Puzzles">
-            <Trophy size={18} color="#10b981" style={{ filter: 'drop-shadow(0 0 6px rgba(16, 185, 129, 0.8))' }} />
+            <Trophy size={20} color="#10b981" style={{ filter: 'drop-shadow(0 0 6px rgba(16, 185, 129, 0.8))' }} />
             <div>
               <div style={{ fontSize: '16px', fontWeight: '800', color: '#10b981', lineHeight: 1 }}>
                 {stats.totalSolved}
@@ -316,10 +551,10 @@ export default function GamesHub({ onNavigate }) {
             </div>
           </div>
 
-          {/* Sound Mute Toggle */}
+          {/* Sound Toggle */}
           <button
             onClick={handleSoundToggle}
-            title={muted ? 'Unmute Sound FX' : 'Mute Sound FX'}
+            title={muted ? 'Unmute' : 'Mute'}
             style={{
               background: '#111827',
               border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -336,10 +571,10 @@ export default function GamesHub({ onNavigate }) {
             {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
           </button>
 
-          {/* Share Button */}
+          {/* Share */}
           <button
             onClick={() => setShareModalOpen(true)}
-            title="Share Your Results"
+            title="Share Your Score"
             style={{
               background: '#111827',
               border: '1px solid rgba(255, 255, 255, 0.12)',
@@ -364,7 +599,7 @@ export default function GamesHub({ onNavigate }) {
         gap: '8px',
         overflowX: 'auto',
         paddingBottom: '8px',
-        marginBottom: '16px'
+        marginBottom: '20px'
       }}>
         {[
           { id: 'ALL', label: 'All Puzzles (7)' },
@@ -374,14 +609,17 @@ export default function GamesHub({ onNavigate }) {
         ].map(cat => (
           <button
             key={cat.id}
-            onClick={() => handleSelectCategory(cat.id)}
+            onClick={() => {
+              setCategoryFilter(cat.id);
+              soundFx.playTap();
+            }}
             style={{
               background: categoryFilter === cat.id ? '#6366f1' : '#0c1220',
               color: categoryFilter === cat.id ? '#ffffff' : '#94a3b8',
               border: `1px solid ${categoryFilter === cat.id ? '#818cf8' : 'rgba(255, 255, 255, 0.08)'}`,
-              padding: '6px 14px',
+              padding: '7px 16px',
               borderRadius: '999px',
-              fontSize: '12px',
+              fontSize: '13px',
               fontWeight: '700',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
@@ -393,188 +631,134 @@ export default function GamesHub({ onNavigate }) {
         ))}
       </div>
 
-      {/* Game Selector Cards Grid */}
+      {/* All Game Cards Grid (Catalog) */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))',
-        gap: '10px',
-        marginBottom: '20px'
+        gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))',
+        gap: '18px'
       }}>
-        {filteredGames.map(item => {
-          const IconComponent = item.icon;
-          const isActive = activeGame === item.id;
-          const isDoneToday = stats.completedToday?.[item.id];
+        {filteredGames.map(game => {
+          const IconComponent = game.icon;
+          const isDoneToday = stats.completedToday?.[game.id];
 
           return (
-            <button
-              key={item.id}
+            <div
+              key={game.id}
               onClick={() => {
-                setActiveGame(item.id);
+                setActiveGame(game.id);
                 soundFx.playTap();
               }}
               style={{
-                background: isActive
-                  ? 'linear-gradient(135deg, #111827 0%, #0e1628 100%)'
-                  : '#070b14',
-                border: `1.5px solid ${isActive ? item.color : 'rgba(255, 255, 255, 0.08)'}`,
-                borderRadius: '12px',
-                padding: '14px',
+                background: '#0c1220',
+                border: `1px solid rgba(255, 255, 255, 0.08)`,
+                borderRadius: '16px',
+                padding: '20px',
                 display: 'flex',
-                alignItems: 'flex-start',
-                gap: '10px',
-                textAlign: 'left',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
                 cursor: 'pointer',
-                transition: 'all 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: isActive ? `0 4px 20px ${item.glow}` : 'none',
+                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
                 position: 'relative',
                 overflow: 'hidden'
               }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-3px)';
+                e.currentTarget.style.borderColor = game.color;
+                e.currentTarget.style.boxShadow = `0 12px 30px ${game.glow}`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
+                e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.4)';
+              }}
             >
-              <div style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: '10px',
-                background: isActive ? `${item.color}22` : 'rgba(255, 255, 255, 0.04)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexShrink: 0
-              }}>
-                <IconComponent size={20} color={item.color} />
-              </div>
+              {/* Card Header */}
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+                  <div style={{
+                    width: '48px',
+                    height: '48px',
+                    borderRadius: '12px',
+                    background: `${game.color}22`,
+                    border: `1px solid ${game.color}44`,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}>
+                    <IconComponent size={24} color={game.color} />
+                  </div>
 
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                  <span style={{ fontSize: '14px', fontWeight: '800', color: '#f8fafc' }}>
-                    {item.title}
-                  </span>
-                  {isDoneToday && (
-                    <span title="Completed Today" style={{ display: 'inline-flex' }}>
-                      <CheckCircle2 size={13} color="#10b981" />
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <span style={{
+                      fontSize: '11px',
+                      fontWeight: '700',
+                      color: game.color,
+                      background: `${game.color}15`,
+                      border: `1px solid ${game.color}33`,
+                      padding: '3px 9px',
+                      borderRadius: '6px'
+                    }}>
+                      {game.badge}
                     </span>
-                  )}
+                    {isDoneToday && (
+                      <span title="Completed Today" style={{ display: 'inline-flex' }}>
+                        <CheckCircle2 size={16} color="#10b981" />
+                      </span>
+                    )}
+                  </div>
                 </div>
-                <div style={{ fontSize: '11px', color: '#94a3b8', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {item.subtitle}
+
+                {/* Title & Subtitle */}
+                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: '0 0 4px 0' }}>
+                  {game.title}
+                </h3>
+                <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '12px' }}>
+                  {game.subtitle}
                 </div>
+
+                {/* Description */}
+                <p style={{ fontSize: '12px', color: '#cbd5e1', lineHeight: '1.6', margin: '0 0 18px 0' }}>
+                  {game.description}
+                </p>
               </div>
 
-              {isActive && (
-                <span style={{
-                  position: 'absolute',
-                  top: 0,
-                  right: 0,
-                  width: '5px',
-                  height: '100%',
-                  background: item.color
-                }} />
-              )}
-            </button>
+              {/* Action Button */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '14px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
+                <span style={{ fontSize: '11px', color: '#64748b' }}>
+                  {isDoneToday ? 'Completed today' : 'Ready to play'}
+                </span>
+
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setActiveGame(game.id);
+                    soundFx.playTap();
+                  }}
+                  style={{
+                    background: `linear-gradient(135deg, ${game.color} 0%, #0369a1 100%)`,
+                    color: '#ffffff',
+                    fontWeight: '700',
+                    fontSize: '12px',
+                    padding: '8px 16px',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    cursor: 'pointer',
+                    boxShadow: `0 4px 12px ${game.glow}`
+                  }}
+                >
+                  <Play size={13} fill="#ffffff" /> Open Game
+                </button>
+              </div>
+            </div>
           );
         })}
       </div>
 
-      {/* Active Puzzle Screen Container */}
-      <div style={{
-        background: '#070b14',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '16px',
-        padding: '20px 16px',
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.6)'
-      }}>
-        {activeGame === 'sudoku' && <SudokuGame onPuzzleComplete={handlePuzzleComplete} />}
-        {activeGame === 'queens' && <QueensGame onPuzzleComplete={handlePuzzleComplete} />}
-        {activeGame === 'memory' && <MemoryMatrixGame onPuzzleComplete={handlePuzzleComplete} />}
-        {activeGame === 'wordle' && <WordleGame onPuzzleComplete={handlePuzzleComplete} />}
-        {activeGame === 'pinpoint' && <PinpointGame onPuzzleComplete={handlePuzzleComplete} />}
-        {activeGame === 'tango' && <TangoGame onPuzzleComplete={handlePuzzleComplete} />}
-        {activeGame === 'crossclimb' && <CrossclimbGame onPuzzleComplete={handlePuzzleComplete} />}
-      </div>
-
-      {/* Share / Results Modal */}
-      {shareModalOpen && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'rgba(3, 7, 18, 0.85)',
-          backdropFilter: 'blur(8px)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          zIndex: 1000,
-          padding: '16px'
-        }}>
-          <div style={{
-            background: '#0c1220',
-            border: '1px solid rgba(99, 102, 241, 0.4)',
-            boxShadow: '0 0 40px rgba(99, 102, 241, 0.25)',
-            borderRadius: '16px',
-            padding: '24px',
-            maxWidth: '420px',
-            width: '100%'
-          }}>
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <Sparkles size={20} color="#818cf8" />
-                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
-                  Share Your Daily Score
-                </h3>
-              </div>
-              <button
-                onClick={() => setShareModalOpen(false)}
-                style={{ background: 'none', color: '#94a3b8', fontSize: '20px', padding: '4px', cursor: 'pointer' }}
-              >
-                ✕
-              </button>
-            </div>
-
-            <textarea
-              readOnly
-              value={generateShareText()}
-              rows={12}
-              style={{
-                background: '#070b14',
-                color: '#cbd5e1',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                borderRadius: '10px',
-                padding: '12px',
-                fontSize: '13px',
-                fontFamily: 'monospace',
-                resize: 'none',
-                width: '100%',
-                marginBottom: '16px'
-              }}
-            />
-
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button
-                onClick={handleCopyShare}
-                style={{
-                  flex: 1,
-                  background: copied
-                    ? 'linear-gradient(135deg, #10b981 0%, #059669 100%)'
-                    : 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)',
-                  color: '#ffffff',
-                  fontWeight: '700',
-                  padding: '12px',
-                  borderRadius: '10px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '8px'
-                }}
-              >
-                {copied ? <CheckCircle2 size={16} /> : <Share2 size={16} />}
-                {copied ? 'Copied to Clipboard!' : 'Copy Results Text'}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Share Results Modal */}
+      {renderShareModal()}
     </div>
   );
 }
