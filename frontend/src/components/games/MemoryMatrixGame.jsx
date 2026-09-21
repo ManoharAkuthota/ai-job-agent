@@ -300,6 +300,7 @@ export default function MemoryMatrixGame({ onPuzzleComplete }) {
                 return (
                   <button
                     key={idx}
+                    className="game-touch-key"
                     onClick={() => handleTileClick(idx)}
                     disabled={phase !== 'RECALL' || isSelected || isWrong}
                     style={{

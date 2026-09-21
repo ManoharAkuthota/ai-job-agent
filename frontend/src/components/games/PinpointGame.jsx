@@ -345,42 +345,45 @@ export default function PinpointGame({ onPuzzleComplete }) {
 
       {/* Guess Input & Controls */}
       {gameStatus === 'PLAYING' ? (
-        <form onSubmit={handleGuessSubmit} style={{ marginBottom: '20px' }}>
+        <form onSubmit={handleGuessSubmit} style={{ marginBottom: '10px', width: '100%' }}>
           <div style={{ display: 'flex', gap: '8px' }}>
             <input
               type="text"
               value={inputVal}
               onChange={(e) => setInputVal(e.target.value)}
-              placeholder="Guess the secret theme (e.g. React Hooks, DevOps)..."
-              autoFocus
+              placeholder="Guess the secret tech theme..."
               style={{
                 flex: 1,
                 background: '#0c1220',
                 border: '1px solid rgba(255, 255, 255, 0.15)',
                 color: '#f8fafc',
-                padding: '12px 14px',
-                borderRadius: '10px',
-                fontSize: '14px'
+                padding: '10px 12px',
+                borderRadius: '8px',
+                fontSize: '13px',
+                minWidth: 0
               }}
             />
             <button
               type="submit"
               disabled={!inputVal.trim()}
+              className="game-touch-key"
               style={{
                 background: inputVal.trim()
                   ? 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)'
                   : '#1e293b',
                 color: inputVal.trim() ? '#030712' : '#64748b',
                 fontWeight: '700',
-                padding: '0 18px',
-                borderRadius: '10px',
+                padding: '0 16px',
+                borderRadius: '8px',
                 cursor: inputVal.trim() ? 'pointer' : 'not-allowed',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '6px'
+                gap: '5px',
+                fontSize: '13px',
+                flexShrink: 0
               }}
             >
-              Guess <ArrowRight size={16} />
+              Guess <ArrowRight size={15} />
             </button>
           </div>
 

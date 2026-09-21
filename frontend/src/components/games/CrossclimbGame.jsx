@@ -324,23 +324,25 @@ export default function CrossclimbGame({ onPuzzleComplete }) {
                   return (
                     <button
                       key={key}
+                      className="game-touch-key"
                       onClick={() => handleKeyInput(key)}
                       style={{
                         background: '#111827',
                         color: '#f8fafc',
                         border: '1px solid rgba(255, 255, 255, 0.1)',
                         borderRadius: '5px',
-                        padding: isBack ? '7px 8px' : '7px 9px',
-                        fontSize: isBack ? '10px' : '13px',
+                        padding: isBack ? '9px 4px' : '9px 0',
+                        fontSize: isBack ? '11px' : '13px',
                         fontWeight: '700',
                         cursor: 'pointer',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        minWidth: isBack ? '46px' : '26px',
-                        flex: isBack ? '1.4' : '1',
-                        maxWidth: isBack ? '56px' : '36px',
-                        transition: 'all 0.1s ease'
+                        minWidth: 0,
+                        flex: isBack ? '1.5' : '1',
+                        maxWidth: isBack ? '60px' : '38px',
+                        transition: 'all 0.1s ease',
+                        boxSizing: 'border-box'
                       }}
                     >
                       {isBack ? <Delete size={14} /> : key}

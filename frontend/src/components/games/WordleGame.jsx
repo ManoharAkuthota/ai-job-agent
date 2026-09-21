@@ -326,23 +326,25 @@ export default function WordleGame({ onPuzzleComplete }) {
               return (
                 <button
                   key={key}
+                  className="game-touch-key"
                   onClick={() => handleInputChar(key)}
                   style={{
                     background: keyBg,
                     color: keyColor,
                     border: '1px solid rgba(255, 255, 255, 0.08)',
                     borderRadius: '5px',
-                    padding: isSpecial ? '8px 7px' : '8px 9px',
-                    fontSize: isSpecial ? '10px' : '13px',
+                    padding: isSpecial ? '10px 4px' : '10px 0',
+                    fontSize: isSpecial ? '11px' : '13px',
                     fontWeight: '700',
                     cursor: 'pointer',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
-                    minWidth: isSpecial ? '46px' : '26px',
-                    flex: isSpecial ? '1.4' : '1',
-                    maxWidth: isSpecial ? '58px' : '38px',
-                    transition: 'all 0.1s ease'
+                    minWidth: 0,
+                    flex: isSpecial ? '1.5' : '1',
+                    maxWidth: isSpecial ? '60px' : '38px',
+                    transition: 'all 0.1s ease',
+                    boxSizing: 'border-box'
                   }}
                 >
                   {key === 'BACKSPACE' ? <Delete size={14} /> : key}

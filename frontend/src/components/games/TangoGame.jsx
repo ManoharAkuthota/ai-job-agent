@@ -422,6 +422,7 @@ export default function TangoGame({ onPuzzleComplete }) {
                 return (
                   <div key={`${r}-${c}`} style={{ position: 'relative' }}>
                     <button
+                      className="game-touch-key"
                       onClick={() => handleCellClick(r, c)}
                       disabled={isLocked || isWon}
                       style={{

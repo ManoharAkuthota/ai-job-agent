@@ -520,10 +520,13 @@ export default function GamesHub({ onNavigate }) {
           justifyContent: 'space-between',
           background: '#0a0f1d',
           borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
-          padding: '8px 16px',
+          paddingTop: 'calc(6px + env(safe-area-inset-top, 0px))',
+          paddingBottom: '6px',
+          paddingLeft: '10px',
+          paddingRight: '10px',
           flexShrink: 0,
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.5)',
-          gap: '10px'
+          gap: '8px'
         }}>
           {/* Back to Lobby Button */}
           <button
@@ -535,38 +538,42 @@ export default function GamesHub({ onNavigate }) {
               background: '#111827',
               border: '1px solid rgba(255, 255, 255, 0.12)',
               color: '#f8fafc',
-              padding: '6px 12px',
+              padding: '6px 10px',
               borderRadius: '8px',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
-              fontSize: '13px',
+              gap: '5px',
+              fontSize: '12px',
               fontWeight: '700',
               cursor: 'pointer',
               whiteSpace: 'nowrap'
             }}
           >
-            <ArrowLeft size={16} /> <span>All Games</span>
+            <ArrowLeft size={16} />
+            <span className="hide-on-mobile">All Games</span>
+            <span className="show-on-mobile">Lobby</span>
           </button>
 
           {/* Center Title Pill */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
             <div style={{
-              width: '28px',
-              height: '28px',
-              borderRadius: '7px',
+              width: '26px',
+              height: '26px',
+              borderRadius: '6px',
               background: `${currentGameConfig.color}22`,
+              border: `1px solid ${currentGameConfig.color}44`,
               display: 'flex',
               alignItems: 'center',
-              justifyContent: 'center'
+              justifyContent: 'center',
+              flexShrink: 0
             }}>
-              <IconComponent size={16} color={currentGameConfig.color} />
+              <IconComponent size={15} color={currentGameConfig.color} />
             </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <span style={{ fontSize: '15px', fontWeight: '800', color: '#f8fafc', whiteSpace: 'nowrap' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px', overflow: 'hidden' }}>
+              <span style={{ fontSize: '14px', fontWeight: '800', color: '#f8fafc', whiteSpace: 'nowrap', textOverflow: 'ellipsis', overflow: 'hidden' }}>
                 {currentGameConfig.title}
               </span>
-              <span style={{
+              <span className="hide-on-mobile" style={{
                 fontSize: '10px',
                 color: currentGameConfig.color,
                 background: `${currentGameConfig.color}18`,
@@ -582,25 +589,26 @@ export default function GamesHub({ onNavigate }) {
           </div>
 
           {/* Right Action Controls (Rules, Sound, Share) */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '5px', flexShrink: 0 }}>
             <button
               onClick={() => setRulesModalOpen(true)}
               title="How to Play / Rules"
               style={{
-                background: 'rgba(56, 189, 248, 0.1)',
+                background: 'rgba(56, 189, 248, 0.12)',
                 border: '1px solid rgba(56, 189, 248, 0.3)',
                 color: '#38bdf8',
-                padding: '5px 10px',
-                borderRadius: '8px',
+                padding: '5px 8px',
+                borderRadius: '7px',
                 display: 'flex',
                 alignItems: 'center',
-                gap: '5px',
+                gap: '4px',
                 fontSize: '12px',
                 fontWeight: '700',
                 cursor: 'pointer'
               }}
             >
-              <HelpCircle size={15} /> <span>Rules</span>
+              <HelpCircle size={14} />
+              <span className="hide-on-mobile">Rules</span>
             </button>
 
             <button
@@ -610,16 +618,16 @@ export default function GamesHub({ onNavigate }) {
                 background: '#111827',
                 border: '1px solid rgba(255, 255, 255, 0.12)',
                 color: muted ? '#64748b' : '#38bdf8',
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
+                width: '30px',
+                height: '30px',
+                borderRadius: '7px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer'
               }}
             >
-              {muted ? <VolumeX size={15} /> : <Volume2 size={15} />}
+              {muted ? <VolumeX size={14} /> : <Volume2 size={14} />}
             </button>
 
             <button
@@ -629,41 +637,51 @@ export default function GamesHub({ onNavigate }) {
                 background: '#111827',
                 border: '1px solid rgba(255, 255, 255, 0.12)',
                 color: '#f8fafc',
-                width: '32px',
-                height: '32px',
-                borderRadius: '8px',
+                width: '30px',
+                height: '30px',
+                borderRadius: '7px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer'
               }}
             >
-              <Share2 size={15} />
+              <Share2 size={14} />
             </button>
           </div>
         </div>
 
-        {/* Dedicated Game Canvas Arena - STRICTLY NON-SCROLLABLE */}
+        {/* Dedicated Game Canvas Arena - RESPONSIVE & MOBILE-SAFE */}
         <div style={{
           flex: 1,
           width: '100%',
-          maxWidth: '800px',
+          maxWidth: '740px',
           margin: '0 auto',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          overflow: 'hidden',
-          padding: '6px 12px',
+          overflowY: 'auto',
+          overflowX: 'hidden',
+          WebkitOverflowScrolling: 'touch',
+          padding: '6px 10px calc(8px + env(safe-area-inset-bottom, 0px)) 10px',
           boxSizing: 'border-box'
         }}>
-          {activeGame === 'sudoku' && <SudokuGame onPuzzleComplete={handlePuzzleComplete} />}
-          {activeGame === 'queens' && <QueensGame onPuzzleComplete={handlePuzzleComplete} />}
-          {activeGame === 'memory' && <MemoryMatrixGame onPuzzleComplete={handlePuzzleComplete} />}
-          {activeGame === 'wordle' && <WordleGame onPuzzleComplete={handlePuzzleComplete} />}
-          {activeGame === 'pinpoint' && <PinpointGame onPuzzleComplete={handlePuzzleComplete} />}
-          {activeGame === 'tango' && <TangoGame onPuzzleComplete={handlePuzzleComplete} />}
-          {activeGame === 'crossclimb' && <CrossclimbGame onPuzzleComplete={handlePuzzleComplete} />}
+          <div style={{
+            margin: 'auto 0',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center'
+          }}>
+            {activeGame === 'sudoku' && <SudokuGame onPuzzleComplete={handlePuzzleComplete} />}
+            {activeGame === 'queens' && <QueensGame onPuzzleComplete={handlePuzzleComplete} />}
+            {activeGame === 'memory' && <MemoryMatrixGame onPuzzleComplete={handlePuzzleComplete} />}
+            {activeGame === 'wordle' && <WordleGame onPuzzleComplete={handlePuzzleComplete} />}
+            {activeGame === 'pinpoint' && <PinpointGame onPuzzleComplete={handlePuzzleComplete} />}
+            {activeGame === 'tango' && <TangoGame onPuzzleComplete={handlePuzzleComplete} />}
+            {activeGame === 'crossclimb' && <CrossclimbGame onPuzzleComplete={handlePuzzleComplete} />}
+          </div>
         </div>
 
         {/* Share Results Modal */}
@@ -679,50 +697,39 @@ export default function GamesHub({ onNavigate }) {
   // SCREEN 1: ALL GAMES LOBBY & CATALOG SCREEN
   // --------------------------------------------------------------------------
   return (
-    <div style={{ maxWidth: '1080px', margin: '0 auto', paddingBottom: '60px' }}>
+    <div className="games-hub-wrapper">
       {/* Lobby Hero Banner & Stats */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        flexWrap: 'wrap',
-        gap: '16px',
-        background: 'linear-gradient(135deg, #090e1a 0%, #111827 100%)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
-        borderRadius: '16px',
-        padding: '22px 26px',
-        marginBottom: '24px',
-        boxShadow: '0 10px 30px rgba(0, 0, 0, 0.5)'
-      }}>
+      <div className="games-hero-banner">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px', flexWrap: 'wrap' }}>
             <span style={{
-              background: 'linear-gradient(135deg, #6366f1, #38bdf8)',
+              background: 'linear-gradient(135deg, #6366f1 0%, #38bdf8 100%)',
               padding: '4px 12px',
               borderRadius: '999px',
               fontSize: '11px',
               fontWeight: '800',
               color: '#ffffff',
               letterSpacing: '0.06em',
-              textTransform: 'uppercase'
+              textTransform: 'uppercase',
+              boxShadow: '0 0 12px rgba(99, 102, 241, 0.5)'
             }}>
-              Brain & Mind Arcade
+              ⚡ Daily Cognitive Arcade
             </span>
             <span style={{ fontSize: '12px', color: '#94a3b8' }}>
-              Select a game to open full screen
+              Select any game to enter full screen
             </span>
           </div>
 
-          <h1 style={{ fontSize: '26px', fontWeight: '900', color: '#f8fafc', margin: 0, letterSpacing: '-0.02em' }}>
-            Brain Puzzles & Games
+          <h1 style={{ fontSize: 'clamp(20px, 4vw, 28px)', fontWeight: '900', color: '#f8fafc', margin: '0 0 6px 0', letterSpacing: '-0.02em' }}>
+            Brain Puzzles & Logic Games
           </h1>
-          <p style={{ fontSize: '13px', color: '#94a3b8', margin: '4px 0 0 0', maxWidth: '600px' }}>
-            Sharpen cognitive stamina, test working memory, and conquer daily algorithmic logic challenges.
+          <p style={{ fontSize: '13px', color: '#94a3b8', margin: 0, maxWidth: '600px', lineHeight: '1.5' }}>
+            Sharpen mental stamina, memory retention, and algorithm intuition with daily brain challenges.
           </p>
         </div>
 
         {/* Global Stats & Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           {/* Daily Streak */}
           <div style={{
             display: 'flex',
@@ -731,14 +738,14 @@ export default function GamesHub({ onNavigate }) {
             background: 'rgba(245, 158, 11, 0.12)',
             border: '1px solid rgba(245, 158, 11, 0.3)',
             borderRadius: '10px',
-            padding: '8px 14px'
+            padding: '7px 12px'
           }} title="Daily Puzzle Streak">
-            <Flame size={20} color="#f59e0b" style={{ filter: 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.8))' }} />
+            <Flame size={18} color="#f59e0b" style={{ filter: 'drop-shadow(0 0 6px rgba(245, 158, 11, 0.8))' }} />
             <div>
-              <div style={{ fontSize: '16px', fontWeight: '800', color: '#fbbf24', lineHeight: 1 }}>
+              <div style={{ fontSize: '15px', fontWeight: '800', color: '#fbbf24', lineHeight: 1 }}>
                 {stats.streak}
               </div>
-              <div style={{ fontSize: '10px', color: '#d97706', textTransform: 'uppercase', fontWeight: '700' }}>
+              <div style={{ fontSize: '9px', color: '#d97706', textTransform: 'uppercase', fontWeight: '700' }}>
                 Streak
               </div>
             </div>
@@ -752,14 +759,14 @@ export default function GamesHub({ onNavigate }) {
             background: 'rgba(16, 185, 129, 0.12)',
             border: '1px solid rgba(16, 185, 129, 0.3)',
             borderRadius: '10px',
-            padding: '8px 14px'
+            padding: '7px 12px'
           }} title="Total Completed Puzzles">
-            <Trophy size={20} color="#10b981" style={{ filter: 'drop-shadow(0 0 6px rgba(16, 185, 129, 0.8))' }} />
+            <Trophy size={18} color="#10b981" style={{ filter: 'drop-shadow(0 0 6px rgba(16, 185, 129, 0.8))' }} />
             <div>
-              <div style={{ fontSize: '16px', fontWeight: '800', color: '#10b981', lineHeight: 1 }}>
+              <div style={{ fontSize: '15px', fontWeight: '800', color: '#10b981', lineHeight: 1 }}>
                 {stats.totalSolved}
               </div>
-              <div style={{ fontSize: '10px', color: '#059669', textTransform: 'uppercase', fontWeight: '700' }}>
+              <div style={{ fontSize: '9px', color: '#059669', textTransform: 'uppercase', fontWeight: '700' }}>
                 Solved
               </div>
             </div>
@@ -773,8 +780,8 @@ export default function GamesHub({ onNavigate }) {
               background: '#111827',
               border: '1px solid rgba(255, 255, 255, 0.12)',
               color: muted ? '#64748b' : '#38bdf8',
-              width: '40px',
-              height: '40px',
+              width: '38px',
+              height: '38px',
               borderRadius: '10px',
               display: 'flex',
               alignItems: 'center',
@@ -782,7 +789,7 @@ export default function GamesHub({ onNavigate }) {
               cursor: 'pointer'
             }}
           >
-            {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            {muted ? <VolumeX size={17} /> : <Volume2 size={17} />}
           </button>
 
           {/* Share */}
@@ -793,8 +800,8 @@ export default function GamesHub({ onNavigate }) {
               background: '#111827',
               border: '1px solid rgba(255, 255, 255, 0.12)',
               color: '#f8fafc',
-              width: '40px',
-              height: '40px',
+              width: '38px',
+              height: '38px',
               borderRadius: '10px',
               display: 'flex',
               alignItems: 'center',
@@ -802,7 +809,7 @@ export default function GamesHub({ onNavigate }) {
               cursor: 'pointer'
             }}
           >
-            <Share2 size={18} />
+            <Share2 size={17} />
           </button>
         </div>
       </div>
@@ -812,8 +819,10 @@ export default function GamesHub({ onNavigate }) {
         display: 'flex',
         gap: '8px',
         overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
         paddingBottom: '8px',
-        marginBottom: '20px'
+        marginBottom: '18px',
+        scrollbarWidth: 'none'
       }}>
         {[
           { id: 'ALL', label: 'All Puzzles (7)' },
@@ -831,13 +840,14 @@ export default function GamesHub({ onNavigate }) {
               background: categoryFilter === cat.id ? '#6366f1' : '#0c1220',
               color: categoryFilter === cat.id ? '#ffffff' : '#94a3b8',
               border: `1px solid ${categoryFilter === cat.id ? '#818cf8' : 'rgba(255, 255, 255, 0.08)'}`,
-              padding: '7px 16px',
+              padding: '7px 15px',
               borderRadius: '999px',
-              fontSize: '13px',
+              fontSize: '12px',
               fontWeight: '700',
               cursor: 'pointer',
               whiteSpace: 'nowrap',
-              transition: 'all 0.15s ease'
+              transition: 'all 0.15s ease',
+              boxShadow: categoryFilter === cat.id ? '0 0 12px rgba(99, 102, 241, 0.4)' : 'none'
             }}
           >
             {cat.label}
@@ -846,11 +856,7 @@ export default function GamesHub({ onNavigate }) {
       </div>
 
       {/* All Game Cards Grid (Catalog) */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(310px, 1fr))',
-        gap: '18px'
-      }}>
+      <div className="games-grid">
         {filteredGames.map(game => {
           const IconComponent = game.icon;
           const isDoneToday = stats.completedToday?.[game.id];
@@ -858,89 +864,75 @@ export default function GamesHub({ onNavigate }) {
           return (
             <div
               key={game.id}
+              className="game-catalog-card"
               onClick={() => {
                 setActiveGame(game.id);
                 soundFx.playTap();
               }}
-              style={{
-                background: '#0c1220',
-                border: `1px solid rgba(255, 255, 255, 0.08)`,
-                borderRadius: '16px',
-                padding: '20px',
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                cursor: 'pointer',
-                transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4)',
-                position: 'relative',
-                overflow: 'hidden'
-              }}
               onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-3px)';
                 e.currentTarget.style.borderColor = game.color;
                 e.currentTarget.style.boxShadow = `0 12px 30px ${game.glow}`;
               }}
               onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0)';
                 e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)';
                 e.currentTarget.style.boxShadow = '0 8px 24px rgba(0, 0, 0, 0.4)';
               }}
             >
               {/* Card Header */}
               <div>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                   <div style={{
-                    width: '48px',
-                    height: '48px',
+                    width: '44px',
+                    height: '44px',
                     borderRadius: '12px',
-                    background: `${game.color}22`,
+                    background: `${game.color}20`,
                     border: `1px solid ${game.color}44`,
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'center'
+                    justifyContent: 'center',
+                    boxShadow: `0 0 12px ${game.glow}`
                   }}>
-                    <IconComponent size={24} color={game.color} />
+                    <IconComponent size={22} color={game.color} />
                   </div>
 
                   <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
                     <span style={{
-                      fontSize: '11px',
+                      fontSize: '10px',
                       fontWeight: '700',
                       color: game.color,
                       background: `${game.color}15`,
                       border: `1px solid ${game.color}33`,
-                      padding: '3px 9px',
+                      padding: '3px 8px',
                       borderRadius: '6px'
                     }}>
                       {game.badge}
                     </span>
                     {isDoneToday && (
-                      <span title="Completed Today" style={{ display: 'inline-flex' }}>
-                        <CheckCircle2 size={16} color="#10b981" />
+                      <span title="Completed Today" style={{ display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'rgba(16, 185, 129, 0.15)', border: '1px solid #10b981', padding: '2px 6px', borderRadius: '5px', fontSize: '10px', color: '#10b981', fontWeight: '700' }}>
+                        <CheckCircle2 size={12} color="#10b981" /> Done
                       </span>
                     )}
                   </div>
                 </div>
 
                 {/* Title & Subtitle */}
-                <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: '0 0 4px 0' }}>
+                <h3 style={{ fontSize: '17px', fontWeight: '800', color: '#f8fafc', margin: '0 0 3px 0' }}>
                   {game.title}
                 </h3>
-                <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '12px' }}>
+                <div style={{ fontSize: '12px', color: '#94a3b8', marginBottom: '10px' }}>
                   {game.subtitle}
                 </div>
 
                 {/* Description */}
-                <p style={{ fontSize: '12px', color: '#cbd5e1', lineHeight: '1.6', margin: '0 0 18px 0' }}>
+                <p style={{ fontSize: '12px', color: '#cbd5e1', lineHeight: '1.5', margin: '0 0 16px 0' }}>
                   {game.description}
                 </p>
               </div>
 
               {/* Action Button */}
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '14px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '12px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <span style={{ fontSize: '11px', color: '#64748b' }}>
-                  {isDoneToday ? 'Completed today' : 'Ready to play'}
+                  {isDoneToday ? 'Completed today' : 'Daily puzzle ready'}
                 </span>
 
                 <button
@@ -954,16 +946,17 @@ export default function GamesHub({ onNavigate }) {
                     color: '#ffffff',
                     fontWeight: '700',
                     fontSize: '12px',
-                    padding: '8px 16px',
+                    padding: '7px 14px',
                     borderRadius: '8px',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '6px',
+                    gap: '5px',
                     cursor: 'pointer',
-                    boxShadow: `0 4px 12px ${game.glow}`
+                    boxShadow: `0 4px 12px ${game.glow}`,
+                    border: 'none'
                   }}
                 >
-                  <Play size={13} fill="#ffffff" /> Open Game
+                  <Play size={12} fill="#ffffff" /> Open Game
                 </button>
               </div>
             </div>

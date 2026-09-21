@@ -627,7 +627,8 @@ export default function SudokuGame({ onPuzzleComplete }) {
         gridTemplateColumns: `repeat(${size}, 1fr)`,
         gap: '4px',
         marginBottom: '8px',
-        width: '100%'
+        width: '100%',
+        maxWidth: '380px'
       }}>
         {Array.from({ length: size }).map((_, idx) => {
           const num = idx + 1;
@@ -637,6 +638,7 @@ export default function SudokuGame({ onPuzzleComplete }) {
           return (
             <button
               key={num}
+              className="game-touch-key"
               onClick={() => handleDigitInput(num)}
               disabled={isDone || isWon}
               style={{
@@ -651,7 +653,9 @@ export default function SudokuGame({ onPuzzleComplete }) {
                 justifyContent: 'center',
                 cursor: isDone || isWon ? 'default' : 'pointer',
                 transition: 'all 0.15s ease',
-                position: 'relative'
+                position: 'relative',
+                minWidth: 0,
+                boxSizing: 'border-box'
               }}
             >
               <span style={{ fontSize: '15px', fontWeight: '800', lineHeight: 1 }}>{num}</span>

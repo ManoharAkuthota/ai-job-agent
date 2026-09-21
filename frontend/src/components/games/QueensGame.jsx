@@ -475,6 +475,7 @@ export default function QueensGame({ onPuzzleComplete }) {
               return (
                 <button
                   key={`${r}-${c}`}
+                  className="game-touch-key"
                   onClick={() => handleCellClick(r, c)}
                   onContextMenu={(e) => handleCellRightClick(e, r, c)}
                   style={{
