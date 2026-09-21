@@ -1,0 +1,562 @@
+import React, { useState, useEffect } from 'react';
+import { Target, HelpCircle, Sparkles, CheckCircle2, XCircle, ArrowRight, Trophy, Lock, Unlock, RotateCcw } from 'lucide-react';
+import { soundFx } from '../../utils/audioEffects';
+
+// Rich tech & engineering themes for Pinpoint
+const PINPOINT_PUZZLES = [
+  {
+    id: 'pinpoint_daily_1',
+    category: 'Containerization & DevOps',
+    aliases: ['container', 'containers', 'containerization', 'devops', 'docker', 'kubernetes', 'container orchestration'],
+    clues: [
+      { text: 'Docker', hint: 'Pioneered container standard' },
+      { text: 'Kubernetes', hint: 'The cloud orchestration giant' },
+      { text: 'Podman', hint: 'Rootless container alternative' },
+      { text: 'Containerd', hint: 'Core OCI industry runtime' },
+      { text: 'Helm Charts', hint: 'Package manager for cloud manifests' }
+    ],
+    explanation: 'All clues represent modern Containerization and DevOps orchestration technologies powering distributed cloud systems.'
+  },
+  {
+    id: 'pinpoint_react_hooks',
+    category: 'React Hooks',
+    aliases: ['react hooks', 'hooks', 'react hook', 'react state hooks', 'react built-in hooks'],
+    clues: [
+      { text: 'useState', hint: 'Local component state manager' },
+      { text: 'useEffect', hint: 'Handles side effects & subscriptions' },
+      { text: 'useMemo', hint: 'Caches expensive computation results' },
+      { text: 'useCallback', hint: 'Preserves function references across re-renders' },
+      { text: 'useRef', hint: 'Persists mutable values without re-rendering' }
+    ],
+    explanation: 'Introduced in React 16.8, React Hooks allow functional components to manage state, lifecycle side-effects, and memoization.'
+  },
+  {
+    id: 'pinpoint_sql_clauses',
+    category: 'SQL Clauses',
+    aliases: ['sql', 'sql clauses', 'sql keywords', 'sql statements', 'sql query clauses', 'database query clauses'],
+    clues: [
+      { text: 'SELECT', hint: 'Retrieves column attributes from tables' },
+      { text: 'INNER JOIN', hint: 'Combines records matching predicates' },
+      { text: 'GROUP BY', hint: 'Aggregates rows sharing common values' },
+      { text: 'HAVING', hint: 'Filters aggregated grouping results' },
+      { text: 'ORDER BY', hint: 'Sorts final result set ascending or descending' }
+    ],
+    explanation: 'Standard SQL query clauses executed logically from FROM to SELECT and ORDER BY across relational database management systems.'
+  },
+  {
+    id: 'pinpoint_http_methods',
+    category: 'HTTP Request Methods',
+    aliases: ['http methods', 'http verbs', 'rest verbs', 'http request methods', 'rest methods'],
+    clues: [
+      { text: 'GET', hint: 'Safe & idempotent resource retrieval' },
+      { text: 'POST', hint: 'Submits payload data to create entities' },
+      { text: 'PUT', hint: 'Idempotently replaces target resource representation' },
+      { text: 'PATCH', hint: 'Applies partial modifications to a resource' },
+      { text: 'DELETE', hint: 'Removes designated resource URI' }
+    ],
+    explanation: 'Core HTTP/1.1 and HTTP/2 request methods defining CRUD semantics for web APIs and RESTful architectures.'
+  },
+  {
+    id: 'pinpoint_cloud_aws',
+    category: 'AWS Cloud Services',
+    aliases: ['aws', 'amazon web services', 'aws services', 'cloud services', 'aws cloud'],
+    clues: [
+      { text: 'Amazon S3', hint: 'Highly scalable blob object storage' },
+      { text: 'Amazon EC2', hint: 'Elastic virtual compute instances' },
+      { text: 'AWS Lambda', hint: 'Serverless event-driven compute engine' },
+      { text: 'Amazon DynamoDB', hint: 'Ultra-fast managed NoSQL key-value database' },
+      { text: 'Amazon CloudFront', hint: 'Global low-latency content delivery network (CDN)' }
+    ],
+    explanation: 'Foundational cloud services in the Amazon Web Services ecosystem used globally to build resilient, distributed systems.'
+  },
+  {
+    id: 'pinpoint_agile_rituals',
+    category: 'Agile & Scrum Ceremonies',
+    aliases: ['agile', 'scrum', 'agile ceremonies', 'scrum ceremonies', 'agile rituals', 'scrum rituals', 'sprint ceremonies'],
+    clues: [
+      { text: 'Daily Standup', hint: '15-minute sync on blockers and daily progress' },
+      { text: 'Sprint Planning', hint: 'Defining sprint backlog & commitment goals' },
+      { text: 'Sprint Review', hint: 'Demonstrating working software to stakeholders' },
+      { text: 'Sprint Retrospective', hint: 'Inspect and adapt team processes' },
+      { text: 'Backlog Refinement', hint: 'Decomposing user stories & estimating points' }
+    ],
+    explanation: 'The five fundamental Scrum events designed to enable transparency, inspection, and adaptation in iterative product development.'
+  }
+];
+
+export default function PinpointGame({ onPuzzleComplete }) {
+  const [puzzleIndex, setPuzzleIndex] = useState(0);
+  const currentPuzzle = PINPOINT_PUZZLES[puzzleIndex];
+
+  const [revealedCount, setRevealedCount] = useState(1);
+  const [guesses, setGuesses] = useState([]);
+  const [inputVal, setInputVal] = useState('');
+  const [gameStatus, setGameStatus] = useState('PLAYING'); // 'PLAYING' | 'WON' | 'LOST'
+  const [feedbackMsg, setFeedbackMsg] = useState(null);
+
+  useEffect(() => {
+    setRevealedCount(1);
+    setGuesses([]);
+    setInputVal('');
+    setGameStatus('PLAYING');
+    setFeedbackMsg(null);
+  }, [puzzleIndex]);
+
+  // Clean and normalize strings for fuzzy comparison
+  const normalize = (str) => {
+    return str
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, '')
+      .trim();
+  };
+
+  const checkAnswerMatch = (guess) => {
+    const normGuess = normalize(guess);
+    const normCategory = normalize(currentPuzzle.category);
+
+    if (normGuess === normCategory) return true;
+
+    // Check alias list
+    for (const alias of currentPuzzle.aliases) {
+      const normAlias = normalize(alias);
+      if (normGuess === normAlias) return true;
+      // If guess contains core keyword (e.g. "hooks" when answer is "react hooks")
+      if (normGuess.length >= 4 && normAlias.includes(normGuess)) return true;
+      if (normAlias.length >= 4 && normGuess.includes(normAlias)) return true;
+    }
+
+    return false;
+  };
+
+  const handleGuessSubmit = (e) => {
+    e.preventDefault();
+    if (!inputVal.trim() || gameStatus !== 'PLAYING') return;
+
+    const trimmed = inputVal.trim();
+    const isCorrect = checkAnswerMatch(trimmed);
+
+    const newGuesses = [...guesses, { text: trimmed, correct: isCorrect }];
+    setGuesses(newGuesses);
+    setInputVal('');
+
+    if (isCorrect) {
+      setGameStatus('WON');
+      soundFx.playWin();
+      if (onPuzzleComplete) {
+        onPuzzleComplete({
+          game: 'pinpoint',
+          puzzleId: currentPuzzle.id,
+          cluesUsed: revealedCount,
+          score: (6 - revealedCount) * 100
+        });
+      }
+    } else {
+      soundFx.playError();
+      setFeedbackMsg(`"${trimmed}" is not the secret theme.`);
+      setTimeout(() => setFeedbackMsg(null), 3000);
+
+      // Reveal next clue if available
+      if (revealedCount < 5) {
+        setRevealedCount(r => r + 1);
+      } else {
+        // Failed after 5 clues
+        setGameStatus('LOST');
+      }
+    }
+  };
+
+  const handleRevealNextClue = () => {
+    if (revealedCount < 5 && gameStatus === 'PLAYING') {
+      soundFx.playTap();
+      setRevealedCount(r => r + 1);
+    }
+  };
+
+  const handleReset = () => {
+    setRevealedCount(1);
+    setGuesses([]);
+    setInputVal('');
+    setGameStatus('PLAYING');
+    setFeedbackMsg(null);
+    soundFx.playTap();
+  };
+
+  // Score calculation
+  const score = gameStatus === 'WON' ? (6 - revealedCount) * 100 : 0;
+  const starsCount = gameStatus === 'WON' ? 6 - revealedCount : 0;
+
+  return (
+    <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+      {/* Header */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '10px',
+        marginBottom: '16px',
+        padding: '12px 16px',
+        background: '#0c1220',
+        border: '1px solid rgba(255, 255, 255, 0.08)',
+        borderRadius: '12px'
+      }}>
+        <div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Target size={20} color="#38bdf8" style={{ filter: 'drop-shadow(0 0 6px rgba(56, 189, 248, 0.7))' }} />
+            <h2 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', margin: 0 }}>
+              Pinpoint
+            </h2>
+          </div>
+          <p style={{ fontSize: '12px', color: '#94a3b8', margin: '2px 0 0 0' }}>
+            Guess the secret tech theme in as few clues as possible.
+          </p>
+        </div>
+
+        {/* Puzzle Selector */}
+        <select
+          value={puzzleIndex}
+          onChange={(e) => setPuzzleIndex(Number(e.target.value))}
+          style={{
+            background: '#111827',
+            color: '#f8fafc',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            borderRadius: '8px',
+            padding: '6px 10px',
+            fontSize: '13px',
+            cursor: 'pointer'
+          }}
+        >
+          {PINPOINT_PUZZLES.map((pz, idx) => (
+            <option key={pz.id} value={idx}>
+              Puzzle #{idx + 1} {idx === 0 ? '(Daily)' : ''}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {/* Clues Progress Bar */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '10px 14px',
+        background: 'rgba(255, 255, 255, 0.03)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        marginBottom: '16px',
+        fontSize: '13px'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+          <span style={{ color: '#94a3b8' }}>Clues Revealed:</span>
+          <span style={{ fontWeight: '800', color: '#38bdf8' }}>{revealedCount} / 5</span>
+        </div>
+
+        <div style={{ display: 'flex', gap: '6px' }}>
+          {[1, 2, 3, 4, 5].map(step => (
+            <div
+              key={step}
+              style={{
+                width: '28px',
+                height: '8px',
+                borderRadius: '4px',
+                background: step <= revealedCount
+                  ? (gameStatus === 'WON' ? '#10b981' : '#38bdf8')
+                  : 'rgba(255, 255, 255, 0.1)',
+                transition: 'all 0.3s ease'
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      {/* Clues List Cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '20px' }}>
+        {currentPuzzle.clues.map((clue, idx) => {
+          const isRevealed = idx < revealedCount;
+
+          return (
+            <div
+              key={idx}
+              style={{
+                background: isRevealed ? '#0e1628' : 'rgba(255, 255, 255, 0.02)',
+                border: `1px solid ${isRevealed ? 'rgba(56, 189, 248, 0.3)' : 'rgba(255, 255, 255, 0.05)'}`,
+                borderRadius: '10px',
+                padding: '14px 16px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                transition: 'all 0.25s ease',
+                boxShadow: isRevealed ? '0 4px 15px rgba(0, 0, 0, 0.3)' : 'none'
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <span style={{
+                  width: '24px',
+                  height: '24px',
+                  borderRadius: '50%',
+                  background: isRevealed ? 'rgba(56, 189, 248, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                  color: isRevealed ? '#38bdf8' : '#64748b',
+                  fontSize: '12px',
+                  fontWeight: '700',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center'
+                }}>
+                  {idx + 1}
+                </span>
+
+                {isRevealed ? (
+                  <div>
+                    <div style={{ fontSize: '16px', fontWeight: '700', color: '#f8fafc' }}>
+                      {clue.text}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#94a3b8' }}>
+                      {clue.hint}
+                    </div>
+                  </div>
+                ) : (
+                  <div style={{ color: '#475569', fontSize: '14px', fontStyle: 'italic', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Lock size={14} /> Locked Clue
+                  </div>
+                )}
+              </div>
+
+              {isRevealed ? (
+                <Sparkles size={16} color="#38bdf8" />
+              ) : (
+                <span style={{ fontSize: '11px', color: '#475569' }}>Clue #{idx + 1}</span>
+              )}
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Feedback Message */}
+      {feedbackMsg && (
+        <div style={{
+          padding: '8px 14px',
+          background: 'rgba(239, 68, 68, 0.15)',
+          border: '1px solid #ef4444',
+          borderRadius: '8px',
+          color: '#f87171',
+          fontSize: '13px',
+          marginBottom: '14px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <XCircle size={16} />
+          {feedbackMsg}
+        </div>
+      )}
+
+      {/* Guess Input & Controls */}
+      {gameStatus === 'PLAYING' ? (
+        <form onSubmit={handleGuessSubmit} style={{ marginBottom: '20px' }}>
+          <div style={{ display: 'flex', gap: '8px' }}>
+            <input
+              type="text"
+              value={inputVal}
+              onChange={(e) => setInputVal(e.target.value)}
+              placeholder="Guess the secret theme (e.g. React Hooks, DevOps)..."
+              autoFocus
+              style={{
+                flex: 1,
+                background: '#0c1220',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: '#f8fafc',
+                padding: '12px 14px',
+                borderRadius: '10px',
+                fontSize: '14px'
+              }}
+            />
+            <button
+              type="submit"
+              disabled={!inputVal.trim()}
+              style={{
+                background: inputVal.trim()
+                  ? 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)'
+                  : '#1e293b',
+                color: inputVal.trim() ? '#030712' : '#64748b',
+                fontWeight: '700',
+                padding: '0 18px',
+                borderRadius: '10px',
+                cursor: inputVal.trim() ? 'pointer' : 'not-allowed',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px'
+              }}
+            >
+              Guess <ArrowRight size={16} />
+            </button>
+          </div>
+
+          {/* Reveal Next Clue button */}
+          {revealedCount < 5 && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginTop: '12px' }}>
+              <button
+                type="button"
+                onClick={handleRevealNextClue}
+                style={{
+                  background: 'none',
+                  color: '#94a3b8',
+                  fontSize: '12px',
+                  textDecoration: 'underline',
+                  padding: '6px 12px',
+                  cursor: 'pointer'
+                }}
+              >
+                Need another hint? Reveal Clue #{revealedCount + 1}
+              </button>
+            </div>
+          )}
+        </form>
+      ) : (
+        /* Game Over / Won State Card */
+        <div style={{
+          background: gameStatus === 'WON' ? 'rgba(16, 185, 129, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+          border: `1px solid ${gameStatus === 'WON' ? '#10b981' : '#ef4444'}`,
+          borderRadius: '12px',
+          padding: '20px',
+          textAlign: 'center',
+          marginBottom: '20px'
+        }}>
+          <div style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '50px',
+            height: '50px',
+            borderRadius: '50%',
+            background: gameStatus === 'WON' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.2)',
+            color: gameStatus === 'WON' ? '#10b981' : '#ef4444',
+            marginBottom: '10px'
+          }}>
+            {gameStatus === 'WON' ? <Trophy size={26} /> : <XCircle size={26} />}
+          </div>
+
+          <h3 style={{ fontSize: '18px', fontWeight: '800', color: '#f8fafc', marginBottom: '6px' }}>
+            {gameStatus === 'WON' ? 'Category Solved!' : 'Puzzle Completed'}
+          </h3>
+
+          <div style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '12px' }}>
+            Secret Theme:
+            <span style={{ color: '#38bdf8', fontWeight: '800', marginLeft: '6px', fontSize: '16px' }}>
+              {currentPuzzle.category}
+            </span>
+          </div>
+
+          <p style={{ fontSize: '12px', color: '#cbd5e1', lineHeight: '1.5', maxWidth: '440px', margin: '0 auto 16px auto' }}>
+            {currentPuzzle.explanation}
+          </p>
+
+          {gameStatus === 'WON' && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '4px', marginBottom: '16px' }}>
+              {[1, 2, 3, 4, 5].map(star => (
+                <span
+                  key={star}
+                  style={{
+                    fontSize: '20px',
+                    color: star <= starsCount ? '#fbbf24' : '#475569'
+                  }}
+                >
+                  ★
+                </span>
+              ))}
+              <span style={{ fontSize: '14px', fontWeight: '800', color: '#fbbf24', marginLeft: '8px' }}>
+                +{score} pts
+              </span>
+            </div>
+          )}
+
+          <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
+            {puzzleIndex < PINPOINT_PUZZLES.length - 1 ? (
+              <button
+                onClick={() => setPuzzleIndex(puzzleIndex + 1)}
+                style={{
+                  background: 'linear-gradient(135deg, #38bdf8 0%, #0284c7 100%)',
+                  color: '#030712',
+                  fontWeight: '700',
+                  padding: '10px 18px',
+                  borderRadius: '8px',
+                  cursor: 'pointer'
+                }}
+              >
+                Next Puzzle →
+              </button>
+            ) : (
+              <button
+                onClick={handleReset}
+                style={{
+                  background: '#1e293b',
+                  color: '#f8fafc',
+                  padding: '10px 18px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}
+              >
+                <RotateCcw size={15} /> Play Again
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Previous Guesses */}
+      {guesses.length > 0 && (
+        <div style={{
+          background: 'rgba(255, 255, 255, 0.02)',
+          border: '1px solid rgba(255, 255, 255, 0.05)',
+          borderRadius: '10px',
+          padding: '12px 14px',
+          marginBottom: '16px'
+        }}>
+          <div style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '8px' }}>
+            Your Guesses ({guesses.length})
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
+            {guesses.map((g, idx) => (
+              <span
+                key={idx}
+                style={{
+                  background: g.correct ? 'rgba(16, 185, 129, 0.2)' : 'rgba(239, 68, 68, 0.15)',
+                  border: `1px solid ${g.correct ? '#10b981' : 'rgba(239, 68, 68, 0.4)'}`,
+                  color: g.correct ? '#10b981' : '#f87171',
+                  padding: '4px 10px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: '600'
+                }}
+              >
+                {g.text}
+              </span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Rules */}
+      <div style={{
+        background: 'rgba(255, 255, 255, 0.02)',
+        border: '1px solid rgba(255, 255, 255, 0.06)',
+        borderRadius: '10px',
+        padding: '12px 14px',
+        fontSize: '12px',
+        color: '#94a3b8',
+        lineHeight: '1.6'
+      }}>
+        <div style={{ fontWeight: '700', color: '#f8fafc', marginBottom: '4px' }}>
+          💡 How to Play Pinpoint:
+        </div>
+        <ul style={{ paddingLeft: '18px', margin: 0 }}>
+          <li>Discover the single umbrella theme or category connecting all 5 clues.</li>
+          <li>Each incorrect guess unlocks the next clue (or click "Reveal Clue").</li>
+          <li>Solve with fewer clues to earn a higher score (up to 500 pts).</li>
+        </ul>
+      </div>
+    </div>
+  );
+}

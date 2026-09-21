@@ -7,9 +7,10 @@ import Applications from './pages/Applications';
 import AgentSettings from './pages/AgentSettings';
 import InterviewPrep from './pages/InterviewPrep';
 import GkQuiz from './pages/GkQuiz';
+import GamesHub from './pages/GamesHub';
 import LoginModal from './components/LoginModal';
 import { getCurrentUser, pingBackend } from './services/api';
-import { LayoutDashboard, Briefcase, FileText, FileCode2, Send, Settings, Bot, Menu, X, LogOut, UserCheck, GraduationCap, Brain } from 'lucide-react';
+import { LayoutDashboard, Briefcase, FileText, FileCode2, Send, Settings, Bot, Menu, X, LogOut, UserCheck, GraduationCap, Brain, Gamepad2 } from 'lucide-react';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState(() => {
@@ -121,6 +122,26 @@ export default function App() {
             }}
           >
             <Brain size={18} />
+          </button>
+
+          {/* Quick Puzzles & Games Button */}
+          <button
+            onClick={() => handleSelectTab('games')}
+            title="Puzzles & Games"
+            style={{
+              background: activeTab === 'games' ? 'rgba(99, 102, 241, 0.25)' : '#0f172a',
+              color: activeTab === 'games' ? '#818cf8' : '#94a3b8',
+              border: '1px solid rgba(255, 255, 255, 0.12)',
+              width: '36px',
+              height: '36px',
+              borderRadius: '8px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer'
+            }}
+          >
+            <Gamepad2 size={18} />
           </button>
 
           {/* Quick Settings Icon Button */}
@@ -299,6 +320,14 @@ export default function App() {
           </button>
 
           <button
+            onClick={() => handleSelectTab('games')}
+            className={`nav-item ${activeTab === 'games' ? 'active' : ''}`}
+          >
+            <Gamepad2 size={18} />
+            Puzzles & Games
+          </button>
+
+          <button
             onClick={() => handleSelectTab('applications')}
             className={`nav-item ${activeTab === 'applications' ? 'active' : ''}`}
           >
@@ -340,6 +369,7 @@ export default function App() {
         {activeTab === 'resumes' && <TailoredResumes onNavigate={handleSelectTab} />}
         {activeTab === 'prep' && <InterviewPrep initialJobId={activeJobIdForPrep} onNavigate={handleSelectTab} />}
         {activeTab === 'gk' && <GkQuiz onNavigate={handleSelectTab} />}
+        {activeTab === 'games' && <GamesHub onNavigate={handleSelectTab} />}
         {activeTab === 'applications' && <Applications onNavigate={handleSelectTab} />}
         {activeTab === 'settings' && <AgentSettings onNavigate={handleSelectTab} />}
       </main>
